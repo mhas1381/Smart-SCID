@@ -27,7 +27,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt',
     'corsheaders',
-    'drf_yasg',  # Swagger/OpenAPI
+    'drf_spectacular',  # Swagger/OpenAPI
     
     # Local apps
     'accounts',
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
 # ============ MIDDLEWARE ============
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # CORS
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,7 +71,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
 # ============ DATABASE (SQLite) ============
 DATABASES = {
     'default': {
@@ -80,20 +79,8 @@ DATABASES = {
     }
 }
 
-# ============ DATABASE ============
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': os.getenv('DB_NAME', 'smart_scid_db'),
-#         'USER': os.getenv('DB_USER', 'postgres'),
-#         'PASSWORD': os.getenv('DB_PASSWORD', ''),
-#         'HOST': os.getenv('DB_HOST', 'localhost'),
-#         'PORT': os.getenv('DB_PORT', '5432'),
-#     }
-# }
-
 # ============ AUTHENTICATION ============
-# AUTH_USER_MODEL = 'accounts.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
@@ -116,6 +103,140 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+# ============ LOGGING CONFIGURATION ============
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    
+    # Formatters - define log message format
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'standard': {
+            'format': '[{asctime}] [{levelname}] [{name}] - {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} - {message}',
+            'style': '{',
+        },
+    },
+    
+    # Handlers - define where logs go
+    'handlers': {
+        # Console output
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'formatter': 'standard',
+        },
+        # File output - general logs
+        'file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'filename': BASE_DIR / 'logs' / 'smart_scid.log',
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        # File output - error logs
+        'error_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'ERROR',
+            'filename': BASE_DIR / 'logs' / 'errors.log',
+            'maxBytes': 10 * 1024 * 1024,  # 10 MB
+            'backupCount': 5,
+            'formatter': 'verbose',
+        },
+        # File output - authentication logs
+        'auth_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'INFO',
+            'filename': BASE_DIR / 'logs' / 'auth.log',
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB
+            'backupCount': 3,
+            'formatter': 'standard',
+        },
+        # File output - database logs
+        'db_file': {
+            'class': 'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'filename': BASE_DIR / 'logs' / 'database.log',
+            'maxBytes': 5 * 1024 * 1024,  # 5 MB
+            'backupCount': 3,
+            'formatter': 'verbose',
+        },
+    },
+    
+    # Loggers - define which components log
+    'loggers': {
+        # Root logger - catches everything
+        '': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+        # Django core
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # Django requests
+        'django.request': {
+            'handlers': ['error_file'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        # Django database
+        'django.db.backends': {
+            'handlers': ['db_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Authentication
+        'django.security': {
+            'handlers': ['auth_file', 'console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+        # Custom app - accounts
+        'accounts': {
+            'handlers': ['console', 'file', 'auth_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Custom app - interview
+        'interview': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Custom app - diagnosis
+        'diagnosis': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Custom app - patients
+        'patients': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        # Custom app - sessions
+        'sessions': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}
+
+
 # ============ REST FRAMEWORK ============
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -130,6 +251,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PARSER_CLASSES': (
         'rest_framework.parsers.JSONParser',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
 # ============ JWT SETTINGS ============
@@ -168,22 +290,31 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
 ]
 
-# ============ SWAGGER (drf-yasg) SETTINGS ============
-SWAGGER_SETTINGS = {
+# ============ SPECTACULAR (Swagger) SETTINGS ============
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Smart SCID API',
+    'DESCRIPTION': 'Structured Clinical Interview for DSM-5 Disorders - Digital Version',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'SCHEMA_PATH_PREFIX': '/api/',
+    'COMPONENT_SPLIT_REQUEST': True,
+    
+    'SWAGGER_UI_SETTINGS': {
+        'deepLinking': True,
+        'persistAuthorization': True,
+        'displayOperationId': True,
+    },
+    
+    'SECURITY': [
+        {'Bearer': []},
+    ],
+    
     'SECURITY_DEFINITIONS': {
         'Bearer': {
-            'type': 'apiKey',
-            'name': 'Authorization',
-            'in': 'header'
+            'type': 'http',
+            'scheme': 'bearer',
+            'bearerFormat': 'JWT',
+            'description': 'Enter JWT token with Bearer prefix (e.g. Bearer <token>)',
         }
     },
-    'USE_SESSION_AUTH': False,
-    'JSON_EDITOR': True,
-    'SUPPORTED_SUBMIT_METHODS': [
-        'get',
-        'post',
-        'put',
-        'delete',
-        'patch'
-    ],
 }
