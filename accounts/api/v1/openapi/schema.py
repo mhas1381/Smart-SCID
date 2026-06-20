@@ -1438,8 +1438,7 @@ Retrieve all overviews for a specific patient.
                             "patient_name": serializers.CharField(),
                             "clinician": serializers.IntegerField(),
                             "clinician_name": serializers.CharField(),
-                            "age": serializers.IntegerField(allow_null=True),
-                            "occupation": serializers.CharField(),
+                            "presenting_problem": serializers.CharField(),
                             "suicide_attempt": serializers.BooleanField(),
                             "created_at": serializers.CharField(),
                         },
@@ -1460,7 +1459,7 @@ overview_create_schema = extend_schema(
 Create a new SCID-5-CV Overview for a patient.
 
 📋 Includes all sections from the SCID-5-CV Overview:
-👤 Demographic Information
+👤 Demographic Information (complementary to Patient)
 🩺 History of Current Illness
 💊 Treatment History
 🏥 Medical Problems
@@ -1469,15 +1468,16 @@ Create a new SCID-5-CV Overview for a patient.
 
 🔸 All fields are optional
 🔐 JWT authentication required
+
+⚠️ Patient base info (name, age, occupation, etc.) is already in Patient model
+⚠️ This Overview only contains additional clinical information
     """,
     request=inline_serializer(
         name="OverviewCreateRequest",
         fields={
-            # Demographic Information
-            "age": serializers.IntegerField(required=False, allow_null=True),
+            # Demographic (Complementary to Patient)
             "living_with": serializers.CharField(required=False, allow_blank=True),
             "living_place": serializers.CharField(required=False, allow_blank=True),
-            "occupation": serializers.CharField(required=False, allow_blank=True),
             "occupation_history": serializers.CharField(required=False, allow_blank=True),
             "employment_status": serializers.CharField(required=False, allow_blank=True),
             "part_time_hours": serializers.IntegerField(required=False, allow_null=True),
@@ -1548,72 +1548,34 @@ Create a new SCID-5-CV Overview for a patient.
     },
     examples=[
         OpenApiExample(
-            "📤 Create Overview Request - Full Example",
+            "📤 Create Overview - Full Example",
             value={
-                "age": 35,
                 "living_with": "همسر و دو فرزند",
                 "living_place": "آپارتمان شخصی",
-                "occupation": "مهندس نرم‌افزار",
                 "occupation_history": "از ۱۰ سال پیش در همین حوزه فعالیت دارم",
                 "employment_status": "full_time",
-                "part_time_hours": None,
-                "part_time_reason": "",
-                "unemployment_reason": "",
-                "disability_payments": False,
-                "disability_reason": "",
-                "unable_to_work_history": False,
-                "unable_to_work_reason": "",
                 "presenting_problem": "از ۶ ماه پیش دچار اضطراب شدید و بی‌خوابی شده‌ام",
                 "onset_circumstances": "همزمان با تغییر شغل و افزایش فشار کاری شروع شد",
                 "last_feeling_ok": "حدود ۸ ماه پیش",
                 "first_treatment_age": "۳۲ سالگی",
-                "first_treatment_reason": "استرس و اضطراب خفیف، درمان شناختی-رفتاری دریافت کردم",
+                "first_treatment_reason": "درمان شناختی-رفتاری برای اضطراب",
                 "psychiatric_hospitalization": False,
-                "hospitalization_count": None,
-                "hospitalization_reason": "",
                 "substance_treatment": False,
-                "treatment_history": [
-                    {
-                        "age": "۳۲",
-                        "description": "درمان شناختی-رفتاری برای اضطراب",
-                        "symptoms": "استرس کاری، تپش قلب",
-                        "triggering_events": "فشار کاری بالا",
-                        "treatment": "CBT به مدت ۱۲ جلسه",
-                        "offset": "بهبود نسبی پس از ۳ ماه"
-                    }
-                ],
+                "treatment_history": [],
                 "physical_health": "فشار خون خفیف، تحت کنترل با دارو",
-                "medical_hospitalization": False,
-                "medical_hospitalization_reason": "",
                 "current_medications": "لوزارتان ۲۵ میلی‌گرم روزانه",
-                "wished_dead": True,
-                "wished_dead_details": "بعضی شب‌ها آرزو می‌کنم کاش نمی‌بیدار شوم",
-                "thoughts_past_week": True,
-                "strong_urge_past_week": False,
-                "strong_urge_details": "",
-                "intention_past_week": False,
-                "intention_details": "",
-                "plan_past_week": False,
-                "plan_details": "",
+                "wished_dead": False,
                 "suicide_attempt": False,
-                "self_harm": False,
-                "suicide_attempt_details": "",
-                "most_severe_attempt": "",
-                "attempt_past_week": False,
                 "other_problems": "مشکلات مالی و اختلاف با همسر",
-                "mood_description": "اغلب غمگین و بی‌حال، گاهی تحریک‌پذیر",
-                "alcohol_use": "ماهانه ۲-۳ بار، هر بار ۱-۲ لیوان شراب",
-                "alcohol_with_whom": "معمولاً با دوستان در مهمانی‌ها",
-                "drug_use": "مصرف تفریحی ماری‌جوانا چندین سال پیش، در حال حاضر هیچ مصرفی ندارم"
+                "mood_description": "اغلب غمگین و بی‌حال",
+                "alcohol_use": "ماهانه ۲-۳ بار، هر بار ۱-۲ لیوان",
+                "drug_use": "مصرف تفریحی ماری‌جوانا چندین سال پیش"
             },
             request_only=True,
         ),
         OpenApiExample(
             "📤 Create Overview - Minimal Example",
             value={
-                "age": 42,
-                "occupation": "معلم",
-                "employment_status": "full_time",
                 "presenting_problem": "افسردگی و کاهش انرژی از ۳ ماه پیش",
                 "wished_dead": False,
                 "suicide_attempt": False
@@ -1623,31 +1585,17 @@ Create a new SCID-5-CV Overview for a patient.
         OpenApiExample(
             "📤 Create Overview - Suicidal Ideation Example",
             value={
-                "age": 28,
-                "occupation": "دانشجو",
-                "employment_status": "student",
                 "presenting_problem": "افکار خودکشی و احساس ناامیدی",
-                "onset_circumstances": "پس از شکست عاطفی و افت تحصیلی",
-                "last_feeling_ok": "۴ ماه پیش",
                 "wished_dead": True,
-                "wished_dead_details": "هر روز به مرگ فکر می‌کنم، احساس می‌کنم بار هستی هستم",
+                "wished_dead_details": "هر روز به مرگ فکر می‌کنم",
                 "thoughts_past_week": True,
                 "strong_urge_past_week": True,
-                "strong_urge_details": "دیشب وسوسه شدم که خودکشی کنم",
                 "intention_past_week": True,
-                "intention_details": "نقشه کشیدم که با پریدن از ارتفاع خودکشی کنم",
                 "plan_past_week": True,
-                "plan_details": "پشت‌بام ساختمان را انتخاب کرده‌ام، چند بار رفته‌ام و نگاه کرده‌ام",
+                "plan_details": "پشت‌بام ساختمان را انتخاب کرده‌ام",
                 "suicide_attempt": True,
-                "suicide_attempt_details": "۲ سال پیش با خوردن قرص خواب‌آور اقدام کردم، به بیمارستان منتقل شدم",
-                "most_severe_attempt": "همان اقدام با قرص، ۳ روز در ICU بستری بودم",
-                "attempt_past_week": False,
-                "self_harm": True,
-                "other_problems": "انزوای اجتماعی، قطع ارتباط با دوستان",
-                "mood_description": "عمیقاً افسرده، بی‌امید به آینده",
-                "alcohol_use": "هفته‌ای ۳-۴ بار، هر بار ۳-۴ لیوان",
-                "alcohol_with_whom": "معمولاً تنها در خانه",
-                "drug_use": "گاهی مصرف مت آمفتامین برای افزایش انرژی"
+                "suicide_attempt_details": "۲ سال پیش با قرص اقدام کردم",
+                "most_severe_attempt": "۳ روز در ICU بستری بودم"
             },
             request_only=True,
         ),
@@ -1671,13 +1619,7 @@ overview_detail_schema = extend_schema(
     description="""
 Get complete Overview details for a patient.
 
-📋 Returns all fields from the SCID-5-CV Overview section:
-👤 Demographic Information
-🩺 History of Current Illness
-💊 Treatment History
-🏥 Medical Problems
-⚠️ Suicidal Ideation & Behavior
-📝 Other Current Problems
+📋 Returns all fields from the SCID-5-CV Overview section.
     """,
     responses={
         200: inline_serializer(
@@ -1688,10 +1630,8 @@ Get complete Overview details for a patient.
                 "clinician": serializers.IntegerField(),
                 "clinician_name": serializers.CharField(),
                 "patient_name": serializers.CharField(),
-                "age": serializers.IntegerField(allow_null=True),
                 "living_with": serializers.CharField(),
                 "living_place": serializers.CharField(),
-                "occupation": serializers.CharField(),
                 "occupation_history": serializers.CharField(),
                 "employment_status": serializers.CharField(),
                 "part_time_hours": serializers.IntegerField(allow_null=True),
@@ -1741,76 +1681,6 @@ Get complete Overview details for a patient.
         401: OpenApiTypes.OBJECT,
         404: OpenApiTypes.OBJECT,
     },
-    examples=[
-        OpenApiExample(
-            "📄 Overview Detail Response - Full Example",
-            value={
-                "id": 1,
-                "patient": 1,
-                "clinician": 1,
-                "clinician_name": "دکتر احمد رضایی",
-                "patient_name": "علی محمدی",
-                "age": 35,
-                "living_with": "همسر و دو فرزند",
-                "living_place": "آپارتمان شخصی",
-                "occupation": "مهندس نرم‌افزار",
-                "occupation_history": "از ۱۰ سال پیش در همین حوزه فعالیت دارم",
-                "employment_status": "full_time",
-                "part_time_hours": None,
-                "part_time_reason": "",
-                "unemployment_reason": "",
-                "disability_payments": False,
-                "disability_reason": "",
-                "unable_to_work_history": False,
-                "unable_to_work_reason": "",
-                "presenting_problem": "از ۶ ماه پیش دچار اضطراب شدید و بی‌خوابی شده‌ام",
-                "onset_circumstances": "همزمان با تغییر شغل و افزایش فشار کاری شروع شد",
-                "last_feeling_ok": "حدود ۸ ماه پیش",
-                "first_treatment_age": "۳۲ سالگی",
-                "first_treatment_reason": "استرس و اضطراب خفیف، درمان شناختی-رفتاری دریافت کردم",
-                "psychiatric_hospitalization": False,
-                "hospitalization_count": None,
-                "hospitalization_reason": "",
-                "substance_treatment": False,
-                "treatment_history": [
-                    {
-                        "age": "۳۲",
-                        "description": "درمان شناختی-رفتاری برای اضطراب",
-                        "symptoms": "استرس کاری، تپش قلب",
-                        "triggering_events": "فشار کاری بالا",
-                        "treatment": "CBT به مدت ۱۲ جلسه",
-                        "offset": "بهبود نسبی پس از ۳ ماه"
-                    }
-                ],
-                "physical_health": "فشار خون خفیف، تحت کنترل با دارو",
-                "medical_hospitalization": False,
-                "medical_hospitalization_reason": "",
-                "current_medications": "لوزارتان ۲۵ میلی‌گرم روزانه",
-                "wished_dead": True,
-                "wished_dead_details": "بعضی شب‌ها آرزو می‌کنم کاش نمی‌بیدار شوم",
-                "thoughts_past_week": True,
-                "strong_urge_past_week": False,
-                "strong_urge_details": "",
-                "intention_past_week": False,
-                "intention_details": "",
-                "plan_past_week": False,
-                "plan_details": "",
-                "suicide_attempt": False,
-                "self_harm": False,
-                "suicide_attempt_details": "",
-                "most_severe_attempt": "",
-                "attempt_past_week": False,
-                "other_problems": "مشکلات مالی و اختلاف با همسر",
-                "mood_description": "اغلب غمگین و بی‌حال، گاهی تحریک‌پذیر",
-                "alcohol_use": "ماهانه ۲-۳ بار، هر بار ۱-۲ لیوان شراب",
-                "alcohol_with_whom": "معمولاً با دوستان در مهمانی‌ها",
-                "drug_use": "مصرف تفریحی ماری‌جوانا چندین سال پیش، در حال حاضر هیچ مصرفی ندارم",
-                "created_at": "2024-01-15T10:30:00Z",
-                "updated_at": "2024-01-15T10:30:00Z"
-            },
-            response_only=True,
-        ),
-    ],
 )
 
 
@@ -1828,10 +1698,8 @@ Update an Overview.
     request=inline_serializer(
         name="OverviewUpdateRequest",
         fields={
-            "age": serializers.IntegerField(required=False, allow_null=True),
             "living_with": serializers.CharField(required=False, allow_blank=True),
             "living_place": serializers.CharField(required=False, allow_blank=True),
-            "occupation": serializers.CharField(required=False, allow_blank=True),
             "occupation_history": serializers.CharField(required=False, allow_blank=True),
             "employment_status": serializers.CharField(required=False, allow_blank=True),
             "part_time_hours": serializers.IntegerField(required=False, allow_null=True),
@@ -1882,34 +1750,4 @@ Update an Overview.
         401: OpenApiTypes.OBJECT,
         404: OpenApiTypes.OBJECT,
     },
-    examples=[
-        OpenApiExample(
-            "📤 Update Overview Request - Partial Update",
-            value={
-                "age": 36,
-                "occupation": "مهندس ارشد نرم‌افزار",
-                "presenting_problem": "اضطراب همچنان ادامه دارد، اما شدت آن کمتر شده",
-                "wished_dead": False,
-                "thoughts_past_week": False
-            },
-            request_only=True,
-        ),
-        OpenApiExample(
-            "✅ Update Overview Response",
-            value={
-                "id": 1,
-                "patient": 1,
-                "clinician": 1,
-                "clinician_name": "دکتر احمد رضایی",
-                "patient_name": "علی محمدی",
-                "age": 36,
-                "occupation": "مهندس ارشد نرم‌افزار",
-                "presenting_problem": "اضطراب همچنان ادامه دارد، اما شدت آن کمتر شده",
-                "wished_dead": False,
-                "thoughts_past_week": False,
-                "updated_at": "2024-01-20T14:30:00Z"
-            },
-            response_only=True,
-        ),
-    ],
 )

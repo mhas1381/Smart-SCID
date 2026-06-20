@@ -459,6 +459,15 @@ class Patient(models.Model):
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+    def get_age(self):
+        if self.birth_date:
+            from django.utils import timezone
+            today = timezone.now().date()
+            return today.year - self.birth_date.year - (
+                (today.month, today.day) < (self.birth_date.month, self.birth_date.day)
+            )
+        return None
+
 
 # ============================================================
 # OVERVIEW MODEL (SCID-5-CV Overview Section)
@@ -467,8 +476,7 @@ class Patient(models.Model):
 class Overview(models.Model):
     """
     SCID-5-CV Overview section.
-    Collected at the beginning of the interview.
-    Each patient can have multiple overviews over time.
+    Contains ONLY information that is NOT already in Patient model.
     """
 
     patient = models.ForeignKey(
@@ -486,15 +494,8 @@ class Overview(models.Model):
     )
 
     # ==========================================================
-    # DEMOGRAPHIC INFORMATION
+    # DEMOGRAPHIC INFORMATION (Complementary to Patient)
     # ==========================================================
-
-    age = models.PositiveIntegerField(
-        verbose_name=_("Age"),
-        blank=True,
-        null=True,
-        help_text=_("How old are you?"),
-    )
 
     living_with = models.CharField(
         max_length=200,
@@ -508,13 +509,6 @@ class Overview(models.Model):
         verbose_name=_("Living Place"),
         blank=True,
         help_text=_("What kind of place do you live in?"),
-    )
-
-    occupation = models.CharField(
-        max_length=200,
-        verbose_name=_("Occupation"),
-        blank=True,
-        help_text=_("What kind of work do you do?"),
     )
 
     occupation_history = models.CharField(
@@ -581,7 +575,7 @@ class Overview(models.Model):
     presenting_problem = models.TextField(
         verbose_name=_("Presenting Problem"),
         blank=True,
-        help_text=_("What led to your coming here (this time)? (What's the major problem you've been having trouble with?)"),
+        help_text=_("What led to your coming here? What's the major problem?"),
     )
 
     onset_circumstances = models.TextField(
@@ -611,7 +605,7 @@ class Overview(models.Model):
     first_treatment_reason = models.TextField(
         verbose_name=_("First Treatment Reason"),
         blank=True,
-        help_text=_("What was that for? What treatment(s) did you get? What medications?"),
+        help_text=_("What was that for? What treatment(s) did you get?"),
     )
 
     psychiatric_hospitalization = models.BooleanField(
@@ -639,13 +633,11 @@ class Overview(models.Model):
         help_text=_("Have you ever had any treatment for drugs or alcohol?"),
     )
 
-    # Treatment History Table (structured as JSON for multiple entries)
-    # Each entry: {age, description, symptoms, triggering_events, treatment, offset}
     treatment_history = models.JSONField(
         verbose_name=_("Treatment History"),
         default=list,
         blank=True,
-        help_text=_('List of treatments: [{"age": "", "description": "", "symptoms": "", "triggering_events": "", "treatment": "", "offset": ""}]'),
+        help_text=_('List of treatments'),
     )
 
     # ==========================================================
@@ -655,7 +647,7 @@ class Overview(models.Model):
     physical_health = models.TextField(
         verbose_name=_("Physical Health"),
         blank=True,
-        help_text=_("How has your physical health been? (Have you had any medical problems?)"),
+        help_text=_("How has your physical health been?"),
     )
 
     medical_hospitalization = models.BooleanField(
@@ -673,18 +665,17 @@ class Overview(models.Model):
     current_medications = models.TextField(
         verbose_name=_("Current Medications"),
         blank=True,
-        help_text=_("Do you take any medications, vitamins, or other nutritional supplements (other than those you've already told me about)? What are you taking and at what dose?"),
+        help_text=_("What medications are you taking?"),
     )
 
     # ==========================================================
     # SUICIDAL IDEATION AND BEHAVIOR
     # ==========================================================
 
-    # CHECK FOR THOUGHTS
     wished_dead = models.BooleanField(
         default=False,
         verbose_name=_("Wished Dead"),
-        help_text=_("Have you ever wished you were dead or wished you could go to sleep and not wake up?"),
+        help_text=_("Have you ever wished you were dead?"),
     )
 
     wished_dead_details = models.TextField(
@@ -693,52 +684,46 @@ class Overview(models.Model):
         help_text=_("Tell me about that."),
     )
 
-    # IF YES: Did you have any of these thoughts in the past week?
     thoughts_past_week = models.BooleanField(
         default=False,
         verbose_name=_("Thoughts Past Week"),
-        help_text=_("Did you have any of these thoughts in the past week (including today)?"),
+        help_text=_("Did you have any of these thoughts in the past week?"),
     )
 
-    # IF YES: CHECK FOR INTENT
     strong_urge_past_week = models.BooleanField(
         default=False,
         verbose_name=_("Strong Urge Past Week"),
-        help_text=_("Have you had a strong urge to kill yourself at any time in the past week?"),
+        help_text=_("Have you had a strong urge to kill yourself in the past week?"),
     )
 
     strong_urge_details = models.TextField(
         verbose_name=_("Strong Urge Details"),
         blank=True,
-        help_text=_("Tell me about that."),
     )
 
     intention_past_week = models.BooleanField(
         default=False,
         verbose_name=_("Intention Past Week"),
-        help_text=_("In the past week, did you have any intention of attempting suicide?"),
+        help_text=_("Did you have any intention of attempting suicide in the past week?"),
     )
 
     intention_details = models.TextField(
         verbose_name=_("Intention Details"),
         blank=True,
-        help_text=_("Tell me about that."),
     )
 
-    # CHECK FOR PLAN AND METHOD
     plan_past_week = models.BooleanField(
         default=False,
         verbose_name=_("Plan Past Week"),
-        help_text=_("In the past week, have you thought about how you might actually do it?"),
+        help_text=_("Have you thought about how you might do it?"),
     )
 
     plan_details = models.TextField(
         verbose_name=_("Plan Details"),
         blank=True,
-        help_text=_("Tell me about what you were thinking of doing. Have you thought about what you would need to do to carry this out? Do you have the means to do this?"),
+        help_text=_("Tell me about your plan."),
     )
 
-    # SUICIDE ATTEMPT
     suicide_attempt = models.BooleanField(
         default=False,
         verbose_name=_("Suicide Attempt"),
@@ -754,19 +739,19 @@ class Overview(models.Model):
     suicide_attempt_details = models.TextField(
         verbose_name=_("Suicide Attempt Details"),
         blank=True,
-        help_text=_("What did you do? (Tell me what happened.) Were you trying to end your life?"),
+        help_text=_("Tell me what happened."),
     )
 
     most_severe_attempt = models.TextField(
         verbose_name=_("Most Severe Attempt"),
         blank=True,
-        help_text=_("Which attempt had the most severe medical consequences (going to the emergency department, needing hospitalization, requiring care in ICU)?"),
+        help_text=_("Which attempt had the most severe consequences?"),
     )
 
     attempt_past_week = models.BooleanField(
         default=False,
         verbose_name=_("Attempt Past Week"),
-        help_text=_("Have you made any suicide attempts in the past week (including today)?"),
+        help_text=_("Have you made any attempts in the past week?"),
     )
 
     # ==========================================================
@@ -776,7 +761,7 @@ class Overview(models.Model):
     other_problems = models.TextField(
         verbose_name=_("Other Problems"),
         blank=True,
-        help_text=_("Have you had any other problems in the past month? (How are things going at work, at home, and with other people?)"),
+        help_text=_("How are things going at work, at home, and with other people?"),
     )
 
     mood_description = models.TextField(
@@ -788,19 +773,19 @@ class Overview(models.Model):
     alcohol_use = models.TextField(
         verbose_name=_("Alcohol Use"),
         blank=True,
-        help_text=_("In the past month, how much have you been drinking?"),
+        help_text=_("How much have you been drinking?"),
     )
 
     alcohol_with_whom = models.TextField(
         verbose_name=_("Alcohol With Whom"),
         blank=True,
-        help_text=_("When you drink, who are you usually with? (Are you usually alone or out with other people?)"),
+        help_text=_("Who do you drink with?"),
     )
 
     drug_use = models.TextField(
         verbose_name=_("Drug Use"),
         blank=True,
-        help_text=_("In the past month, have you been using any illegal or recreational drugs? How about taking more of your prescription drugs than was prescribed or running out of medication early?"),
+        help_text=_("Have you been using any drugs?"),
     )
 
     # ==========================================================
@@ -833,7 +818,6 @@ class Overview(models.Model):
 class PatientNote(models.Model):
     """
     Notes added by clinicians about the patient.
-    Can be used for general notes or quick observations.
     """
 
     NOTE_TYPES = [
@@ -889,7 +873,7 @@ class PatientNote(models.Model):
 
 
 # ============================================================
-# SIGNALS: Auto-create profile when user is created
+# SIGNALS
 # ============================================================
 
 @receiver(post_save, sender=User)

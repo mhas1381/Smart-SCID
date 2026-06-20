@@ -152,7 +152,7 @@ class PatientNoteInline(admin.TabularInline):
 class OverviewInline(admin.TabularInline):
     model = Overview
     extra = 0
-    fields = ('clinician', 'age', 'occupation', 'created_at', 'view_overview_link')
+    fields = ('clinician', 'presenting_problem', 'suicide_attempt', 'created_at', 'view_overview_link')
     readonly_fields = ('created_at', 'view_overview_link')
     classes = ('collapse',)
     can_delete = False
@@ -306,9 +306,7 @@ class OverviewAdmin(admin.ModelAdmin):
         'id',
         'patient_link',
         'clinician_link',
-        'age',
-        'occupation',
-        'employment_status',
+        'presenting_problem_preview',
         'suicide_attempt',
         'has_overview_details',
         'created_at',
@@ -333,8 +331,8 @@ class OverviewAdmin(admin.ModelAdmin):
         'patient__patient_code',
         'clinician__first_name',
         'clinician__last_name',
-        'occupation',
         'presenting_problem',
+        'occupation_history',
     )
 
     readonly_fields = ('created_at', 'updated_at')
@@ -346,10 +344,8 @@ class OverviewAdmin(admin.ModelAdmin):
 
         (_('📋 Demographic Information'), {
             'fields': (
-                'age',
                 'living_with',
                 'living_place',
-                'occupation',
                 'occupation_history',
                 'employment_status',
                 'part_time_hours',
@@ -444,11 +440,22 @@ class OverviewAdmin(admin.ModelAdmin):
     clinician_link.short_description = 'Clinician'
     clinician_link.admin_order_field = 'clinician__first_name'
 
+    def presenting_problem_preview(self, obj):
+        if obj.presenting_problem:
+            if len(obj.presenting_problem) > 50:
+                return f"{obj.presenting_problem[:50]}..."
+            return obj.presenting_problem
+        return '-'
+    presenting_problem_preview.short_description = 'Presenting Problem'
+
     def has_overview_details(self, obj):
         """Check if overview has any meaningful content."""
         fields_to_check = [
-            obj.age, obj.occupation, obj.presenting_problem,
-            obj.physical_health, obj.wished_dead, obj.suicide_attempt
+            obj.presenting_problem,
+            obj.occupation_history,
+            obj.physical_health,
+            obj.wished_dead,
+            obj.suicide_attempt
         ]
         if any(fields_to_check):
             return True

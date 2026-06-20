@@ -171,10 +171,10 @@ class OverviewModelTest(TestCase):
         self.overview = Overview.objects.create(
             patient=self.patient,
             clinician=self.user,
-            age=35,
-            occupation="مهندس نرم‌افزار",
-            employment_status="full_time",
             presenting_problem="اضطراب و بی‌خوابی",
+            living_with="همسر و دو فرزند",
+            living_place="آپارتمان شخصی",
+            employment_status="full_time",
             wished_dead=False,
             suicide_attempt=False
         )
@@ -184,9 +184,9 @@ class OverviewModelTest(TestCase):
         self.assertIsNotNone(self.overview.id)
         self.assertEqual(self.overview.patient, self.patient)
         self.assertEqual(self.overview.clinician, self.user)
-        self.assertEqual(self.overview.age, 35)
-        self.assertEqual(self.overview.occupation, "مهندس نرم‌افزار")
         self.assertEqual(self.overview.presenting_problem, "اضطراب و بی‌خوابی")
+        self.assertEqual(self.overview.living_with, "همسر و دو فرزند")
+        self.assertEqual(self.overview.employment_status, "full_time")
 
     def test_overview_str_method(self):
         """Test string representation of overview."""
@@ -533,10 +533,10 @@ class OverviewAPITest(TestCase):
     def test_create_overview_success(self):
         """Test creating an overview successfully."""
         data = {
-            "age": 35,
-            "occupation": "مهندس نرم‌افزار",
-            "employment_status": "full_time",
             "presenting_problem": "اضطراب و بی‌خوابی",
+            "living_with": "همسر و دو فرزند",
+            "living_place": "آپارتمان شخصی",
+            "employment_status": "full_time",
             "wished_dead": False,
             "suicide_attempt": False,
             "self_harm": False
@@ -552,14 +552,12 @@ class OverviewAPITest(TestCase):
         Overview.objects.create(
             patient=self.patient,
             clinician=self.user,
-            age=35,
-            occupation="مهندس"
+            presenting_problem="اضطراب"
         )
         Overview.objects.create(
             patient=self.patient,
             clinician=self.user,
-            age=40,
-            occupation="دکتر"
+            presenting_problem="افسردگی"
         )
 
         response = self.client.get(self.overviews_url)
@@ -572,32 +570,32 @@ class OverviewAPITest(TestCase):
         overview = Overview.objects.create(
             patient=self.patient,
             clinician=self.user,
-            age=35,
-            occupation="مهندس نرم‌افزار",
-            presenting_problem="اضطراب"
+            presenting_problem="اضطراب شدید",
+            living_with="همسر",
+            employment_status="full_time"
         )
         response = self.client.get(f"/api/accounts/overviews/{overview.id}/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['age'], 35)
-        self.assertEqual(response.data['occupation'], "مهندس نرم‌افزار")
+        self.assertEqual(response.data['presenting_problem'], "اضطراب شدید")
+        self.assertEqual(response.data['living_with'], "همسر")
+        self.assertEqual(response.data['employment_status'], "full_time")
 
     def test_update_overview(self):
         """Test updating an overview."""
         overview = Overview.objects.create(
             patient=self.patient,
             clinician=self.user,
-            age=35,
-            occupation="مهندس"
+            presenting_problem="اضطراب"
         )
-        data = {"occupation": "مهندس ارشد"}
+        data = {"presenting_problem": "اضطراب شدید و بی‌خوابی"}
         response = self.client.patch(f"/api/accounts/overviews/{overview.id}/", data, format='json')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data['occupation'], "مهندس ارشد")
+        self.assertEqual(response.data['presenting_problem'], "اضطراب شدید و بی‌خوابی")
 
     def test_overview_branching_logic(self):
         """Test suicidal ideation branching logic."""
         data = {
-            "age": 35,
+            "presenting_problem": "افکار خودکشی",
             "wished_dead": True,
             "wished_dead_details": "Sometimes I feel hopeless",
             "thoughts_past_week": True,
@@ -685,10 +683,9 @@ class IntegrationTest(TestCase):
         # 4. Create overview
         overviews_url = self.overviews_url_base.format(patient_id)
         overview_data = {
-            "age": 35,
-            "occupation": "مهندس",
+            "presenting_problem": "اضطراب شدید",
+            "living_with": "همسر و دو فرزند",
             "employment_status": "full_time",
-            "presenting_problem": "اضطراب",
             "wished_dead": False,
             "suicide_attempt": False
         }

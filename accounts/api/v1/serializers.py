@@ -558,6 +558,7 @@ class PatientNoteSerializer(serializers.ModelSerializer):
 class OverviewSerializer(serializers.ModelSerializer):
     """
     Serializer for SCID-5-CV Overview section.
+    Contains ONLY fields that are NOT in Patient model.
     """
 
     clinician_name = serializers.SerializerMethodField()
@@ -568,20 +569,28 @@ class OverviewSerializer(serializers.ModelSerializer):
         model = Overview
         fields = [
             'id', 'patient', 'clinician', 'clinician_name', 'patient_name', 'message',
-            'age', 'living_with', 'living_place', 'occupation', 'occupation_history',
-            'employment_status', 'part_time_hours', 'part_time_reason', 'unemployment_reason',
-            'disability_payments', 'disability_reason', 'unable_to_work_history',
-            'unable_to_work_reason',
+            # Demographic (Complementary to Patient)
+            'living_with', 'living_place', 'occupation_history',
+            'employment_status', 'part_time_hours', 'part_time_reason',
+            'unemployment_reason', 'disability_payments', 'disability_reason',
+            'unable_to_work_history', 'unable_to_work_reason',
+            # History of Current Illness
             'presenting_problem', 'onset_circumstances', 'last_feeling_ok',
-            'first_treatment_age', 'first_treatment_reason', 'psychiatric_hospitalization',
-            'hospitalization_count', 'hospitalization_reason', 'substance_treatment',
-            'treatment_history', 'physical_health', 'medical_hospitalization',
+            # Treatment History
+            'first_treatment_age', 'first_treatment_reason',
+            'psychiatric_hospitalization', 'hospitalization_count',
+            'hospitalization_reason', 'substance_treatment', 'treatment_history',
+            # Medical Problems
+            'physical_health', 'medical_hospitalization',
             'medical_hospitalization_reason', 'current_medications',
+            # Suicidal Ideation & Behavior
             'wished_dead', 'wished_dead_details', 'thoughts_past_week',
-            'strong_urge_past_week', 'strong_urge_details', 'intention_past_week',
-            'intention_details', 'plan_past_week', 'plan_details',
+            'strong_urge_past_week', 'strong_urge_details',
+            'intention_past_week', 'intention_details',
+            'plan_past_week', 'plan_details',
             'suicide_attempt', 'self_harm', 'suicide_attempt_details',
             'most_severe_attempt', 'attempt_past_week',
+            # Other Current Problems
             'other_problems', 'mood_description', 'alcohol_use',
             'alcohol_with_whom', 'drug_use',
             'created_at', 'updated_at'
@@ -614,8 +623,7 @@ class OverviewListSerializer(serializers.ModelSerializer):
             'patient_name',
             'clinician',
             'clinician_name',
-            'age',
-            'occupation',
+            'presenting_problem',
             'suicide_attempt',
             'created_at',
         ]
