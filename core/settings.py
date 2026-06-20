@@ -236,6 +236,21 @@ LOGGING = {
     },
 }
 
+# ==================== SMS Configuration ====================
+
+# SMS.ir Configuration (for production)
+SMS_IR_API_KEY = "your-sms-ir-api-key-here"  # Replace with real key in production
+SMS_IR_VERIFY_TEMPLATE_ID = 100000  # Your template ID from SMS.ir
+
+# SMS Mock Mode - Set to True to use mock SMS (logs OTP in console)
+# In development, this will be automatically enabled if DEBUG=True
+SMS_MOCK_MODE = True  # Force mock mode
+
+# OTP Configuration
+OTP_CACHE_TIMEOUT = 120  # 2 minutes - OTP validity period
+OTP_LENGTH = 5  # Length of OTP code
+
+
 
 # ============ REST FRAMEWORK ============
 REST_FRAMEWORK = {
