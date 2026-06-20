@@ -12,15 +12,16 @@ from django.dispatch import receiver
 import re
 
 
+# ============================================================
+# USER MANAGER
+# ============================================================
+
 class UserManager(BaseUserManager):
     """
     Custom user manager using phone number as the main identifier.
     """
 
     def create_user(self, phone_number, password=None, **extra_fields):
-        """
-        Create and save a User with the given phone number and password.
-        """
         if not phone_number:
             raise ValueError(_("The Phone Number must be set."))
 
@@ -38,9 +39,6 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, phone_number, password=None, **extra_fields):
-        """
-        Create and save a SuperUser with the given phone number and password.
-        """
         extra_fields.setdefault("is_staff", True)
         extra_fields.setdefault("is_superuser", True)
         extra_fields.setdefault("is_active", True)
@@ -53,12 +51,15 @@ class UserManager(BaseUserManager):
         return self.create_user(phone_number, password, **extra_fields)
 
 
+# ============================================================
+# USER MODEL
+# ============================================================
+
 class User(AbstractBaseUser, PermissionsMixin):
     """
     Custom User model where phone number is the primary identifier.
     """
 
-    # Phone number validator for Iranian format (e.g., 09123456789)
     phone_regex = RegexValidator(
         regex=r"^09\d{9}$",
         message=_("Phone number must be entered in the format: '09123456789'."),
@@ -95,7 +96,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("Last Name"),
     )
 
-    # Django internal fields
     is_superuser = models.BooleanField(
         default=False,
         verbose_name=_("Superuser Status"),
@@ -114,7 +114,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_("Designates whether the user's phone number is verified."),
     )
 
-    # Fix reverse accessor clash - add unique related_name
     groups = models.ManyToManyField(
         'auth.Group',
         related_name='custom_user_set',
@@ -130,7 +129,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         help_text=_('Specific permissions for this user.'),
     )
 
-    # Timestamps
     created_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name=_("Created Date"),
@@ -140,13 +138,9 @@ class User(AbstractBaseUser, PermissionsMixin):
         verbose_name=_("Updated Date"),
     )
 
-    # Custom manager
     objects = UserManager()
 
-    # Field used for authentication
     USERNAME_FIELD = "phone_number"
-
-    # Fields required when creating a superuser
     REQUIRED_FIELDS = ["first_name", "last_name"]
 
     class Meta:
@@ -160,17 +154,19 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.phone_number
 
     def get_full_name(self):
-        """Return the full name of the user."""
         if self.first_name and self.last_name:
             return f"{self.first_name} {self.last_name}"
         return self.phone_number
 
     def get_short_name(self):
-        """Return the short name of the user."""
         if self.first_name:
             return self.first_name
         return self.phone_number
 
+
+# ============================================================
+# USER PROFILE MODEL
+# ============================================================
 
 class UserProfile(models.Model):
     """
@@ -197,7 +193,6 @@ class UserProfile(models.Model):
         help_text=_("The user this profile belongs to."),
     )
 
-    # Personal Information
     birth_date = models.DateField(
         verbose_name=_("Birth Date"),
         null=True,
@@ -219,7 +214,6 @@ class UserProfile(models.Model):
         blank=True,
     )
 
-    # Professional Information
     role = models.CharField(
         verbose_name=_("User Role"),
         max_length=20,
@@ -239,7 +233,7 @@ class UserProfile(models.Model):
         verbose_name=_("Specialization"),
         max_length=200,
         blank=True,
-        help_text=_("Clinical specialization (e.g., Clinical Psychology, Psychiatry)."),
+        help_text=_("Clinical specialization."),
     )
 
     organization = models.CharField(
@@ -262,14 +256,11 @@ class UserProfile(models.Model):
         null=True,
     )
 
-    # Timestamps
     created_at = models.DateTimeField(
-        verbose_name=_("Created At"),
         auto_now_add=True,
         editable=False,
     )
     updated_at = models.DateTimeField(
-        verbose_name=_("Updated At"),
         auto_now=True,
         editable=False,
     )
@@ -283,20 +274,16 @@ class UserProfile(models.Model):
         return f"Profile of {self.user.get_full_name()}"
 
     def clean(self):
-        """Validate profile data."""
         if self.national_code:
-            # Check length
             if not re.match(r"^\d{10}$", self.national_code):
                 raise ValidationError(_("National code must be exactly 10 digits."))
-            
-            # Iranian National Code checksum algorithm
+
             check = int(self.national_code[9])
             s = sum(int(self.national_code[x]) * (10 - x) for x in range(9)) % 11
             if (s < 2 and check != s) or (s >= 2 and check + s != 11):
                 raise ValidationError(_("National code is invalid."))
 
     def save(self, *args, **kwargs):
-        """Override save to delete old profile image when updated."""
         if self.pk:
             try:
                 old_instance = UserProfile.objects.get(pk=self.pk)
@@ -308,13 +295,630 @@ class UserProfile(models.Model):
 
     @property
     def full_name(self):
-        """Return the user's full name."""
         return self.user.get_full_name()
 
     @property
     def phone_number(self):
-        """Return the user's phone number."""
         return self.user.phone_number
+
+
+# ============================================================
+# PATIENT MODEL
+# ============================================================
+
+class Patient(models.Model):
+    """
+    Patient model for SCID-5 interviews.
+    Patients do NOT have user accounts - they are managed by clinicians.
+    """
+
+    GENDER_CHOICES = [
+        ("male", _("Male")),
+        ("female", _("Female")),
+        ("other", _("Other")),
+    ]
+
+    MARITAL_STATUS_CHOICES = [
+        ("single", _("Single")),
+        ("married", _("Married")),
+        ("divorced", _("Divorced")),
+        ("widowed", _("Widowed")),
+    ]
+
+    EDUCATION_CHOICES = [
+        ("elementary", _("Elementary")),
+        ("middle_school", _("Middle School")),
+        ("high_school", _("High School")),
+        ("diploma", _("Diploma")),
+        ("associate", _("Associate Degree")),
+        ("bachelor", _("Bachelor's Degree")),
+        ("master", _("Master's Degree")),
+        ("doctoral", _("Doctoral Degree")),
+    ]
+
+    # ===== Patient Identifier =====
+    patient_code = models.CharField(
+        max_length=20,
+        unique=True,
+        editable=False,
+        verbose_name=_("Patient Code"),
+        help_text=_("Unique code generated automatically for each patient."),
+    )
+
+    # ===== Personal Information =====
+    first_name = models.CharField(
+        max_length=150,
+        verbose_name=_("First Name"),
+    )
+
+    last_name = models.CharField(
+        max_length=150,
+        verbose_name=_("Last Name"),
+    )
+
+    phone_regex = RegexValidator(
+        regex=r"^09\d{9}$",
+        message=_("Phone number must be entered in the format: '09123456789'."),
+    )
+
+    phone_number = models.CharField(
+        max_length=11,
+        validators=[phone_regex],
+        verbose_name=_("Phone Number"),
+        blank=True,
+    )
+
+    email = models.EmailField(
+        verbose_name=_("Email Address"),
+        blank=True,
+    )
+
+    national_code = models.CharField(
+        max_length=10,
+        verbose_name=_("National Code"),
+        blank=True,
+    )
+
+    birth_date = models.DateField(
+        verbose_name=_("Birth Date"),
+        null=True,
+        blank=True,
+    )
+
+    gender = models.CharField(
+        max_length=10,
+        choices=GENDER_CHOICES,
+        verbose_name=_("Gender"),
+        null=True,
+        blank=True,
+    )
+
+    marital_status = models.CharField(
+        max_length=20,
+        choices=MARITAL_STATUS_CHOICES,
+        verbose_name=_("Marital Status"),
+        null=True,
+        blank=True,
+    )
+
+    education = models.CharField(
+        max_length=20,
+        choices=EDUCATION_CHOICES,
+        verbose_name=_("Education Level"),
+        null=True,
+        blank=True,
+    )
+
+    occupation = models.CharField(
+        max_length=200,
+        verbose_name=_("Occupation"),
+        blank=True,
+    )
+
+    address = models.TextField(
+        verbose_name=_("Address"),
+        blank=True,
+    )
+
+    # ===== Emergency Contact =====
+    emergency_contact_name = models.CharField(
+        max_length=150,
+        verbose_name=_("Emergency Contact Name"),
+        blank=True,
+    )
+
+    emergency_contact_phone = models.CharField(
+        max_length=11,
+        validators=[phone_regex],
+        verbose_name=_("Emergency Contact Phone"),
+        blank=True,
+    )
+
+    # ===== Metadata =====
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="created_patients",
+        verbose_name=_("Created By"),
+        help_text=_("The clinician who created this patient record."),
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Created At"),
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("Updated At"),
+    )
+
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("Is Active"),
+        help_text=_("Inactive patients are hidden from lists."),
+    )
+
+    class Meta:
+        verbose_name = _("Patient")
+        verbose_name_plural = _("Patients")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name} ({self.patient_code})"
+
+    def save(self, *args, **kwargs):
+        if not self.patient_code:
+            self.patient_code = self._generate_patient_code()
+        super().save(*args, **kwargs)
+
+    def _generate_patient_code(self) -> str:
+        from django.utils import timezone
+        import uuid
+        timestamp = timezone.now().strftime("%Y%m")
+        short_uuid = str(uuid.uuid4()).replace("-", "").upper()[:6]
+        return f"P-{timestamp}-{short_uuid}"
+
+    def get_full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
+    def clean(self):
+        if self.national_code:
+            if not re.match(r"^\d{10}$", self.national_code):
+                raise ValidationError(_("National code must be exactly 10 digits."))
+
+            check = int(self.national_code[9])
+            s = sum(int(self.national_code[x]) * (10 - x) for x in range(9)) % 11
+            if (s < 2 and check != s) or (s >= 2 and check + s != 11):
+                raise ValidationError(_("National code is invalid."))
+
+
+# ============================================================
+# OVERVIEW MODEL (SCID-5-CV Overview Section)
+# ============================================================
+
+class Overview(models.Model):
+    """
+    SCID-5-CV Overview section.
+    Collected at the beginning of the interview.
+    Each patient can have multiple overviews over time.
+    """
+
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE,
+        related_name="overviews",
+        verbose_name=_("Patient"),
+    )
+
+    clinician = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="overviews",
+        verbose_name=_("Clinician"),
+    )
+
+    # ==========================================================
+    # DEMOGRAPHIC INFORMATION
+    # ==========================================================
+
+    age = models.PositiveIntegerField(
+        verbose_name=_("Age"),
+        blank=True,
+        null=True,
+        help_text=_("How old are you?"),
+    )
+
+    living_with = models.CharField(
+        max_length=200,
+        verbose_name=_("Living With"),
+        blank=True,
+        help_text=_("With whom do you live?"),
+    )
+
+    living_place = models.CharField(
+        max_length=200,
+        verbose_name=_("Living Place"),
+        blank=True,
+        help_text=_("What kind of place do you live in?"),
+    )
+
+    occupation = models.CharField(
+        max_length=200,
+        verbose_name=_("Occupation"),
+        blank=True,
+        help_text=_("What kind of work do you do?"),
+    )
+
+    occupation_history = models.CharField(
+        max_length=200,
+        verbose_name=_("Occupation History"),
+        blank=True,
+        help_text=_("Have you always done that kind of work?"),
+    )
+
+    employment_status = models.CharField(
+        max_length=50,
+        verbose_name=_("Employment Status"),
+        blank=True,
+        help_text=_("Are you currently employed (getting paid)?"),
+    )
+
+    part_time_hours = models.PositiveIntegerField(
+        verbose_name=_("Part-time Hours"),
+        blank=True,
+        null=True,
+        help_text=_("How many hours do you typically work each week?"),
+    )
+
+    part_time_reason = models.TextField(
+        verbose_name=_("Part-time Reason"),
+        blank=True,
+        help_text=_("Why do you work part-time instead of full-time?"),
+    )
+
+    unemployment_reason = models.TextField(
+        verbose_name=_("Unemployment Reason"),
+        blank=True,
+        help_text=_("Why is that? When was the last time you worked? How are you supporting yourself now?"),
+    )
+
+    disability_payments = models.BooleanField(
+        default=False,
+        verbose_name=_("Disability Payments"),
+        help_text=_("Are you currently receiving disability payments?"),
+    )
+
+    disability_reason = models.TextField(
+        verbose_name=_("Disability Reason"),
+        blank=True,
+        help_text=_("Why are you on disability?"),
+    )
+
+    unable_to_work_history = models.BooleanField(
+        default=False,
+        verbose_name=_("Unable to Work History"),
+        help_text=_("Has there ever been a period of time when you were unable to work or go to school?"),
+    )
+
+    unable_to_work_reason = models.TextField(
+        verbose_name=_("Unable to Work Reason"),
+        blank=True,
+        help_text=_("Why was that?"),
+    )
+
+    # ==========================================================
+    # HISTORY OF CURRENT ILLNESS
+    # ==========================================================
+
+    presenting_problem = models.TextField(
+        verbose_name=_("Presenting Problem"),
+        blank=True,
+        help_text=_("What led to your coming here (this time)? (What's the major problem you've been having trouble with?)"),
+    )
+
+    onset_circumstances = models.TextField(
+        verbose_name=_("Onset Circumstances"),
+        blank=True,
+        help_text=_("What was going on in your life when this began?"),
+    )
+
+    last_feeling_ok = models.CharField(
+        max_length=100,
+        verbose_name=_("Last Feeling OK"),
+        blank=True,
+        help_text=_("When were you last feeling OK (your usual self)?"),
+    )
+
+    # ==========================================================
+    # TREATMENT HISTORY
+    # ==========================================================
+
+    first_treatment_age = models.CharField(
+        max_length=50,
+        verbose_name=_("First Treatment Age"),
+        blank=True,
+        help_text=_("When was the first time you saw someone for emotional or psychiatric problems?"),
+    )
+
+    first_treatment_reason = models.TextField(
+        verbose_name=_("First Treatment Reason"),
+        blank=True,
+        help_text=_("What was that for? What treatment(s) did you get? What medications?"),
+    )
+
+    psychiatric_hospitalization = models.BooleanField(
+        default=False,
+        verbose_name=_("Psychiatric Hospitalization"),
+        help_text=_("Have you ever been a patient in a psychiatric hospital?"),
+    )
+
+    hospitalization_count = models.PositiveIntegerField(
+        verbose_name=_("Hospitalization Count"),
+        blank=True,
+        null=True,
+        help_text=_("How many times?"),
+    )
+
+    hospitalization_reason = models.TextField(
+        verbose_name=_("Hospitalization Reason"),
+        blank=True,
+        help_text=_("What was that for?"),
+    )
+
+    substance_treatment = models.BooleanField(
+        default=False,
+        verbose_name=_("Substance Treatment"),
+        help_text=_("Have you ever had any treatment for drugs or alcohol?"),
+    )
+
+    # Treatment History Table (structured as JSON for multiple entries)
+    # Each entry: {age, description, symptoms, triggering_events, treatment, offset}
+    treatment_history = models.JSONField(
+        verbose_name=_("Treatment History"),
+        default=list,
+        blank=True,
+        help_text=_('List of treatments: [{"age": "", "description": "", "symptoms": "", "triggering_events": "", "treatment": "", "offset": ""}]'),
+    )
+
+    # ==========================================================
+    # MEDICAL PROBLEMS
+    # ==========================================================
+
+    physical_health = models.TextField(
+        verbose_name=_("Physical Health"),
+        blank=True,
+        help_text=_("How has your physical health been? (Have you had any medical problems?)"),
+    )
+
+    medical_hospitalization = models.BooleanField(
+        default=False,
+        verbose_name=_("Medical Hospitalization"),
+        help_text=_("Have you ever been in a hospital for treatment of a medical problem?"),
+    )
+
+    medical_hospitalization_reason = models.TextField(
+        verbose_name=_("Medical Hospitalization Reason"),
+        blank=True,
+        help_text=_("What was that for?"),
+    )
+
+    current_medications = models.TextField(
+        verbose_name=_("Current Medications"),
+        blank=True,
+        help_text=_("Do you take any medications, vitamins, or other nutritional supplements (other than those you've already told me about)? What are you taking and at what dose?"),
+    )
+
+    # ==========================================================
+    # SUICIDAL IDEATION AND BEHAVIOR
+    # ==========================================================
+
+    # CHECK FOR THOUGHTS
+    wished_dead = models.BooleanField(
+        default=False,
+        verbose_name=_("Wished Dead"),
+        help_text=_("Have you ever wished you were dead or wished you could go to sleep and not wake up?"),
+    )
+
+    wished_dead_details = models.TextField(
+        verbose_name=_("Wished Dead Details"),
+        blank=True,
+        help_text=_("Tell me about that."),
+    )
+
+    # IF YES: Did you have any of these thoughts in the past week?
+    thoughts_past_week = models.BooleanField(
+        default=False,
+        verbose_name=_("Thoughts Past Week"),
+        help_text=_("Did you have any of these thoughts in the past week (including today)?"),
+    )
+
+    # IF YES: CHECK FOR INTENT
+    strong_urge_past_week = models.BooleanField(
+        default=False,
+        verbose_name=_("Strong Urge Past Week"),
+        help_text=_("Have you had a strong urge to kill yourself at any time in the past week?"),
+    )
+
+    strong_urge_details = models.TextField(
+        verbose_name=_("Strong Urge Details"),
+        blank=True,
+        help_text=_("Tell me about that."),
+    )
+
+    intention_past_week = models.BooleanField(
+        default=False,
+        verbose_name=_("Intention Past Week"),
+        help_text=_("In the past week, did you have any intention of attempting suicide?"),
+    )
+
+    intention_details = models.TextField(
+        verbose_name=_("Intention Details"),
+        blank=True,
+        help_text=_("Tell me about that."),
+    )
+
+    # CHECK FOR PLAN AND METHOD
+    plan_past_week = models.BooleanField(
+        default=False,
+        verbose_name=_("Plan Past Week"),
+        help_text=_("In the past week, have you thought about how you might actually do it?"),
+    )
+
+    plan_details = models.TextField(
+        verbose_name=_("Plan Details"),
+        blank=True,
+        help_text=_("Tell me about what you were thinking of doing. Have you thought about what you would need to do to carry this out? Do you have the means to do this?"),
+    )
+
+    # SUICIDE ATTEMPT
+    suicide_attempt = models.BooleanField(
+        default=False,
+        verbose_name=_("Suicide Attempt"),
+        help_text=_("Have you ever tried to kill yourself?"),
+    )
+
+    self_harm = models.BooleanField(
+        default=False,
+        verbose_name=_("Self Harm"),
+        help_text=_("Have you ever done anything to harm yourself?"),
+    )
+
+    suicide_attempt_details = models.TextField(
+        verbose_name=_("Suicide Attempt Details"),
+        blank=True,
+        help_text=_("What did you do? (Tell me what happened.) Were you trying to end your life?"),
+    )
+
+    most_severe_attempt = models.TextField(
+        verbose_name=_("Most Severe Attempt"),
+        blank=True,
+        help_text=_("Which attempt had the most severe medical consequences (going to the emergency department, needing hospitalization, requiring care in ICU)?"),
+    )
+
+    attempt_past_week = models.BooleanField(
+        default=False,
+        verbose_name=_("Attempt Past Week"),
+        help_text=_("Have you made any suicide attempts in the past week (including today)?"),
+    )
+
+    # ==========================================================
+    # OTHER CURRENT PROBLEMS
+    # ==========================================================
+
+    other_problems = models.TextField(
+        verbose_name=_("Other Problems"),
+        blank=True,
+        help_text=_("Have you had any other problems in the past month? (How are things going at work, at home, and with other people?)"),
+    )
+
+    mood_description = models.TextField(
+        verbose_name=_("Mood Description"),
+        blank=True,
+        help_text=_("What has your mood been like?"),
+    )
+
+    alcohol_use = models.TextField(
+        verbose_name=_("Alcohol Use"),
+        blank=True,
+        help_text=_("In the past month, how much have you been drinking?"),
+    )
+
+    alcohol_with_whom = models.TextField(
+        verbose_name=_("Alcohol With Whom"),
+        blank=True,
+        help_text=_("When you drink, who are you usually with? (Are you usually alone or out with other people?)"),
+    )
+
+    drug_use = models.TextField(
+        verbose_name=_("Drug Use"),
+        blank=True,
+        help_text=_("In the past month, have you been using any illegal or recreational drugs? How about taking more of your prescription drugs than was prescribed or running out of medication early?"),
+    )
+
+    # ==========================================================
+    # METADATA
+    # ==========================================================
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Created At"),
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("Updated At"),
+    )
+
+    class Meta:
+        verbose_name = _("Overview")
+        verbose_name_plural = _("Overviews")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Overview - {self.patient.get_full_name()} - {self.created_at.strftime('%Y-%m-%d')}"
+
+
+# ============================================================
+# PATIENT NOTE MODEL
+# ============================================================
+
+class PatientNote(models.Model):
+    """
+    Notes added by clinicians about the patient.
+    Can be used for general notes or quick observations.
+    """
+
+    NOTE_TYPES = [
+        ('general', _('General Note')),
+        ('progress', _('Progress Note')),
+        ('follow_up', _('Follow-up')),
+        ('referral', _('Referral')),
+        ('other', _('Other')),
+    ]
+
+    patient = models.ForeignKey(
+        Patient,
+        on_delete=models.CASCADE,
+        related_name="notes",
+        verbose_name=_("Patient"),
+    )
+
+    clinician = models.ForeignKey(
+        User,
+        on_delete=models.PROTECT,
+        related_name="patient_notes",
+        verbose_name=_("Clinician"),
+    )
+
+    content = models.TextField(
+        verbose_name=_("Note Content"),
+    )
+
+    note_type = models.CharField(
+        max_length=20,
+        choices=NOTE_TYPES,
+        default='general',
+        verbose_name=_("Note Type"),
+    )
+
+    created_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Created At"),
+    )
+
+    updated_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name=_("Updated At"),
+    )
+
+    class Meta:
+        verbose_name = _("Patient Note")
+        verbose_name_plural = _("Patient Notes")
+        ordering = ["-created_at"]
+
+    def __str__(self):
+        return f"Note for {self.patient.get_full_name()} by {self.clinician.get_full_name()}"
 
 
 # ============================================================
@@ -323,9 +927,6 @@ class UserProfile(models.Model):
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
-    """
-    Automatically create a UserProfile when a new User is created.
-    """
     if created:
         try:
             UserProfile.objects.create(user=instance)
@@ -335,9 +936,6 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
-    """
-    Save profile when user is saved.
-    """
     if hasattr(instance, "profile"):
         try:
             instance.profile.save()

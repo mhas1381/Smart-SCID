@@ -23,6 +23,13 @@ from .serializers import (
     SetPasswordSerializer,
     UserMeSerializer,
     UserProfileSerializer,
+    PatientListSerializer,
+    PatientDetailSerializer,
+    PatientCreateSerializer,
+    PatientUpdateSerializer,
+    PatientNoteSerializer,
+    OverviewSerializer,
+    OverviewListSerializer,
 )
 from .openapi.schema import (
     register_schema,
@@ -35,8 +42,19 @@ from .openapi.schema import (
     profile_get_schema,
     profile_create_schema,
     profile_update_schema,
+    patient_list_schema,
+    patient_create_schema,
+    patient_detail_schema,
+    patient_update_schema,
+    patient_delete_schema,
+    patient_note_list_schema,
+    patient_note_create_schema,
+    overview_create_schema,
+    overview_detail_schema,
+    overview_list_schema,
+    overview_update_schema,
 )
-from ...models import UserProfile
+from ...models import UserProfile, Patient, PatientNote, Overview
 from utils.sms import send_verification_code
 
 User = get_user_model()
@@ -364,3 +382,129 @@ class UserProfileView(generics.GenericAPIView):
             serializer.save()
             return Response(self.get_serializer(profile).data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+# ============================================================
+# PATIENT VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=patient_list_schema,
+    post=patient_create_schema,
+)
+class PatientListCreateView(generics.ListCreateAPIView):
+    """
+    List all patients or create a new patient.
+    """
+    permission_classes = [IsAuthenticated]
+    filter_backends = []
+    search_fields = ['first_name', 'last_name', 'phone_number', 'national_code', 'patient_code']
+    ordering_fields = ['created_at', 'first_name', 'last_name']
+    ordering = ['-created_at']
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return PatientCreateSerializer
+        return PatientListSerializer
+
+    def get_queryset(self):
+        return Patient.objects.filter(created_by=self.request.user, is_active=True)
+
+
+@extend_schema_view(
+    get=patient_detail_schema,
+    put=patient_update_schema,
+    patch=patient_update_schema,
+    delete=patient_delete_schema,
+)
+class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
+    """
+    Retrieve, update or delete a patient.
+    """
+    permission_classes = [IsAuthenticated]
+    queryset = Patient.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method in ['PUT', 'PATCH']:
+            return PatientUpdateSerializer
+        return PatientDetailSerializer
+
+    def get_queryset(self):
+        return Patient.objects.filter(created_by=self.request.user)
+
+    def perform_destroy(self, instance):
+        instance.is_active = False
+        instance.save()
+
+
+# ============================================================
+# PATIENT NOTE VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=patient_note_list_schema,
+    post=patient_note_create_schema,
+)
+class PatientNoteListCreateView(generics.ListCreateAPIView):
+    """
+    List notes for a patient or add a new note.
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = PatientNoteSerializer
+
+    def get_queryset(self):
+        patient_id = self.kwargs.get('patient_id')
+        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
+        return PatientNote.objects.filter(patient=patient)
+
+    def perform_create(self, serializer):
+        patient_id = self.kwargs.get('patient_id')
+        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
+        serializer.save(patient=patient)
+
+
+# ============================================================
+# OVERVIEW VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=overview_list_schema,
+    post=overview_create_schema,
+)
+class OverviewListCreateView(generics.ListCreateAPIView):
+    """
+    List all overviews for a patient or create a new overview.
+    """
+    permission_classes = [IsAuthenticated]
+
+    def get_serializer_class(self):
+        if self.request.method == 'POST':
+            return OverviewSerializer
+        return OverviewListSerializer
+
+    def get_queryset(self):
+        patient_id = self.kwargs.get('patient_id')
+        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
+        return Overview.objects.filter(patient=patient)
+
+    def perform_create(self, serializer):
+        patient_id = self.kwargs.get('patient_id')
+        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
+        serializer.save(patient=patient)
+
+
+@extend_schema_view(
+    get=overview_detail_schema,
+    put=overview_update_schema,
+    patch=overview_update_schema,
+)
+class OverviewDetailView(generics.RetrieveUpdateAPIView):
+    """
+    Retrieve or update an overview.
+    """
+    permission_classes = [IsAuthenticated]
+    serializer_class = OverviewSerializer
+    queryset = Overview.objects.all()
+
+    def get_queryset(self):
+        return Overview.objects.filter(patient__created_by=self.request.user)

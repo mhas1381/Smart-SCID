@@ -877,3 +877,549 @@ profile_update_schema = extend_schema(
         ),
     ],
 )
+
+
+# ============================================================
+# PATIENT SCHEMAS
+# ============================================================
+
+patient_list_schema = extend_schema(
+    summary="📋 List Patients",
+    tags=["👤 Patients"],
+    description="""
+    Retrieve a list of all patients created by the authenticated clinician.
+    
+    **🔐 Requirements:**
+    🛡️ JWT authentication required
+    👤 Only returns patients created by the current user
+    """,
+    responses={
+        200: inline_serializer(
+            name="PatientListResponse",
+            fields={
+                "count": serializers.IntegerField(),
+                "next": serializers.CharField(allow_null=True),
+                "previous": serializers.CharField(allow_null=True),
+                "results": serializers.ListField(
+                    child=inline_serializer(
+                        name="PatientListItem",
+                        fields={
+                            "id": serializers.IntegerField(),
+                            "patient_code": serializers.CharField(),
+                            "full_name": serializers.CharField(),
+                            "phone_number": serializers.CharField(),
+                            "gender": serializers.CharField(allow_null=True),
+                            "birth_date": serializers.CharField(allow_null=True),
+                            "created_by_name": serializers.CharField(),
+                            "created_at": serializers.CharField(),
+                            "is_active": serializers.BooleanField(),
+                        },
+                    )
+                ),
+            },
+        ),
+        401: OpenApiTypes.OBJECT,
+    },
+)
+
+
+patient_create_schema = extend_schema(
+    summary="➕ Create Patient",
+    tags=["👤 Patients"],
+    description="""
+    Create a new patient record.
+    
+    **📋 Required fields:**
+    ✅ `first_name` - Patient's first name
+    ✅ `last_name` - Patient's last name
+    
+    **🔸 Optional fields:**
+    ⭕ `phone_number` - Iranian mobile number (09XXXXXXXXX)
+    ⭕ `email` - Email address
+    ⭕ `national_code` - 10-digit Iranian national code
+    ⭕ `birth_date` - Birth date (YYYY-MM-DD)
+    ⭕ `gender` - male, female, other
+    ⭕ `marital_status` - single, married, divorced, widowed
+    ⭕ `education` - elementary, high_school, diploma, bachelor, master, doctoral
+    ⭕ `occupation` - Patient's job
+    ⭕ `address` - Full address
+    ⭕ `emergency_contact_name` - Emergency contact person
+    ⭕ `emergency_contact_phone` - Emergency contact phone
+    """,
+    request=inline_serializer(
+        name="PatientCreateRequest",
+        fields={
+            "first_name": serializers.CharField(required=True),
+            "last_name": serializers.CharField(required=True),
+            "phone_number": serializers.CharField(required=False, allow_blank=True),
+            "email": serializers.EmailField(required=False, allow_blank=True),
+            "national_code": serializers.CharField(required=False, allow_blank=True),
+            "birth_date": serializers.DateField(required=False, allow_null=True),
+            "gender": serializers.ChoiceField(choices=["male", "female", "other"], required=False, allow_null=True),
+            "marital_status": serializers.ChoiceField(choices=["single", "married", "divorced", "widowed"], required=False, allow_null=True),
+            "education": serializers.ChoiceField(choices=["elementary", "middle_school", "high_school", "diploma", "associate", "bachelor", "master", "doctoral"], required=False, allow_null=True),
+            "occupation": serializers.CharField(required=False, allow_blank=True),
+            "address": serializers.CharField(required=False, allow_blank=True),
+            "emergency_contact_name": serializers.CharField(required=False, allow_blank=True),
+            "emergency_contact_phone": serializers.CharField(required=False, allow_blank=True),
+        },
+    ),
+    responses={
+        201: inline_serializer(
+            name="PatientCreateResponse",
+            fields={
+                "id": serializers.IntegerField(),
+                "patient_code": serializers.CharField(),
+                "first_name": serializers.CharField(),
+                "last_name": serializers.CharField(),
+                "full_name": serializers.CharField(),
+                "phone_number": serializers.CharField(),
+                "message": serializers.CharField(),
+            },
+        ),
+        400: OpenApiTypes.OBJECT,
+        401: OpenApiTypes.OBJECT,
+    },
+)
+
+
+patient_detail_schema = extend_schema(
+    summary="📄 Get Patient Details",
+    tags=["👤 Patients"],
+    description="""
+    Get detailed information about a specific patient.
+    """,
+    responses={
+        200: inline_serializer(
+            name="PatientDetailResponse",
+            fields={
+                "id": serializers.IntegerField(),
+                "patient_code": serializers.CharField(),
+                "first_name": serializers.CharField(),
+                "last_name": serializers.CharField(),
+                "full_name": serializers.CharField(),
+                "phone_number": serializers.CharField(),
+                "email": serializers.CharField(),
+                "national_code": serializers.CharField(),
+                "birth_date": serializers.CharField(allow_null=True),
+                "age": serializers.IntegerField(allow_null=True),
+                "gender": serializers.CharField(allow_null=True),
+                "marital_status": serializers.CharField(allow_null=True),
+                "education": serializers.CharField(allow_null=True),
+                "occupation": serializers.CharField(),
+                "address": serializers.CharField(),
+                "emergency_contact_name": serializers.CharField(),
+                "emergency_contact_phone": serializers.CharField(),
+                "created_by": serializers.IntegerField(),
+                "created_by_name": serializers.CharField(),
+                "created_at": serializers.CharField(),
+                "updated_at": serializers.CharField(),
+                "is_active": serializers.BooleanField(),
+            },
+        ),
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+patient_update_schema = extend_schema(
+    summary="✏️ Update Patient",
+    tags=["👤 Patients"],
+    description="""
+    Update patient information.
+    
+    **🔸 For PATCH (Partial Update):**
+    ✅ Only send fields you want to update
+    """,
+    request=inline_serializer(
+        name="PatientUpdateRequest",
+        fields={
+            "first_name": serializers.CharField(required=False),
+            "last_name": serializers.CharField(required=False),
+            "phone_number": serializers.CharField(required=False, allow_blank=True),
+            "email": serializers.EmailField(required=False, allow_blank=True),
+            "national_code": serializers.CharField(required=False, allow_blank=True),
+            "birth_date": serializers.DateField(required=False, allow_null=True),
+            "gender": serializers.ChoiceField(choices=["male", "female", "other"], required=False, allow_null=True),
+            "marital_status": serializers.ChoiceField(choices=["single", "married", "divorced", "widowed"], required=False, allow_null=True),
+            "education": serializers.ChoiceField(choices=["elementary", "middle_school", "high_school", "diploma", "associate", "bachelor", "master", "doctoral"], required=False, allow_null=True),
+            "occupation": serializers.CharField(required=False, allow_blank=True),
+            "address": serializers.CharField(required=False, allow_blank=True),
+            "emergency_contact_name": serializers.CharField(required=False, allow_blank=True),
+            "emergency_contact_phone": serializers.CharField(required=False, allow_blank=True),
+            "is_active": serializers.BooleanField(required=False),
+        },
+    ),
+    responses={
+        200: OpenApiTypes.OBJECT,
+        400: OpenApiTypes.OBJECT,
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+patient_delete_schema = extend_schema(
+    summary="🗑️ Delete Patient (Soft)",
+    tags=["👤 Patients"],
+    description="""
+    Soft delete a patient (sets is_active=False).
+    """,
+    responses={
+        204: OpenApiTypes.OBJECT,
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+patient_note_list_schema = extend_schema(
+    summary="📋 List Patient Notes",
+    tags=["👤 Patients"],
+    description="""
+    Retrieve all notes for a specific patient.
+    """,
+    responses={
+        200: inline_serializer(
+            name="PatientNoteListResponse",
+            fields={
+                "count": serializers.IntegerField(),
+                "next": serializers.CharField(allow_null=True),
+                "previous": serializers.CharField(allow_null=True),
+                "results": serializers.ListField(
+                    child=inline_serializer(
+                        name="PatientNoteItem",
+                        fields={
+                            "id": serializers.IntegerField(),
+                            "clinician_name": serializers.CharField(),
+                            "note_type": serializers.CharField(),
+                            "content": serializers.CharField(),
+                            "created_at": serializers.CharField(),
+                        },
+                    )
+                ),
+            },
+        ),
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+patient_note_create_schema = extend_schema(
+    summary="➕ Add Patient Note",
+    tags=["👤 Patients"],
+    description="""
+    Add a new note for a patient.
+    
+    **📋 Required fields:**
+    ✅ `content` - Note content
+    ✅ `note_type` - general, progress, follow_up, referral, other
+    """,
+    request=inline_serializer(
+        name="PatientNoteCreateRequest",
+        fields={
+            "content": serializers.CharField(required=True),
+            "note_type": serializers.ChoiceField(choices=["general", "progress", "follow_up", "referral", "other"], required=False, default="general"),
+        },
+    ),
+    responses={
+        201: inline_serializer(
+            name="PatientNoteCreateResponse",
+            fields={
+                "id": serializers.IntegerField(),
+                "clinician_name": serializers.CharField(),
+                "note_type": serializers.CharField(),
+                "content": serializers.CharField(),
+                "created_at": serializers.CharField(),
+            },
+        ),
+        400: OpenApiTypes.OBJECT,
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+# ============================================================
+# OVERVIEW SCHEMAS
+# ============================================================
+
+overview_list_schema = extend_schema(
+    summary="📋 List Overviews",
+    tags=["📋 Overview"],
+    description="""
+    Retrieve all overviews for a specific patient.
+    """,
+    responses={
+        200: inline_serializer(
+            name="OverviewListResponse",
+            fields={
+                "count": serializers.IntegerField(),
+                "next": serializers.CharField(allow_null=True),
+                "previous": serializers.CharField(allow_null=True),
+                "results": serializers.ListField(
+                    child=inline_serializer(
+                        name="OverviewListItem",
+                        fields={
+                            "id": serializers.IntegerField(),
+                            "patient": serializers.IntegerField(),
+                            "patient_name": serializers.CharField(),
+                            "clinician": serializers.IntegerField(),
+                            "clinician_name": serializers.CharField(),
+                            "age": serializers.IntegerField(allow_null=True),
+                            "occupation": serializers.CharField(),
+                            "suicide_attempt": serializers.BooleanField(),
+                            "created_at": serializers.CharField(),
+                        },
+                    )
+                ),
+            },
+        ),
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+overview_create_schema = extend_schema(
+    summary="➕ Create Overview",
+    tags=["📋 Overview"],
+    description="""
+    Create a new SCID-5-CV Overview for a patient.
+    
+    This includes all sections from the SCID-5-CV Overview:
+    - Demographic Information
+    - History of Current Illness
+    - Treatment History
+    - Medical Problems
+    - Suicidal Ideation & Behavior
+    - Other Current Problems
+    """,
+    request=inline_serializer(
+        name="OverviewCreateRequest",
+        fields={
+            # Demographic Information
+            "age": serializers.IntegerField(required=False, allow_null=True),
+            "living_with": serializers.CharField(required=False, allow_blank=True),
+            "living_place": serializers.CharField(required=False, allow_blank=True),
+            "occupation": serializers.CharField(required=False, allow_blank=True),
+            "occupation_history": serializers.CharField(required=False, allow_blank=True),
+            "employment_status": serializers.CharField(required=False, allow_blank=True),
+            "part_time_hours": serializers.IntegerField(required=False, allow_null=True),
+            "part_time_reason": serializers.CharField(required=False, allow_blank=True),
+            "unemployment_reason": serializers.CharField(required=False, allow_blank=True),
+            "disability_payments": serializers.BooleanField(required=False, default=False),
+            "disability_reason": serializers.CharField(required=False, allow_blank=True),
+            "unable_to_work_history": serializers.BooleanField(required=False, default=False),
+            "unable_to_work_reason": serializers.CharField(required=False, allow_blank=True),
+
+            # History of Current Illness
+            "presenting_problem": serializers.CharField(required=False, allow_blank=True),
+            "onset_circumstances": serializers.CharField(required=False, allow_blank=True),
+            "last_feeling_ok": serializers.CharField(required=False, allow_blank=True),
+
+            # Treatment History
+            "first_treatment_age": serializers.CharField(required=False, allow_blank=True),
+            "first_treatment_reason": serializers.CharField(required=False, allow_blank=True),
+            "psychiatric_hospitalization": serializers.BooleanField(required=False, default=False),
+            "hospitalization_count": serializers.IntegerField(required=False, allow_null=True),
+            "hospitalization_reason": serializers.CharField(required=False, allow_blank=True),
+            "substance_treatment": serializers.BooleanField(required=False, default=False),
+            "treatment_history": serializers.JSONField(required=False, default=list),
+
+            # Medical Problems
+            "physical_health": serializers.CharField(required=False, allow_blank=True),
+            "medical_hospitalization": serializers.BooleanField(required=False, default=False),
+            "medical_hospitalization_reason": serializers.CharField(required=False, allow_blank=True),
+            "current_medications": serializers.CharField(required=False, allow_blank=True),
+
+            # Suicidal Ideation & Behavior
+            "wished_dead": serializers.BooleanField(required=False, default=False),
+            "wished_dead_details": serializers.CharField(required=False, allow_blank=True),
+            "thoughts_past_week": serializers.BooleanField(required=False, default=False),
+            "strong_urge_past_week": serializers.BooleanField(required=False, default=False),
+            "strong_urge_details": serializers.CharField(required=False, allow_blank=True),
+            "intention_past_week": serializers.BooleanField(required=False, default=False),
+            "intention_details": serializers.CharField(required=False, allow_blank=True),
+            "plan_past_week": serializers.BooleanField(required=False, default=False),
+            "plan_details": serializers.CharField(required=False, allow_blank=True),
+            "suicide_attempt": serializers.BooleanField(required=False, default=False),
+            "self_harm": serializers.BooleanField(required=False, default=False),
+            "suicide_attempt_details": serializers.CharField(required=False, allow_blank=True),
+            "most_severe_attempt": serializers.CharField(required=False, allow_blank=True),
+            "attempt_past_week": serializers.BooleanField(required=False, default=False),
+
+            # Other Current Problems
+            "other_problems": serializers.CharField(required=False, allow_blank=True),
+            "mood_description": serializers.CharField(required=False, allow_blank=True),
+            "alcohol_use": serializers.CharField(required=False, allow_blank=True),
+            "alcohol_with_whom": serializers.CharField(required=False, allow_blank=True),
+            "drug_use": serializers.CharField(required=False, allow_blank=True),
+        },
+    ),
+    responses={
+        201: inline_serializer(
+            name="OverviewCreateResponse",
+            fields={
+                "id": serializers.IntegerField(),
+                "patient": serializers.IntegerField(),
+                "clinician": serializers.IntegerField(),
+                "message": serializers.CharField(),
+            },
+        ),
+        400: OpenApiTypes.OBJECT,
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+overview_detail_schema = extend_schema(
+    summary="📄 Get Overview Details",
+    tags=["📋 Overview"],
+    description="""
+    Get complete Overview details for a patient.
+    """,
+    responses={
+        200: inline_serializer(
+            name="OverviewDetailResponse",
+            fields={
+                "id": serializers.IntegerField(),
+                "patient": serializers.IntegerField(),
+                "clinician": serializers.IntegerField(),
+                "clinician_name": serializers.CharField(),
+                "patient_name": serializers.CharField(),
+
+                # All Overview fields
+                "age": serializers.IntegerField(allow_null=True),
+                "living_with": serializers.CharField(),
+                "living_place": serializers.CharField(),
+                "occupation": serializers.CharField(),
+                "occupation_history": serializers.CharField(),
+                "employment_status": serializers.CharField(),
+                "part_time_hours": serializers.IntegerField(allow_null=True),
+                "part_time_reason": serializers.CharField(),
+                "unemployment_reason": serializers.CharField(),
+                "disability_payments": serializers.BooleanField(),
+                "disability_reason": serializers.CharField(),
+                "unable_to_work_history": serializers.BooleanField(),
+                "unable_to_work_reason": serializers.CharField(),
+
+                "presenting_problem": serializers.CharField(),
+                "onset_circumstances": serializers.CharField(),
+                "last_feeling_ok": serializers.CharField(),
+
+                "first_treatment_age": serializers.CharField(),
+                "first_treatment_reason": serializers.CharField(),
+                "psychiatric_hospitalization": serializers.BooleanField(),
+                "hospitalization_count": serializers.IntegerField(allow_null=True),
+                "hospitalization_reason": serializers.CharField(),
+                "substance_treatment": serializers.BooleanField(),
+                "treatment_history": serializers.JSONField(),
+
+                "physical_health": serializers.CharField(),
+                "medical_hospitalization": serializers.BooleanField(),
+                "medical_hospitalization_reason": serializers.CharField(),
+                "current_medications": serializers.CharField(),
+
+                "wished_dead": serializers.BooleanField(),
+                "wished_dead_details": serializers.CharField(),
+                "thoughts_past_week": serializers.BooleanField(),
+                "strong_urge_past_week": serializers.BooleanField(),
+                "strong_urge_details": serializers.CharField(),
+                "intention_past_week": serializers.BooleanField(),
+                "intention_details": serializers.CharField(),
+                "plan_past_week": serializers.BooleanField(),
+                "plan_details": serializers.CharField(),
+                "suicide_attempt": serializers.BooleanField(),
+                "self_harm": serializers.BooleanField(),
+                "suicide_attempt_details": serializers.CharField(),
+                "most_severe_attempt": serializers.CharField(),
+                "attempt_past_week": serializers.BooleanField(),
+
+                "other_problems": serializers.CharField(),
+                "mood_description": serializers.CharField(),
+                "alcohol_use": serializers.CharField(),
+                "alcohol_with_whom": serializers.CharField(),
+                "drug_use": serializers.CharField(),
+
+                "created_at": serializers.CharField(),
+                "updated_at": serializers.CharField(),
+            },
+        ),
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
+
+
+overview_update_schema = extend_schema(
+    summary="✏️ Update Overview",
+    tags=["📋 Overview"],
+    description="""
+    Update an Overview.
+    
+    **🔸 For PATCH (Partial Update):**
+    ✅ Only send fields you want to update
+    """,
+    request=inline_serializer(
+        name="OverviewUpdateRequest",
+        fields={
+            # Same as create request - all optional
+            "age": serializers.IntegerField(required=False, allow_null=True),
+            "living_with": serializers.CharField(required=False, allow_blank=True),
+            "living_place": serializers.CharField(required=False, allow_blank=True),
+            "occupation": serializers.CharField(required=False, allow_blank=True),
+            "occupation_history": serializers.CharField(required=False, allow_blank=True),
+            "employment_status": serializers.CharField(required=False, allow_blank=True),
+            "part_time_hours": serializers.IntegerField(required=False, allow_null=True),
+            "part_time_reason": serializers.CharField(required=False, allow_blank=True),
+            "unemployment_reason": serializers.CharField(required=False, allow_blank=True),
+            "disability_payments": serializers.BooleanField(required=False),
+            "disability_reason": serializers.CharField(required=False, allow_blank=True),
+            "unable_to_work_history": serializers.BooleanField(required=False),
+            "unable_to_work_reason": serializers.CharField(required=False, allow_blank=True),
+            "presenting_problem": serializers.CharField(required=False, allow_blank=True),
+            "onset_circumstances": serializers.CharField(required=False, allow_blank=True),
+            "last_feeling_ok": serializers.CharField(required=False, allow_blank=True),
+            "first_treatment_age": serializers.CharField(required=False, allow_blank=True),
+            "first_treatment_reason": serializers.CharField(required=False, allow_blank=True),
+            "psychiatric_hospitalization": serializers.BooleanField(required=False),
+            "hospitalization_count": serializers.IntegerField(required=False, allow_null=True),
+            "hospitalization_reason": serializers.CharField(required=False, allow_blank=True),
+            "substance_treatment": serializers.BooleanField(required=False),
+            "treatment_history": serializers.JSONField(required=False),
+            "physical_health": serializers.CharField(required=False, allow_blank=True),
+            "medical_hospitalization": serializers.BooleanField(required=False),
+            "medical_hospitalization_reason": serializers.CharField(required=False, allow_blank=True),
+            "current_medications": serializers.CharField(required=False, allow_blank=True),
+            "wished_dead": serializers.BooleanField(required=False),
+            "wished_dead_details": serializers.CharField(required=False, allow_blank=True),
+            "thoughts_past_week": serializers.BooleanField(required=False),
+            "strong_urge_past_week": serializers.BooleanField(required=False),
+            "strong_urge_details": serializers.CharField(required=False, allow_blank=True),
+            "intention_past_week": serializers.BooleanField(required=False),
+            "intention_details": serializers.CharField(required=False, allow_blank=True),
+            "plan_past_week": serializers.BooleanField(required=False),
+            "plan_details": serializers.CharField(required=False, allow_blank=True),
+            "suicide_attempt": serializers.BooleanField(required=False),
+            "self_harm": serializers.BooleanField(required=False),
+            "suicide_attempt_details": serializers.CharField(required=False, allow_blank=True),
+            "most_severe_attempt": serializers.CharField(required=False, allow_blank=True),
+            "attempt_past_week": serializers.BooleanField(required=False),
+            "other_problems": serializers.CharField(required=False, allow_blank=True),
+            "mood_description": serializers.CharField(required=False, allow_blank=True),
+            "alcohol_use": serializers.CharField(required=False, allow_blank=True),
+            "alcohol_with_whom": serializers.CharField(required=False, allow_blank=True),
+            "drug_use": serializers.CharField(required=False, allow_blank=True),
+        },
+    ),
+    responses={
+        200: OpenApiTypes.OBJECT,
+        400: OpenApiTypes.OBJECT,
+        401: OpenApiTypes.OBJECT,
+        404: OpenApiTypes.OBJECT,
+    },
+)
