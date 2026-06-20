@@ -472,6 +472,9 @@ class Patient(models.Model):
 # ============================================================
 # OVERVIEW MODEL (SCID-5-CV Overview Section)
 # ============================================================
+# ============================================================
+# OVERVIEW MODEL (SCID-5-CV Overview Section)
+# ============================================================
 
 class Overview(models.Model):
     """
@@ -483,14 +486,14 @@ class Overview(models.Model):
         Patient,
         on_delete=models.CASCADE,
         related_name="overviews",
-        verbose_name=_("Patient"),
+        verbose_name="بیمار",
     )
 
     clinician = models.ForeignKey(
         User,
         on_delete=models.PROTECT,
         related_name="overviews",
-        verbose_name=_("Clinician"),
+        verbose_name="مصاحبه‌کننده",
     )
 
     # ==========================================================
@@ -499,73 +502,73 @@ class Overview(models.Model):
 
     living_with = models.CharField(
         max_length=200,
-        verbose_name=_("Living With"),
+        verbose_name="با چه کسی زندگی می‌کنید؟",
         blank=True,
-        help_text=_("With whom do you live?"),
+        help_text="با چه کسی زندگی می‌کنید؟",
     )
 
     living_place = models.CharField(
         max_length=200,
-        verbose_name=_("Living Place"),
+        verbose_name="در چه نوع مکانی زندگی می‌کنید؟",
         blank=True,
-        help_text=_("What kind of place do you live in?"),
+        help_text="در چه نوع مکانی زندگی می‌کنید؟",
     )
 
     occupation_history = models.CharField(
         max_length=200,
-        verbose_name=_("Occupation History"),
+        verbose_name="آیا همیشه همین شغل را داشته‌اید؟",
         blank=True,
-        help_text=_("Have you always done that kind of work?"),
+        help_text="آیا همیشه همین شغل را داشته‌اید؟",
     )
 
     employment_status = models.CharField(
         max_length=50,
-        verbose_name=_("Employment Status"),
+        verbose_name="آیا در حال حاضر شاغل هستید؟",
         blank=True,
-        help_text=_("Are you currently employed (getting paid)?"),
+        help_text="آیا در حال حاضر شاغل هستید؟ (درآمد دارید؟)",
     )
 
     part_time_hours = models.PositiveIntegerField(
-        verbose_name=_("Part-time Hours"),
+        verbose_name="چند ساعت در هفته کار می‌کنید؟",
         blank=True,
         null=True,
-        help_text=_("How many hours do you typically work each week?"),
+        help_text="چند ساعت در هفته به صورت پاره‌وقت کار می‌کنید؟",
     )
 
     part_time_reason = models.TextField(
-        verbose_name=_("Part-time Reason"),
+        verbose_name="چرا پاره‌وقت کار می‌کنید؟",
         blank=True,
-        help_text=_("Why do you work part-time instead of full-time?"),
+        help_text="چرا به جای تمام‌وقت، پاره‌وقت کار می‌کنید؟",
     )
 
     unemployment_reason = models.TextField(
-        verbose_name=_("Unemployment Reason"),
+        verbose_name="دلیل بیکاری",
         blank=True,
-        help_text=_("Why is that? When was the last time you worked? How are you supporting yourself now?"),
+        help_text="چرا بیکار هستید؟ آخرین بار کی کار می‌کردید؟ چگونه هزینه‌های خود را تأمین می‌کنید؟",
     )
 
     disability_payments = models.BooleanField(
         default=False,
-        verbose_name=_("Disability Payments"),
-        help_text=_("Are you currently receiving disability payments?"),
+        verbose_name="آیا مستمری دریافت می‌کنید؟",
+        help_text="آیا در حال حاضر مستمری دریافت می‌کنید؟",
     )
 
     disability_reason = models.TextField(
-        verbose_name=_("Disability Reason"),
+        verbose_name="دلیل دریافت مستمری",
         blank=True,
-        help_text=_("Why are you on disability?"),
+        help_text="به چه دلیلی مستمری دریافت می‌کنید؟",
     )
 
     unable_to_work_history = models.BooleanField(
         default=False,
-        verbose_name=_("Unable to Work History"),
-        help_text=_("Has there ever been a period of time when you were unable to work or go to school?"),
+        verbose_name="آیا تا به حال نتوانسته‌اید کار یا تحصیل کنید؟",
+        help_text="آیا تا به حال دوره‌ای بوده که نتوانسته‌اید کار یا تحصیل کنید؟",
     )
 
     unable_to_work_reason = models.TextField(
-        verbose_name=_("Unable to Work Reason"),
+        verbose_name="دلیل ناتوانی در کار یا تحصیل",
         blank=True,
-        help_text=_("Why was that?"),
+        help_text="به چه دلیل نتوانسته‌اید کار یا تحصیل کنید؟",
     )
 
     # ==========================================================
@@ -573,22 +576,22 @@ class Overview(models.Model):
     # ==========================================================
 
     presenting_problem = models.TextField(
-        verbose_name=_("Presenting Problem"),
+        verbose_name="علت مراجعه شما چیست؟",
         blank=True,
-        help_text=_("What led to your coming here? What's the major problem?"),
+        help_text="چه چیزی باعث شد اینجا بیایید؟ (مشکل اصلی شما چیست؟)",
     )
 
     onset_circumstances = models.TextField(
-        verbose_name=_("Onset Circumstances"),
+        verbose_name="چه اتفاقی در زندگی شما افتاده بود که این مشکل شروع شد؟",
         blank=True,
-        help_text=_("What was going on in your life when this began?"),
+        help_text="چه اتفاقی در زندگی شما می‌گذشت که این مشکل شروع شد؟",
     )
 
     last_feeling_ok = models.CharField(
         max_length=100,
-        verbose_name=_("Last Feeling OK"),
+        verbose_name="آخرین باری که حال خوبی داشتید کی بود؟",
         blank=True,
-        help_text=_("When were you last feeling OK (your usual self)?"),
+        help_text="آخرین باری که احساس می‌کردید حالتان خوب است (حالت عادی خودتان) کی بود؟",
     )
 
     # ==========================================================
@@ -597,47 +600,47 @@ class Overview(models.Model):
 
     first_treatment_age = models.CharField(
         max_length=50,
-        verbose_name=_("First Treatment Age"),
+        verbose_name="اولین بار چند ساله بودید که کمک گرفتید؟",
         blank=True,
-        help_text=_("When was the first time you saw someone for emotional or psychiatric problems?"),
+        help_text="اولین بار چند ساله بودید که برای مشکلات عاطفی یا روانپزشکی به کسی مراجعه کردید؟",
     )
 
     first_treatment_reason = models.TextField(
-        verbose_name=_("First Treatment Reason"),
+        verbose_name="چه مشکلی داشتید و چه درمانی دریافت کردید؟",
         blank=True,
-        help_text=_("What was that for? What treatment(s) did you get?"),
+        help_text="به خاطر چه مشکلی مراجعه کردید؟ چه درمانی دریافت کردید؟ چه داروهایی مصرف می‌کردید؟",
     )
 
     psychiatric_hospitalization = models.BooleanField(
         default=False,
-        verbose_name=_("Psychiatric Hospitalization"),
-        help_text=_("Have you ever been a patient in a psychiatric hospital?"),
+        verbose_name="آیا در بیمارستان روانپزشکی بستری شده‌اید؟",
+        help_text="آیا تا به حال در بیمارستان روانپزشکی بستری شده‌اید؟",
     )
 
     hospitalization_count = models.PositiveIntegerField(
-        verbose_name=_("Hospitalization Count"),
+        verbose_name="چند بار بستری شده‌اید؟",
         blank=True,
         null=True,
-        help_text=_("How many times?"),
+        help_text="چند بار در بیمارستان بستری شده‌اید؟",
     )
 
     hospitalization_reason = models.TextField(
-        verbose_name=_("Hospitalization Reason"),
+        verbose_name="به چه دلیل بستری شدید؟",
         blank=True,
-        help_text=_("What was that for?"),
+        help_text="به چه دلیل در بیمارستان بستری شدید؟",
     )
 
     substance_treatment = models.BooleanField(
         default=False,
-        verbose_name=_("Substance Treatment"),
-        help_text=_("Have you ever had any treatment for drugs or alcohol?"),
+        verbose_name="آیا برای مصرف مواد یا الکل درمان شده‌اید؟",
+        help_text="آیا تا به حال برای مصرف مواد مخدر یا الکل درمان شده‌اید؟",
     )
 
     treatment_history = models.JSONField(
-        verbose_name=_("Treatment History"),
+        verbose_name="سابقه درمان‌ها",
         default=list,
         blank=True,
-        help_text=_('List of treatments'),
+        help_text='لیست درمان‌ها: [{"age": "سن", "description": "توضیحات", "symptoms": "علائم", "triggering_events": "عوامل محرک", "treatment": "درمان", "offset": "نتیجه"}]',
     )
 
     # ==========================================================
@@ -645,27 +648,27 @@ class Overview(models.Model):
     # ==========================================================
 
     physical_health = models.TextField(
-        verbose_name=_("Physical Health"),
+        verbose_name="سلامت جسمانی شما چگونه است؟",
         blank=True,
-        help_text=_("How has your physical health been?"),
+        help_text="سلامت جسمانی شما چگونه است؟ (آیا مشکل پزشکی خاصی دارید؟)",
     )
 
     medical_hospitalization = models.BooleanField(
         default=False,
-        verbose_name=_("Medical Hospitalization"),
-        help_text=_("Have you ever been in a hospital for treatment of a medical problem?"),
+        verbose_name="آیا برای درمان مشکل پزشکی بستری شده‌اید؟",
+        help_text="آیا تا به حال برای درمان یک مشکل پزشکی در بیمارستان بستری شده‌اید؟",
     )
 
     medical_hospitalization_reason = models.TextField(
-        verbose_name=_("Medical Hospitalization Reason"),
+        verbose_name="به چه دلیل بستری شدید؟",
         blank=True,
-        help_text=_("What was that for?"),
+        help_text="به چه دلیل در بیمارستان بستری شدید؟",
     )
 
     current_medications = models.TextField(
-        verbose_name=_("Current Medications"),
+        verbose_name="چه داروهایی مصرف می‌کنید؟",
         blank=True,
-        help_text=_("What medications are you taking?"),
+        help_text="چه داروهایی، ویتامین‌ها یا مکمل‌های غذایی مصرف می‌کنید؟ (به جز آنهایی که قبلاً گفتید) با چه دوزی؟",
     )
 
     # ==========================================================
@@ -674,84 +677,86 @@ class Overview(models.Model):
 
     wished_dead = models.BooleanField(
         default=False,
-        verbose_name=_("Wished Dead"),
-        help_text=_("Have you ever wished you were dead?"),
+        verbose_name="آیا تا به حال آرزو کرده‌اید که بمیرید؟",
+        help_text="آیا تا به حال آرزو کرده‌اید که بمیرید یا کاش می‌خوابیدید و بیدار نمی‌شدید؟",
     )
 
     wished_dead_details = models.TextField(
-        verbose_name=_("Wished Dead Details"),
+        verbose_name="در این مورد توضیح دهید",
         blank=True,
-        help_text=_("Tell me about that."),
+        help_text="در این مورد برایم توضیح دهید.",
     )
 
     thoughts_past_week = models.BooleanField(
         default=False,
-        verbose_name=_("Thoughts Past Week"),
-        help_text=_("Did you have any of these thoughts in the past week?"),
+        verbose_name="آیا در هفته گذشته این افکار را داشته‌اید؟",
+        help_text="آیا در هفته گذشته (از جمله امروز) این افکار را داشته‌اید؟",
     )
 
     strong_urge_past_week = models.BooleanField(
         default=False,
-        verbose_name=_("Strong Urge Past Week"),
-        help_text=_("Have you had a strong urge to kill yourself in the past week?"),
+        verbose_name="آیا در هفته گذشته میل شدید به خودکشی داشته‌اید؟",
+        help_text="آیا در هفته گذشته میل شدیدی برای کشتن خود داشته‌اید؟",
     )
 
     strong_urge_details = models.TextField(
-        verbose_name=_("Strong Urge Details"),
+        verbose_name="در این مورد توضیح دهید",
         blank=True,
+        help_text="در این مورد برایم توضیح دهید.",
     )
 
     intention_past_week = models.BooleanField(
         default=False,
-        verbose_name=_("Intention Past Week"),
-        help_text=_("Did you have any intention of attempting suicide in the past week?"),
+        verbose_name="آیا در هفته گذشته قصد خودکشی داشته‌اید؟",
+        help_text="در هفته گذشته، آیا قصد داشته‌اید که اقدام به خودکشی کنید؟",
     )
 
     intention_details = models.TextField(
-        verbose_name=_("Intention Details"),
+        verbose_name="در این مورد توضیح دهید",
         blank=True,
+        help_text="در این مورد برایم توضیح دهید.",
     )
 
     plan_past_week = models.BooleanField(
         default=False,
-        verbose_name=_("Plan Past Week"),
-        help_text=_("Have you thought about how you might do it?"),
+        verbose_name="آیا به این فکر کرده‌اید که چطور این کار را انجام دهید؟",
+        help_text="در هفته گذشته، آیا به این فکر کرده‌اید که چطور ممکن است این کار را انجام دهید؟",
     )
 
     plan_details = models.TextField(
-        verbose_name=_("Plan Details"),
+        verbose_name="برنامه شما چیست؟",
         blank=True,
-        help_text=_("Tell me about your plan."),
+        help_text="به من بگویید به چه چیزی فکر می‌کردید. آیا به این فکر کرده‌اید که برای انجام این کار به چه چیزی نیاز دارید؟ آیا وسایل لازم را دارید؟",
     )
 
     suicide_attempt = models.BooleanField(
         default=False,
-        verbose_name=_("Suicide Attempt"),
-        help_text=_("Have you ever tried to kill yourself?"),
+        verbose_name="آیا تا به حال اقدام به خودکشی کرده‌اید؟",
+        help_text="آیا تا به حال سعی کرده‌اید خودتان را بکشید؟",
     )
 
     self_harm = models.BooleanField(
         default=False,
-        verbose_name=_("Self Harm"),
-        help_text=_("Have you ever done anything to harm yourself?"),
+        verbose_name="آیا تا به حال به خودتان آسیب زده‌اید؟",
+        help_text="آیا تا به حال کاری کرده‌اید که به خودتان آسیب بزنید؟",
     )
 
     suicide_attempt_details = models.TextField(
-        verbose_name=_("Suicide Attempt Details"),
+        verbose_name="چه اتفاقی افتاد؟",
         blank=True,
-        help_text=_("Tell me what happened."),
+        help_text="چه کار کردید؟ (برایم بگویید چه اتفاقی افتاد.) آیا قصد پایان دادن به زندگی خود را داشتید؟",
     )
 
     most_severe_attempt = models.TextField(
-        verbose_name=_("Most Severe Attempt"),
+        verbose_name="شدیدترین اقدام کدام بود؟",
         blank=True,
-        help_text=_("Which attempt had the most severe consequences?"),
+        help_text="کدام اقدام شدیدترین عواقب پزشکی را داشت (رفتن به اورژانس، نیاز به بستری، نیاز به مراقبت در ICU)؟",
     )
 
     attempt_past_week = models.BooleanField(
         default=False,
-        verbose_name=_("Attempt Past Week"),
-        help_text=_("Have you made any attempts in the past week?"),
+        verbose_name="آیا در هفته گذشته اقدام به خودکشی کرده‌اید؟",
+        help_text="آیا در هفته گذشته (از جمله امروز) اقدام به خودکشی کرده‌اید؟",
     )
 
     # ==========================================================
@@ -759,33 +764,33 @@ class Overview(models.Model):
     # ==========================================================
 
     other_problems = models.TextField(
-        verbose_name=_("Other Problems"),
+        verbose_name="آیا مشکلات دیگری داشته‌اید؟",
         blank=True,
-        help_text=_("How are things going at work, at home, and with other people?"),
+        help_text="آیا در ماه گذشته مشکلات دیگری داشته‌اید؟ (اوضاع در کار، خانه و با دیگران چگونه است؟)",
     )
 
     mood_description = models.TextField(
-        verbose_name=_("Mood Description"),
+        verbose_name="حالتان چگونه بوده است؟",
         blank=True,
-        help_text=_("What has your mood been like?"),
+        help_text="حالتان در ماه گذشته چگونه بوده است؟",
     )
 
     alcohol_use = models.TextField(
-        verbose_name=_("Alcohol Use"),
+        verbose_name="چقدر الکل مصرف می‌کنید؟",
         blank=True,
-        help_text=_("How much have you been drinking?"),
+        help_text="در ماه گذشته، چقدر الکل مصرف کرده‌اید؟",
     )
 
     alcohol_with_whom = models.TextField(
-        verbose_name=_("Alcohol With Whom"),
+        verbose_name="با چه کسی الکل مصرف می‌کنید؟",
         blank=True,
-        help_text=_("Who do you drink with?"),
+        help_text="وقتی الکل مصرف می‌کنید، معمولاً با چه کسی هستید؟ (معمولاً تنها هستید یا با دیگران؟)",
     )
 
     drug_use = models.TextField(
-        verbose_name=_("Drug Use"),
+        verbose_name="آیا مواد مخدر مصرف می‌کنید؟",
         blank=True,
-        help_text=_("Have you been using any drugs?"),
+        help_text="در ماه گذشته، آیا مواد مخدر یا تفریحی مصرف کرده‌اید؟ آیا بیشتر از مقدار تجویز شده از داروهای خود استفاده کرده‌اید یا زودتر از موعد داروهایتان تمام شده است؟",
     )
 
     # ==========================================================
@@ -794,22 +799,22 @@ class Overview(models.Model):
 
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name=_("Created At"),
+        verbose_name="تاریخ ایجاد",
     )
 
     updated_at = models.DateTimeField(
         auto_now=True,
-        verbose_name=_("Updated At"),
+        verbose_name="تاریخ بروزرسانی",
     )
 
     class Meta:
-        verbose_name = _("Overview")
-        verbose_name_plural = _("Overviews")
+        verbose_name = "Overview"
+        verbose_name_plural = "Overviews"
         ordering = ["-created_at"]
 
     def __str__(self):
         return f"Overview - {self.patient.get_full_name()} - {self.created_at.strftime('%Y-%m-%d')}"
-
+    
 
 # ============================================================
 # PATIENT NOTE MODEL

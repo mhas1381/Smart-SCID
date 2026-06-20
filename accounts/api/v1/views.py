@@ -9,6 +9,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
+from django.db import models
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema_view
 from django.shortcuts import get_object_or_404
@@ -54,6 +55,7 @@ from .openapi.schema import (
     overview_detail_schema,
     overview_list_schema,
     overview_update_schema,
+    overview_questions_schema,
 )
 from ...models import UserProfile, Patient, PatientNote, Overview
 from utils.sms import send_verification_code
@@ -475,7 +477,194 @@ class PatientNoteListCreateView(generics.ListCreateAPIView):
 # ============================================================
 # 📋 OVERVIEW VIEWS
 # ============================================================
+@extend_schema_view(
+    get=overview_questions_schema,
+)
+class OverviewQuestionsView(APIView):
+    """
+    Get all Overview questions with their metadata.
+    Questions are extracted from model field help_text.
+    """
+    permission_classes = [IsAuthenticated]
 
+    def get(self, request):
+        questions = self._get_questions()
+        return Response({
+            'sections': self._group_by_sections(questions),
+            'total': len(questions)
+        })
+
+    def _get_questions(self):
+        """Extract questions from model fields"""
+        questions = []
+        
+        # Fields to exclude (metadata fields)
+        exclude_fields = ['id', 'patient', 'clinician', 'created_at', 'updated_at']
+        
+        for field in Overview._meta.get_fields():
+            if field.name in exclude_fields:
+                continue
+            
+            # Skip reverse relations
+            if field.auto_created:
+                continue
+            
+            question = self._parse_field(field)
+            if question:
+                questions.append(question)
+        
+        return questions
+
+    def _parse_field(self, field):
+        """Parse a single field into a question object"""
+        from django.db.models.fields import NOT_PROVIDED
+        
+        question = {
+            'id': field.name,
+            'type': self._get_field_type(field),
+            'text': field.help_text or field.verbose_name or field.name,
+            'required': not field.blank,
+            'section': self._get_section(field.name),
+        }
+        
+        # Add choices if field has choices
+        if hasattr(field, 'choices') and field.choices:
+            question['choices'] = [
+                {'value': choice[0], 'label': choice[1]} 
+                for choice in field.choices
+            ]
+        
+        # Add default value - check for NOT_PROVIDED
+        if hasattr(field, 'default') and field.default is not NOT_PROVIDED:
+            default_value = field.default
+            # If default is a callable, call it to get the actual value
+            if callable(default_value):
+                try:
+                    default_value = default_value()
+                except Exception:
+                    default_value = None
+            # If default is a type (like bool, str, int), convert to appropriate value
+            elif isinstance(default_value, type):
+                if default_value is bool:
+                    default_value = False
+                elif default_value is str:
+                    default_value = ""
+                elif default_value is int:
+                    default_value = 0
+                elif default_value is list:
+                    default_value = []
+                elif default_value is dict:
+                    default_value = {}
+                else:
+                    default_value = None
+            question['default'] = default_value
+        
+        return question
+
+    def _get_field_type(self, field):
+        """Determine field type for frontend rendering"""
+        if isinstance(field, models.BooleanField):
+            return 'boolean'
+        if isinstance(field, models.TextField):
+            return 'textarea'
+        if isinstance(field, models.CharField) and hasattr(field, 'choices') and field.choices:
+            return 'select'
+        if isinstance(field, models.CharField):
+            return 'text'
+        if isinstance(field, models.IntegerField) or isinstance(field, models.PositiveIntegerField):
+            return 'number'
+        if isinstance(field, models.DateField):
+            return 'date'
+        if isinstance(field, models.JSONField):
+            return 'json'
+        return 'text'
+
+    def _get_section(self, field_name):
+        """Group fields by logical sections"""
+        demographic = [
+            'living_with', 'living_place', 'occupation_history',
+            'employment_status', 'part_time_hours', 'part_time_reason',
+            'unemployment_reason', 'disability_payments', 'disability_reason',
+            'unable_to_work_history', 'unable_to_work_reason'
+        ]
+        illness_history = [
+            'presenting_problem', 'onset_circumstances', 'last_feeling_ok'
+        ]
+        treatment_history = [
+            'first_treatment_age', 'first_treatment_reason',
+            'psychiatric_hospitalization', 'hospitalization_count',
+            'hospitalization_reason', 'substance_treatment', 'treatment_history'
+        ]
+        medical = [
+            'physical_health', 'medical_hospitalization',
+            'medical_hospitalization_reason', 'current_medications'
+        ]
+        suicidal = [
+            'wished_dead', 'wished_dead_details', 'thoughts_past_week',
+            'strong_urge_past_week', 'strong_urge_details',
+            'intention_past_week', 'intention_details',
+            'plan_past_week', 'plan_details',
+            'suicide_attempt', 'self_harm', 'suicide_attempt_details',
+            'most_severe_attempt', 'attempt_past_week'
+        ]
+        other = [
+            'other_problems', 'mood_description', 'alcohol_use',
+            'alcohol_with_whom', 'drug_use'
+        ]
+        
+        if field_name in demographic:
+            return 'demographic'
+        elif field_name in illness_history:
+            return 'illness_history'
+        elif field_name in treatment_history:
+            return 'treatment_history'
+        elif field_name in medical:
+            return 'medical'
+        elif field_name in suicidal:
+            return 'suicidal'
+        elif field_name in other:
+            return 'other'
+        return 'other'
+
+    def _group_by_sections(self, questions):
+        """Group questions by section"""
+        sections_map = {}
+        
+        for q in questions:
+            section_key = q.pop('section')
+            if section_key not in sections_map:
+                sections_map[section_key] = {
+                    'id': section_key,
+                    'title': self._get_section_title(section_key),
+                    'icon': self._get_section_icon(section_key),
+                    'questions': []
+                }
+            sections_map[section_key]['questions'].append(q)
+        
+        return list(sections_map.values())
+
+    def _get_section_title(self, section_key):
+        titles = {
+            'demographic': 'Demographic Information',
+            'illness_history': 'History of Current Illness',
+            'treatment_history': 'Treatment History',
+            'medical': 'Medical Problems',
+            'suicidal': 'Suicidal Ideation & Behavior',
+            'other': 'Other Current Problems'
+        }
+        return titles.get(section_key, section_key)
+
+    def _get_section_icon(self, section_key):
+        icons = {
+            'demographic': '👤',
+            'illness_history': '🩺',
+            'treatment_history': '💊',
+            'medical': '🏥',
+            'suicidal': '⚠️',
+            'other': '📝'
+        }
+        return icons.get(section_key, '📋')
+    
 @extend_schema_view(
     get=overview_list_schema,
     post=overview_create_schema,
@@ -525,3 +714,5 @@ class OverviewDetailView(generics.RetrieveUpdateAPIView):
 
     def get_queryset(self):
         return Overview.objects.filter(patient__created_by=self.request.user)
+    
+    

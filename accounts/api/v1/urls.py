@@ -10,6 +10,7 @@ from .views import (
     UserProfileView,
     PatientListCreateView,
     PatientDetailView,
+    OverviewQuestionsView,
     PatientNoteListCreateView,
     OverviewListCreateView,
     OverviewDetailView,
@@ -44,6 +45,7 @@ urlpatterns = [
     # ==========================================================
     # OVERVIEW
     # ==========================================================
+    path("overview-questions/", OverviewQuestionsView.as_view(), name="overview-questions"),
     path("patients/<int:patient_id>/overviews/", OverviewListCreateView.as_view(), name="overview-list-create"),
     path("overviews/<int:pk>/", OverviewDetailView.as_view(), name="overview-detail"),
 ]

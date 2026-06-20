@@ -1751,3 +1751,330 @@ Update an Overview.
         404: OpenApiTypes.OBJECT,
     },
 )
+
+# ============================================================
+# 📋 OVERVIEW QUESTIONS SCHEMA
+# ============================================================
+overview_questions_schema = extend_schema(
+    summary="📋 Get Overview Questions",
+    tags=["📋 Overview"],
+    description="""
+Get all Overview questions with their metadata for frontend rendering.
+
+📋 Returns:
+- All questions grouped by sections
+- Each question includes: id, type, text, required status
+- Section titles and icons for UI display
+
+🔐 JWT authentication required
+
+📝 Question Types:
+- `text`: Short text input
+- `textarea`: Long text input
+- `boolean`: Yes/No toggle
+- `number`: Numeric input
+- `date`: Date picker
+- `select`: Dropdown selection
+- `json`: Structured data (for treatment_history)
+
+🔍 Sections:
+- 👤 Demographic Information
+- 🩺 History of Current Illness
+- 💊 Treatment History
+- 🏥 Medical Problems
+- ⚠️ Suicidal Ideation & Behavior
+- 📝 Other Current Problems
+    """,
+    responses={
+        200: inline_serializer(
+            name="OverviewQuestionsResponse",
+            fields={
+                "total": serializers.IntegerField(),
+                "sections": serializers.ListField(
+                    child=inline_serializer(
+                        name="OverviewQuestionSection",
+                        fields={
+                            "id": serializers.CharField(),
+                            "title": serializers.CharField(),
+                            "icon": serializers.CharField(),
+                            "questions": serializers.ListField(
+                                child=inline_serializer(
+                                    name="OverviewQuestionItem",
+                                    fields={
+                                        "id": serializers.CharField(),
+                                        "type": serializers.CharField(),
+                                        "text": serializers.CharField(),
+                                        "required": serializers.BooleanField(),
+                                        "choices": serializers.ListField(
+                                            child=inline_serializer(
+                                                name="OverviewQuestionChoice",
+                                                fields={
+                                                    "value": serializers.CharField(),
+                                                    "label": serializers.CharField(),
+                                                }
+                                            ),
+                                            required=False,
+                                            allow_null=True,
+                                        ),
+                                        "default": serializers.JSONField(
+                                            required=False,
+                                            allow_null=True,
+                                            help_text="Default value (can be string, boolean, number, or null)"
+                                        ),
+                                    }
+                                )
+                            ),
+                        }
+                    )
+                ),
+            },
+        ),
+        401: OpenApiTypes.OBJECT,
+    },
+    examples=[
+        OpenApiExample(
+            "📋 Overview Questions Response - Full Example",
+            value={
+                "total": 42,
+                "sections": [
+                    {
+                        "id": "demographic",
+                        "title": "Demographic Information",
+                        "icon": "👤",
+                        "questions": [
+                            {
+                                "id": "living_with",
+                                "type": "text",
+                                "text": "With whom do you live?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "living_place",
+                                "type": "text",
+                                "text": "What kind of place do you live in?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "employment_status",
+                                "type": "text",
+                                "text": "Are you currently employed (getting paid)?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "part_time_hours",
+                                "type": "number",
+                                "text": "How many hours do you typically work each week?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            }
+                        ]
+                    },
+                    {
+                        "id": "illness_history",
+                        "title": "History of Current Illness",
+                        "icon": "🩺",
+                        "questions": [
+                            {
+                                "id": "presenting_problem",
+                                "type": "textarea",
+                                "text": "What led to your coming here? What's the major problem?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "onset_circumstances",
+                                "type": "textarea",
+                                "text": "What was going on in your life when this began?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            }
+                        ]
+                    },
+                    {
+                        "id": "treatment_history",
+                        "title": "Treatment History",
+                        "icon": "💊",
+                        "questions": [
+                            {
+                                "id": "psychiatric_hospitalization",
+                                "type": "boolean",
+                                "text": "Have you ever been a patient in a psychiatric hospital?",
+                                "required": False,
+                                "choices": None,
+                                "default": False,
+                            },
+                            {
+                                "id": "hospitalization_count",
+                                "type": "number",
+                                "text": "How many times?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "treatment_history",
+                                "type": "json",
+                                "text": "List of treatments",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            }
+                        ]
+                    },
+                    {
+                        "id": "medical",
+                        "title": "Medical Problems",
+                        "icon": "🏥",
+                        "questions": [
+                            {
+                                "id": "physical_health",
+                                "type": "textarea",
+                                "text": "How has your physical health been?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "medical_hospitalization",
+                                "type": "boolean",
+                                "text": "Have you ever been in a hospital for treatment of a medical problem?",
+                                "required": False,
+                                "choices": None,
+                                "default": False,
+                            }
+                        ]
+                    },
+                    {
+                        "id": "suicidal",
+                        "title": "Suicidal Ideation & Behavior",
+                        "icon": "⚠️",
+                        "questions": [
+                            {
+                                "id": "wished_dead",
+                                "type": "boolean",
+                                "text": "Have you ever wished you were dead?",
+                                "required": False,
+                                "choices": None,
+                                "default": False,
+                            },
+                            {
+                                "id": "wished_dead_details",
+                                "type": "textarea",
+                                "text": "Tell me about that.",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "thoughts_past_week",
+                                "type": "boolean",
+                                "text": "Did you have any of these thoughts in the past week?",
+                                "required": False,
+                                "choices": None,
+                                "default": False,
+                            },
+                            {
+                                "id": "suicide_attempt",
+                                "type": "boolean",
+                                "text": "Have you ever tried to kill yourself?",
+                                "required": False,
+                                "choices": None,
+                                "default": False,
+                            },
+                            {
+                                "id": "suicide_attempt_details",
+                                "type": "textarea",
+                                "text": "Tell me what happened.",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            }
+                        ]
+                    },
+                    {
+                        "id": "other",
+                        "title": "Other Current Problems",
+                        "icon": "📝",
+                        "questions": [
+                            {
+                                "id": "other_problems",
+                                "type": "textarea",
+                                "text": "How are things going at work, at home, and with other people?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "mood_description",
+                                "type": "textarea",
+                                "text": "What has your mood been like?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "alcohol_use",
+                                "type": "textarea",
+                                "text": "How much have you been drinking?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            },
+                            {
+                                "id": "drug_use",
+                                "type": "textarea",
+                                "text": "Have you been using any drugs?",
+                                "required": False,
+                                "choices": None,
+                                "default": None,
+                            }
+                        ]
+                    }
+                ]
+            },
+            response_only=True,
+        ),
+        OpenApiExample(
+            "📋 Overview Questions Response - With Choices",
+            value={
+                "total": 42,
+                "sections": [
+                    {
+                        "id": "demographic",
+                        "title": "Demographic Information",
+                        "icon": "👤",
+                        "questions": [
+                            {
+                                "id": "education",
+                                "type": "select",
+                                "text": "Education Level",
+                                "required": False,
+                                "choices": [
+                                    {"value": "elementary", "label": "Elementary"},
+                                    {"value": "middle_school", "label": "Middle School"},
+                                    {"value": "high_school", "label": "High School"},
+                                    {"value": "diploma", "label": "Diploma"},
+                                    {"value": "associate", "label": "Associate Degree"},
+                                    {"value": "bachelor", "label": "Bachelor's Degree"},
+                                    {"value": "master", "label": "Master's Degree"},
+                                    {"value": "doctoral", "label": "Doctoral Degree"}
+                                ],
+                                "default": None,
+                            }
+                        ]
+                    }
+                ]
+            },
+            response_only=True,
+        ),
+    ],
+)
