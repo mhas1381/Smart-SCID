@@ -207,13 +207,6 @@ class UserProfile(models.Model):
         blank=True,
     )
 
-    national_code = models.CharField(
-        verbose_name=_("National Code"),
-        max_length=10,
-        null=True,
-        blank=True,
-    )
-
     role = models.CharField(
         verbose_name=_("User Role"),
         max_length=20,
@@ -272,16 +265,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profile of {self.user.get_full_name()}"
-
-    def clean(self):
-        if self.national_code:
-            if not re.match(r"^\d{10}$", self.national_code):
-                raise ValidationError(_("National code must be exactly 10 digits."))
-
-            check = int(self.national_code[9])
-            s = sum(int(self.national_code[x]) * (10 - x) for x in range(9)) % 11
-            if (s < 2 and check != s) or (s >= 2 and check + s != 11):
-                raise ValidationError(_("National code is invalid."))
 
     def save(self, *args, **kwargs):
         if self.pk:
@@ -370,12 +353,6 @@ class Patient(models.Model):
 
     email = models.EmailField(
         verbose_name=_("Email Address"),
-        blank=True,
-    )
-
-    national_code = models.CharField(
-        max_length=10,
-        verbose_name=_("National Code"),
         blank=True,
     )
 
@@ -481,16 +458,6 @@ class Patient(models.Model):
 
     def get_full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
-
-    def clean(self):
-        if self.national_code:
-            if not re.match(r"^\d{10}$", self.national_code):
-                raise ValidationError(_("National code must be exactly 10 digits."))
-
-            check = int(self.national_code[9])
-            s = sum(int(self.national_code[x]) * (10 - x) for x in range(9)) % 11
-            if (s < 2 and check != s) or (s >= 2 and check + s != 11):
-                raise ValidationError(_("National code is invalid."))
 
 
 # ============================================================

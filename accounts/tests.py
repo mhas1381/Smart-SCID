@@ -15,30 +15,6 @@ User = get_user_model()
 
 
 # ============================================================
-# HELPER: Generate valid Iranian national code
-# ============================================================
-
-def generate_valid_national_code() -> str:
-    """
-    Generate a valid Iranian national code for testing.
-    """
-    import random
-    
-    # Generate first 9 digits
-    digits = [random.randint(0, 9) for _ in range(9)]
-    
-    # Calculate check digit
-    s = sum(digits[i] * (10 - i) for i in range(9)) % 11
-    if s < 2:
-        check = s
-    else:
-        check = 11 - s
-    
-    digits.append(check)
-    return ''.join(str(d) for d in digits)
-
-
-# ============================================================
 # MODEL TESTS
 # ============================================================
 
@@ -98,12 +74,10 @@ class PatientModelTest(TestCase):
             phone_number="09123456789",
             password="Test@1234"
         )
-        self.national_code = generate_valid_national_code()
         self.patient = Patient.objects.create(
             first_name="علی",
             last_name="محمدی",
             phone_number="09123456780",
-            national_code=self.national_code,
             created_by=self.user
         )
 
@@ -370,7 +344,6 @@ class PatientAPITest(TestCase):
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {refresh.access_token}')
 
         self.patients_url = "/api/accounts/patients/"
-        self.valid_national_code = generate_valid_national_code()
 
     def test_create_patient_success(self):
         """Test creating a patient successfully."""
@@ -378,7 +351,6 @@ class PatientAPITest(TestCase):
             "first_name": "علی",
             "last_name": "محمدی",
             "phone_number": "09123456780",
-            "national_code": self.valid_national_code,
             "occupation": "مهندس"
         }
         response = self.client.post(self.patients_url, data, format='json')
@@ -392,10 +364,87 @@ class PatientAPITest(TestCase):
             print("="*50 + "\n")
         
         self.assertEqual(response.status_code, 201)
-        # Use get() to avoid KeyError, and check that data exists
         self.assertEqual(response.data.get('first_name'), "علی")
         self.assertEqual(response.data.get('last_name'), "محمدی")
         self.assertIsNotNone(response.data.get('patient_code'))
+
+    def test_list_patients(self):
+        """Test listing patients."""
+        Patient.objects.create(
+            first_name="علی",
+            last_name="محمدی",
+            created_by=self.user
+        )
+        Patient.objects.create(
+            first_name="سارا",
+            last_name="احمدی",
+            created_by=self.user
+        )
+
+        response = self.client.get(self.patients_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 2)
+        self.assertEqual(len(response.data['results']), 2)
+
+    def test_list_patients_only_own(self):
+        """Test user can only see their own patients."""
+        user2 = User.objects.create_user(
+            phone_number="09123456788",
+            password="Test@1234"
+        )
+        Patient.objects.create(
+            first_name="علی",
+            last_name="محمدی",
+            created_by=self.user
+        )
+        Patient.objects.create(
+            first_name="رضا",
+            last_name="کریمی",
+            created_by=user2
+        )
+
+        response = self.client.get(self.patients_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['count'], 1)
+        self.assertEqual(response.data['results'][0].get('full_name'), "علی محمدی")
+
+    def test_get_patient_detail(self):
+        """Test getting patient details."""
+        patient = Patient.objects.create(
+            first_name="علی",
+            last_name="محمدی",
+            created_by=self.user
+        )
+        response = self.client.get(f"{self.patients_url}{patient.id}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['first_name'], "علی")
+        self.assertEqual(response.data['last_name'], "محمدی")
+
+    def test_update_patient(self):
+        """Test updating a patient."""
+        patient = Patient.objects.create(
+            first_name="علی",
+            last_name="محمدی",
+            created_by=self.user
+        )
+        data = {"occupation": "مهندس ارشد"}
+        response = self.client.patch(f"{self.patients_url}{patient.id}/", data, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['occupation'], "مهندس ارشد")
+
+    def test_delete_patient_soft(self):
+        """Test soft deleting a patient."""
+        patient = Patient.objects.create(
+            first_name="علی",
+            last_name="محمدی",
+            created_by=self.user
+        )
+        response = self.client.delete(f"{self.patients_url}{patient.id}/")
+        self.assertEqual(response.status_code, 204)
+
+        patient.refresh_from_db()
+        self.assertFalse(patient.is_active)
+
 
 class PatientNoteAPITest(TestCase):
     """Test cases for Patient Note APIs."""
@@ -592,7 +641,6 @@ class IntegrationTest(TestCase):
         self.token_url = "/api/accounts/token/"
         self.patients_url = "/api/accounts/patients/"
         self.overviews_url_base = "/api/accounts/patients/{}/overviews/"
-        self.valid_national_code = generate_valid_national_code()
 
     def test_full_workflow(self):
         """Test complete workflow: register -> login -> create patient -> create overview."""
@@ -616,8 +664,7 @@ class IntegrationTest(TestCase):
         patient_data = {
             "first_name": "علی",
             "last_name": "محمدی",
-            "phone_number": "09123456780",
-            "national_code": self.valid_national_code
+            "phone_number": "09123456780"
         }
         patient_response = self.client.post(self.patients_url, patient_data, format='json')
         

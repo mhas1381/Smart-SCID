@@ -17,7 +17,7 @@ class UserProfileInline(admin.StackedInline):
     extra = 0
     fieldsets = (
         (None, {
-            'fields': ('role', 'gender', 'birth_date', 'national_code')
+            'fields': ('role', 'gender', 'birth_date')
         }),
         (_('Professional Information'), {
             'fields': ('license_number', 'specialization', 'organization', 'years_of_experience')
@@ -108,12 +108,12 @@ class CustomUserAdmin(UserAdmin):
 class UserProfileAdmin(admin.ModelAdmin):
     list_display = ('user_full_name', 'phone_number_display', 'role', 'gender', 'license_number', 'created_at')
     list_filter = ('role', 'gender', 'created_at')
-    search_fields = ('user__phone_number', 'user__first_name', 'user__last_name', 'license_number', 'national_code')
+    search_fields = ('user__phone_number', 'user__first_name', 'user__last_name', 'license_number')
     readonly_fields = ('created_at', 'updated_at')
 
     fieldsets = (
         (None, {'fields': ('user',)}),
-        (_('Personal Information'), {'fields': ('birth_date', 'gender', 'national_code')}),
+        (_('Personal Information'), {'fields': ('birth_date', 'gender')}),
         (_('Professional Information'), {'fields': ('role', 'license_number', 'specialization', 'organization', 'years_of_experience')}),
         (_('Profile Image'), {'fields': ('profile_image',)}),
         (_('Timestamps'), {'fields': ('created_at', 'updated_at'), 'classes': ('collapse',)}),
@@ -146,7 +146,7 @@ class PatientNoteInline(admin.TabularInline):
 
 
 # ============================================================
-# OVERVIEW INLINE (نمایش خلاصه Overview در صفحه Patient)
+# OVERVIEW INLINE
 # ============================================================
 
 class OverviewInline(admin.TabularInline):
@@ -191,14 +191,14 @@ class PatientAdmin(admin.ModelAdmin):
     )
 
     list_filter = ('gender', 'marital_status', 'education', 'is_active', 'created_at')
-    search_fields = ('patient_code', 'first_name', 'last_name', 'phone_number', 'national_code', 'email')
+    search_fields = ('patient_code', 'first_name', 'last_name', 'phone_number', 'email')
     ordering = ('-created_at',)
 
     readonly_fields = ('patient_code', 'created_at', 'updated_at')
 
     fieldsets = (
         (_('Patient Information'), {'fields': ('patient_code', 'first_name', 'last_name', 'phone_number', 'email')}),
-        (_('Personal Details'), {'fields': ('national_code', 'birth_date', 'gender', 'marital_status', 'education', 'occupation', 'address')}),
+        (_('Personal Details'), {'fields': ('birth_date', 'gender', 'marital_status', 'education', 'occupation', 'address')}),
         (_('Emergency Contact'), {'fields': ('emergency_contact_name', 'emergency_contact_phone'), 'classes': ('collapse',)}),
         (_('Metadata'), {'fields': ('created_by', 'is_active', 'created_at', 'updated_at'), 'classes': ('collapse',)}),
     )

@@ -65,6 +65,13 @@ OTP_LENGTH = 5
 CACHE_TIMEOUT = 120
 
 
+# ============================================================
+# 🔐 AUTHENTICATION VIEWS
+# ============================================================
+
+@extend_schema_view(
+    post=register_schema,
+)
 class RegisterView(generics.CreateAPIView):
     """
     Register a new user with phone number and password.
@@ -108,6 +115,9 @@ class RegisterView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
+@extend_schema_view(
+    post=token_obtain_schema,
+)
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
     Custom JWT Token Obtain Pair View.
@@ -115,6 +125,9 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
+@extend_schema_view(
+    post=token_refresh_schema,
+)
 class CustomTokenRefreshView(TokenRefreshView):
     """
     Custom JWT Token Refresh View.
@@ -122,6 +135,9 @@ class CustomTokenRefreshView(TokenRefreshView):
     pass
 
 
+@extend_schema_view(
+    post=send_otp_schema,
+)
 class SendOTPView(generics.GenericAPIView):
     """
     Send OTP to phone number for authentication.
@@ -167,6 +183,9 @@ class SendOTPView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(
+    post=verify_otp_schema,
+)
 class VerifyOTPView(generics.GenericAPIView):
     """
     Verify OTP and authenticate user.
@@ -233,6 +252,9 @@ class VerifyOTPView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(
+    post=set_password_schema,
+)
 class SetPasswordView(generics.GenericAPIView):
     """
     Set password for authenticated user.
@@ -259,6 +281,13 @@ class SetPasswordView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ============================================================
+# 👤 USER PROFILE VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=me_schema,
+)
 class MeView(generics.GenericAPIView):
     """
     Get authenticated user's profile.
@@ -272,6 +301,12 @@ class MeView(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@extend_schema_view(
+    get=profile_get_schema,
+    post=profile_create_schema,
+    put=profile_update_schema,
+    patch=profile_update_schema,
+)
 class UserProfileView(generics.GenericAPIView):
     """
     Get, create or update user profile.
@@ -338,6 +373,14 @@ class UserProfileView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ============================================================
+# 👤 PATIENT VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=patient_list_schema,
+    post=patient_create_schema,
+)
 class PatientListCreateView(generics.ListCreateAPIView):
     """
     List all patients or create a new patient.
@@ -364,12 +407,17 @@ class PatientListCreateView(generics.ListCreateAPIView):
         serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             patient = serializer.save()
-            # Use PatientDetailSerializer to return full patient data
             response_serializer = PatientDetailSerializer(patient, context={'request': request})
             return Response(response_serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(
+    get=patient_detail_schema,
+    put=patient_update_schema,
+    patch=patient_update_schema,
+    delete=patient_delete_schema,
+)
 class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a patient.
@@ -390,6 +438,14 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.save()
 
 
+# ============================================================
+# 📝 PATIENT NOTE VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=patient_note_list_schema,
+    post=patient_note_create_schema,
+)
 class PatientNoteListCreateView(generics.ListCreateAPIView):
     """
     List notes for a patient or add a new note.
@@ -416,6 +472,14 @@ class PatientNoteListCreateView(generics.ListCreateAPIView):
         serializer.save(patient=patient, clinician=self.request.user)
 
 
+# ============================================================
+# 📋 OVERVIEW VIEWS
+# ============================================================
+
+@extend_schema_view(
+    get=overview_list_schema,
+    post=overview_create_schema,
+)
 class OverviewListCreateView(generics.ListCreateAPIView):
     """
     List all overviews for a patient or create a new overview.
@@ -446,6 +510,11 @@ class OverviewListCreateView(generics.ListCreateAPIView):
         serializer.save(patient=patient, clinician=self.request.user)
 
 
+@extend_schema_view(
+    get=overview_detail_schema,
+    put=overview_update_schema,
+    patch=overview_update_schema,
+)
 class OverviewDetailView(generics.RetrieveUpdateAPIView):
     """
     Retrieve or update an overview.

@@ -309,7 +309,6 @@ class UserProfileSerializer(serializers.ModelSerializer):
             'phone_number',
             'birth_date',
             'gender',
-            'national_code',
             'role',
             'license_number',
             'specialization',
@@ -411,7 +410,6 @@ class PatientDetailSerializer(serializers.ModelSerializer):
             'full_name',
             'phone_number',
             'email',
-            'national_code',
             'birth_date',
             'age',
             'gender',
@@ -466,7 +464,6 @@ class PatientCreateSerializer(serializers.ModelSerializer):
             'last_name',
             'phone_number',
             'email',
-            'national_code',
             'birth_date',
             'gender',
             'marital_status',
@@ -476,7 +473,6 @@ class PatientCreateSerializer(serializers.ModelSerializer):
             'emergency_contact_name',
             'emergency_contact_phone',
         ]
-        # Add read-only fields for patient_code and id
         read_only_fields = ['patient_code', 'id']
 
     def validate_phone_number(self, value):
@@ -488,20 +484,6 @@ class PatientCreateSerializer(serializers.ModelSerializer):
                 )
         return value
 
-    def validate_national_code(self, value):
-        # Skip validation if empty or None (it's optional)
-        if not value:
-            return value
-            
-        if not re.match(r"^\d{10}$", value):
-            raise serializers.ValidationError("کد ملی باید دقیقاً ۱۰ رقم باشد.")
-
-        check = int(value[9])
-        s = sum(int(value[x]) * (10 - x) for x in range(9)) % 11
-        if (s < 2 and check != s) or (s >= 2 and check + s != 11):
-            raise serializers.ValidationError("کد ملی نامعتبر است.")
-        return value
-
     def create(self, validated_data):
         request = self.context.get('request')
         if not request or not request.user:
@@ -510,6 +492,7 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         validated_data['created_by'] = request.user
         patient = Patient.objects.create(**validated_data)
         return patient
+
 
 class PatientUpdateSerializer(serializers.ModelSerializer):
     """
@@ -523,7 +506,6 @@ class PatientUpdateSerializer(serializers.ModelSerializer):
             'last_name',
             'phone_number',
             'email',
-            'national_code',
             'birth_date',
             'gender',
             'marital_status',
@@ -542,17 +524,6 @@ class PatientUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     "شماره تلفن همراه باید با 09 شروع شود و ۱۱ رقم باشد."
                 )
-        return value
-
-    def validate_national_code(self, value):
-        if value:
-            if not re.match(r"^\d{10}$", value):
-                raise serializers.ValidationError("کد ملی باید دقیقاً ۱۰ رقم باشد.")
-
-            check = int(value[9])
-            s = sum(int(value[x]) * (10 - x) for x in range(9)) % 11
-            if (s < 2 and check != s) or (s >= 2 and check + s != 11):
-                raise serializers.ValidationError("کد ملی نامعتبر است.")
         return value
 
 
