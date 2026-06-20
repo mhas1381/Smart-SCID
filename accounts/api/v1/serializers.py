@@ -2,7 +2,7 @@
 API v1 serializers for accounts app.
 """
 
-from typing import Optional, Dict, Any, List
+from typing import Optional, Dict, Any
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from django.contrib.auth import get_user_model
@@ -16,10 +16,6 @@ import logging
 logger = logging.getLogger("accounts")
 User = get_user_model()
 
-
-# ============================================================
-# JWT TOKEN SERIALIZER
-# ============================================================
 
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
     """
@@ -60,10 +56,6 @@ class CustomTokenObtainPairSerializer(TokenObtainPairSerializer):
 
         return data
 
-
-# ============================================================
-# REGISTER SERIALIZER
-# ============================================================
 
 class RegisterSerializer(serializers.ModelSerializer):
     """
@@ -183,10 +175,6 @@ class RegisterSerializer(serializers.ModelSerializer):
         return user
 
 
-# ============================================================
-# OTP SERIALIZERS
-# ============================================================
-
 class SendOTPSerializer(serializers.Serializer):
     """
     Serializer for sending OTP to phone number.
@@ -242,10 +230,6 @@ class VerifyOTPSerializer(serializers.Serializer):
         },
     )
 
-
-# ============================================================
-# PASSWORD SERIALIZERS
-# ============================================================
 
 class SetPasswordSerializer(serializers.Serializer):
     """
@@ -307,10 +291,6 @@ class SetPasswordSerializer(serializers.Serializer):
 
         return attrs
 
-
-# ============================================================
-# USER PROFILE SERIALIZERS
-# ============================================================
 
 class UserProfileSerializer(serializers.ModelSerializer):
     """
@@ -382,10 +362,6 @@ class UserMeSerializer(serializers.Serializer):
             pass
         return None
 
-
-# ============================================================
-# PATIENT SERIALIZERS
-# ============================================================
 
 class PatientListSerializer(serializers.ModelSerializer):
     """
@@ -500,24 +476,30 @@ class PatientCreateSerializer(serializers.ModelSerializer):
             'emergency_contact_name',
             'emergency_contact_phone',
         ]
+        # Add read-only fields for patient_code and id
+        read_only_fields = ['patient_code', 'id']
 
     def validate_phone_number(self, value):
-        phone_regex = re.compile(r"^09\d{9}$")
-        if value and not phone_regex.match(value):
-            raise serializers.ValidationError(
-                "شماره تلفن همراه باید با 09 شروع شود و ۱۱ رقم باشد."
-            )
+        if value:
+            phone_regex = re.compile(r"^09\d{9}$")
+            if not phone_regex.match(value):
+                raise serializers.ValidationError(
+                    "شماره تلفن همراه باید با 09 شروع شود و ۱۱ رقم باشد."
+                )
         return value
 
     def validate_national_code(self, value):
-        if value:
-            if not re.match(r"^\d{10}$", value):
-                raise serializers.ValidationError("کد ملی باید دقیقاً ۱۰ رقم باشد.")
+        # Skip validation if empty or None (it's optional)
+        if not value:
+            return value
+            
+        if not re.match(r"^\d{10}$", value):
+            raise serializers.ValidationError("کد ملی باید دقیقاً ۱۰ رقم باشد.")
 
-            check = int(value[9])
-            s = sum(int(value[x]) * (10 - x) for x in range(9)) % 11
-            if (s < 2 and check != s) or (s >= 2 and check + s != 11):
-                raise serializers.ValidationError("کد ملی نامعتبر است.")
+        check = int(value[9])
+        s = sum(int(value[x]) * (10 - x) for x in range(9)) % 11
+        if (s < 2 and check != s) or (s >= 2 and check + s != 11):
+            raise serializers.ValidationError("کد ملی نامعتبر است.")
         return value
 
     def create(self, validated_data):
@@ -528,7 +510,6 @@ class PatientCreateSerializer(serializers.ModelSerializer):
         validated_data['created_by'] = request.user
         patient = Patient.objects.create(**validated_data)
         return patient
-
 
 class PatientUpdateSerializer(serializers.ModelSerializer):
     """
@@ -555,11 +536,12 @@ class PatientUpdateSerializer(serializers.ModelSerializer):
         ]
 
     def validate_phone_number(self, value):
-        phone_regex = re.compile(r"^09\d{9}$")
-        if value and not phone_regex.match(value):
-            raise serializers.ValidationError(
-                "شماره تلفن همراه باید با 09 شروع شود و ۱۱ رقم باشد."
-            )
+        if value:
+            phone_regex = re.compile(r"^09\d{9}$")
+            if not phone_regex.match(value):
+                raise serializers.ValidationError(
+                    "شماره تلفن همراه باید با 09 شروع شود و ۱۱ رقم باشد."
+                )
         return value
 
     def validate_national_code(self, value):
@@ -573,10 +555,6 @@ class PatientUpdateSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError("کد ملی نامعتبر است.")
         return value
 
-
-# ============================================================
-# PATIENT NOTE SERIALIZER
-# ============================================================
 
 class PatientNoteSerializer(serializers.ModelSerializer):
     """
@@ -598,19 +576,13 @@ class PatientNoteSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
         read_only_fields = ['id', 'clinician', 'clinician_name', 'created_at', 'updated_at']
+        extra_kwargs = {
+            'patient': {'required': False},
+        }
 
     def get_clinician_name(self, obj):
         return obj.clinician.get_full_name()
 
-    def create(self, validated_data):
-        request = self.context.get('request')
-        validated_data['clinician'] = request.user
-        return super().create(validated_data)
-
-
-# ============================================================
-# OVERVIEW SERIALIZER
-# ============================================================
 
 class OverviewSerializer(serializers.ModelSerializer):
     """
@@ -619,22 +591,40 @@ class OverviewSerializer(serializers.ModelSerializer):
 
     clinician_name = serializers.SerializerMethodField()
     patient_name = serializers.SerializerMethodField()
+    message = serializers.CharField(read_only=True, default="Overview created successfully")
 
     class Meta:
         model = Overview
-        fields = '__all__'
-        read_only_fields = ['id', 'clinician', 'created_at', 'updated_at']
+        fields = [
+            'id', 'patient', 'clinician', 'clinician_name', 'patient_name', 'message',
+            'age', 'living_with', 'living_place', 'occupation', 'occupation_history',
+            'employment_status', 'part_time_hours', 'part_time_reason', 'unemployment_reason',
+            'disability_payments', 'disability_reason', 'unable_to_work_history',
+            'unable_to_work_reason',
+            'presenting_problem', 'onset_circumstances', 'last_feeling_ok',
+            'first_treatment_age', 'first_treatment_reason', 'psychiatric_hospitalization',
+            'hospitalization_count', 'hospitalization_reason', 'substance_treatment',
+            'treatment_history', 'physical_health', 'medical_hospitalization',
+            'medical_hospitalization_reason', 'current_medications',
+            'wished_dead', 'wished_dead_details', 'thoughts_past_week',
+            'strong_urge_past_week', 'strong_urge_details', 'intention_past_week',
+            'intention_details', 'plan_past_week', 'plan_details',
+            'suicide_attempt', 'self_harm', 'suicide_attempt_details',
+            'most_severe_attempt', 'attempt_past_week',
+            'other_problems', 'mood_description', 'alcohol_use',
+            'alcohol_with_whom', 'drug_use',
+            'created_at', 'updated_at'
+        ]
+        read_only_fields = ['id', 'clinician', 'created_at', 'updated_at', 'message']
+        extra_kwargs = {
+            'patient': {'required': False},
+        }
 
     def get_clinician_name(self, obj):
         return obj.clinician.get_full_name()
 
     def get_patient_name(self, obj):
         return obj.patient.get_full_name()
-
-    def create(self, validated_data):
-        request = self.context.get('request')
-        validated_data['clinician'] = request.user
-        return super().create(validated_data)
 
 
 class OverviewListSerializer(serializers.ModelSerializer):
@@ -664,19 +654,3 @@ class OverviewListSerializer(serializers.ModelSerializer):
 
     def get_clinician_name(self, obj):
         return obj.clinician.get_full_name()
-
-
-class UserShortSerializer(serializers.ModelSerializer):
-    """
-    Short serializer for User model.
-    """
-
-    full_name = serializers.SerializerMethodField()
-
-    class Meta:
-        model = User
-        fields = ['id', 'phone_number', 'full_name', 'email']
-
-    @extend_schema_field(serializers.CharField)
-    def get_full_name(self, obj: User) -> str:
-        return obj.get_full_name()

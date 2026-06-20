@@ -11,6 +11,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from drf_spectacular.utils import extend_schema_view
+from django.shortcuts import get_object_or_404
 import secrets
 import time
 import logging
@@ -64,13 +65,6 @@ OTP_LENGTH = 5
 CACHE_TIMEOUT = 120
 
 
-# ============================================================
-# REGISTER VIEW
-# ============================================================
-
-@extend_schema_view(
-    post=register_schema,
-)
 class RegisterView(generics.CreateAPIView):
     """
     Register a new user with phone number and password.
@@ -114,13 +108,6 @@ class RegisterView(generics.CreateAPIView):
         return Response(response_data, status=status.HTTP_201_CREATED)
 
 
-# ============================================================
-# JWT TOKEN VIEWS
-# ============================================================
-
-@extend_schema_view(
-    post=token_obtain_schema,
-)
 class CustomTokenObtainPairView(TokenObtainPairView):
     """
     Custom JWT Token Obtain Pair View.
@@ -128,9 +115,6 @@ class CustomTokenObtainPairView(TokenObtainPairView):
     serializer_class = CustomTokenObtainPairSerializer
 
 
-@extend_schema_view(
-    post=token_refresh_schema,
-)
 class CustomTokenRefreshView(TokenRefreshView):
     """
     Custom JWT Token Refresh View.
@@ -138,13 +122,6 @@ class CustomTokenRefreshView(TokenRefreshView):
     pass
 
 
-# ============================================================
-# OTP VIEWS
-# ============================================================
-
-@extend_schema_view(
-    post=send_otp_schema,
-)
 class SendOTPView(generics.GenericAPIView):
     """
     Send OTP to phone number for authentication.
@@ -190,9 +167,6 @@ class SendOTPView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema_view(
-    post=verify_otp_schema,
-)
 class VerifyOTPView(generics.GenericAPIView):
     """
     Verify OTP and authenticate user.
@@ -259,13 +233,6 @@ class VerifyOTPView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ============================================================
-# PASSWORD VIEWS
-# ============================================================
-
-@extend_schema_view(
-    post=set_password_schema,
-)
 class SetPasswordView(generics.GenericAPIView):
     """
     Set password for authenticated user.
@@ -292,13 +259,6 @@ class SetPasswordView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ============================================================
-# USER PROFILE VIEWS
-# ============================================================
-
-@extend_schema_view(
-    get=me_schema,
-)
 class MeView(generics.GenericAPIView):
     """
     Get authenticated user's profile.
@@ -312,12 +272,6 @@ class MeView(generics.GenericAPIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@extend_schema_view(
-    get=profile_get_schema,
-    post=profile_create_schema,
-    put=profile_update_schema,
-    patch=profile_update_schema,
-)
 class UserProfileView(generics.GenericAPIView):
     """
     Get, create or update user profile.
@@ -384,23 +338,11 @@ class UserProfileView(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# ============================================================
-# PATIENT VIEWS
-# ============================================================
-
-@extend_schema_view(
-    get=patient_list_schema,
-    post=patient_create_schema,
-)
 class PatientListCreateView(generics.ListCreateAPIView):
     """
     List all patients or create a new patient.
     """
     permission_classes = [IsAuthenticated]
-    filter_backends = []
-    search_fields = ['first_name', 'last_name', 'phone_number', 'national_code', 'patient_code']
-    ordering_fields = ['created_at', 'first_name', 'last_name']
-    ordering = ['-created_at']
 
     def get_serializer_class(self):
         if self.request.method == 'POST':
@@ -410,19 +352,30 @@ class PatientListCreateView(generics.ListCreateAPIView):
     def get_queryset(self):
         return Patient.objects.filter(created_by=self.request.user, is_active=True)
 
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'count': queryset.count(),
+            'results': serializer.data
+        })
 
-@extend_schema_view(
-    get=patient_detail_schema,
-    put=patient_update_schema,
-    patch=patient_update_schema,
-    delete=patient_delete_schema,
-)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            patient = serializer.save()
+            # Use PatientDetailSerializer to return full patient data
+            response_serializer = PatientDetailSerializer(patient, context={'request': request})
+            return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
     Retrieve, update or delete a patient.
     """
     permission_classes = [IsAuthenticated]
-    queryset = Patient.objects.all()
+    lookup_url_kwarg = 'pk'
 
     def get_serializer_class(self):
         if self.request.method in ['PUT', 'PATCH']:
@@ -437,14 +390,6 @@ class PatientDetailView(generics.RetrieveUpdateDestroyAPIView):
         instance.save()
 
 
-# ============================================================
-# PATIENT NOTE VIEWS
-# ============================================================
-
-@extend_schema_view(
-    get=patient_note_list_schema,
-    post=patient_note_create_schema,
-)
 class PatientNoteListCreateView(generics.ListCreateAPIView):
     """
     List notes for a patient or add a new note.
@@ -454,23 +399,23 @@ class PatientNoteListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         patient_id = self.kwargs.get('patient_id')
-        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
+        patient = get_object_or_404(Patient, id=patient_id, created_by=self.request.user)
         return PatientNote.objects.filter(patient=patient)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'count': queryset.count(),
+            'results': serializer.data
+        })
 
     def perform_create(self, serializer):
         patient_id = self.kwargs.get('patient_id')
-        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
-        serializer.save(patient=patient)
+        patient = get_object_or_404(Patient, id=patient_id, created_by=self.request.user)
+        serializer.save(patient=patient, clinician=self.request.user)
 
 
-# ============================================================
-# OVERVIEW VIEWS
-# ============================================================
-
-@extend_schema_view(
-    get=overview_list_schema,
-    post=overview_create_schema,
-)
 class OverviewListCreateView(generics.ListCreateAPIView):
     """
     List all overviews for a patient or create a new overview.
@@ -484,27 +429,30 @@ class OverviewListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         patient_id = self.kwargs.get('patient_id')
-        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
+        patient = get_object_or_404(Patient, id=patient_id, created_by=self.request.user)
         return Overview.objects.filter(patient=patient)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        serializer = self.get_serializer(queryset, many=True)
+        return Response({
+            'count': queryset.count(),
+            'results': serializer.data
+        })
 
     def perform_create(self, serializer):
         patient_id = self.kwargs.get('patient_id')
-        patient = Patient.objects.get(id=patient_id, created_by=self.request.user)
-        serializer.save(patient=patient)
+        patient = get_object_or_404(Patient, id=patient_id, created_by=self.request.user)
+        serializer.save(patient=patient, clinician=self.request.user)
 
 
-@extend_schema_view(
-    get=overview_detail_schema,
-    put=overview_update_schema,
-    patch=overview_update_schema,
-)
 class OverviewDetailView(generics.RetrieveUpdateAPIView):
     """
     Retrieve or update an overview.
     """
     permission_classes = [IsAuthenticated]
     serializer_class = OverviewSerializer
-    queryset = Overview.objects.all()
+    lookup_url_kwarg = 'pk'
 
     def get_queryset(self):
         return Overview.objects.filter(patient__created_by=self.request.user)
