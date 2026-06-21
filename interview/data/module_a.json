@@ -9,7 +9,7 @@
   "questions": [
     {
       "id": "A1",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا احساس افسردگی، غم‌گینی یا بی‌حالی داشتید؟",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا در بیشترِ روز و تقریباً هر روز احساس افسردگی، غمگینی یا پوچی داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "1",
@@ -19,17 +19,17 @@
     },
     {
       "id": "A2",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی علاقه یا لذت را در فعالیت‌هایی که معمولاً لذت‌بخش بودند، از دست دادید؟",
+      "text": "در طول آن دوره دو هفته‌ای، آیا به طور قابل توجهی علاقه یا لذت خود را نسبت به همه یا تقریباً همه فعالیت‌هایی که معمولاً لذت‌بخش بودند، از دست دادید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "2",
       "order": 2,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A3",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی وزن خود را کاهش دادید یا اشتها را از دست دادید (بدون رژیم لاغری) یا به طور قابل توجهی وزن یا اشتها را افزایش دادید؟",
+      "text": "در طول آن دوره، آیا کاهش وزن قابل توجه (بدون رژیم) یا افزایش وزن داشتید، یا اشتهای شما تقریباً هر روز کاهش یا افزایش یافته بود؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "3",
@@ -39,7 +39,7 @@
     },
     {
       "id": "A4",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی بی‌خوابی یا پرخوابی داشتید؟",
+      "text": "آیا تقریباً هر روز دچار بی‌خوابی (مشکل در به خواب رفتن یا بیدار ماندن) یا پرخوابی بودید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "4",
@@ -49,7 +49,7 @@
     },
     {
       "id": "A5",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی خستگی یا بی‌انرژی بودید؟",
+      "text": "آیا تقریباً هر روز آن‌قدر بی‌قرار بودید که نمی‌توانستید آرام بنشینید (سراسیمگی روانی-حرکتی) یا برعکس، کُندتر از حد معمول حرکت می‌کردید یا حرف می‌زدید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "5",
@@ -59,7 +59,7 @@
     },
     {
       "id": "A6",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا احساس بی‌ارزشی یا بیش از حد گناهکار بودید؟",
+      "text": "آیا تقریباً هر روز احساس خستگی شدید یا از دست دادن انرژی داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "6",
@@ -69,7 +69,7 @@
     },
     {
       "id": "A7",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی توانایی فکر کردن، تمرکز کردن یا تصمیم‌گیری را کاهش دادید؟",
+      "text": "آیا تقریباً هر روز احساس بی‌ارزشی می‌کردید یا احساس گناه مفرط و نامتناسب داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "7",
@@ -79,7 +79,7 @@
     },
     {
       "id": "A8",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی سرعت حرکت خود را کاهش دادید یا به ندرت بیشتر از معمول تحریک‌پذیر، بی‌قرار یا نگران بودید؟",
+      "text": "آیا تقریباً هر روز توانایی شما برای فکر کردن، تمرکز کردن یا تصمیم‌گیری کاهش یافته بود؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "8",
@@ -89,17 +89,17 @@
     },
     {
       "id": "A9",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی مرده بودید (افکار مرگ) یا خودکشی فکر کرده‌اید (بدون برنامه‌ریزی) یا خودکشی برنامه‌ریزی کرده‌اید یا اقدام به خودکشی کرده‌اید؟",
+      "text": "آیا در آن دوره افکار عودکننده درباره مرگ داشتید، یا به خودکشی فکر کردید، یا برای آن برنامه‌ریزی یا اقدامی داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "9",
       "order": 9,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A10",
-      "text": "در طول بدترین دوره دو هفته‌ای، آیا علائم به طور قابل توجهی عملکرد شما در کار، در موقعیت‌های اجتماعی یا در فعالیت‌های تفریحی را مختل کردند؟",
+      "text": "آیا این علائم باعث ایجاد پریشانی بالینی معنادار یا افت شدید در عملکرد شغلی، اجتماعی یا سایر حوزه‌های مهم زندگی شما شدند؟",
       "question_type": "boolean",
       "order": 10,
       "is_required": true,
@@ -107,23 +107,23 @@
     },
     {
       "id": "A11",
-      "text": "علائم به طور قابل توجهی شامل یک بیماری پزشکی عمومی نبودند؟",
+      "text": "آیا این علائم مستقیماً ناشی از اثرات فیزیولوژیک یک بیماری پزشکی عمومی (مانند کم‌کاری تیروئید) بوده‌اند؟",
       "question_type": "boolean",
       "order": 11,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A12",
-      "text": "علائم به طور قابل توجهی ناشی از یک ماده یا یک دارو نبودند؟",
+      "text": "آیا این علائم مستقیماً ناشی از مصرف یک ماده (داروی تجویزی یا مواد مخدر) بوده‌اند؟",
       "question_type": "boolean",
       "order": 12,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A13",
-      "text": "آیا یک بیماری دوگانه (مانند اختلالات خلقی، اسکیزوفرنی، اختلال شخصیت، اختلال وسواسی اجباری، اختلال اضطراب، اختلال خوراک، اختلال مواد) وجود داشت؟",
+      "text": "آیا هرگز دوره‌ای از مانیا (شیدایی) یا هیپومانیا در گذشته داشته‌اید؟",
       "question_type": "boolean",
       "order": 13,
       "is_required": true,
@@ -131,7 +131,7 @@
     },
     {
       "id": "A14",
-      "text": "آیا علائم به طور قابل توجهی نتیجه یک فقدان عمیق یا یک ضربه به سیستم عصبی مرکزی نبودند؟",
+      "text": "آیا این علائم با اختلال اسکیزوافکتیو، اسکیزوفرنی یا سایر اختلالات سایکوتیک بهتر توجیه نمی‌شوند؟",
       "question_type": "boolean",
       "order": 14,
       "is_required": true,
@@ -139,15 +139,15 @@
     },
     {
       "id": "A15",
-      "text": "آیا علائم به طور قابل توجهی نتیجه یک فقدان عمیق یا یک ضربه به سیستم عصبی مرکزی نبودند؟",
+      "text": "آیا تا به حال در طول زندگی‌تان دوره دیگری بوده است که حداقل دو هفته احساس افسردگی یا از دست دادن علاقه داشته باشید (بررسی دوره افسردگی گذشته)؟",
       "question_type": "boolean",
       "order": 15,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A16",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا تغییرات قابل توجهی در اشتها یا وزن داشتید؟",
       "question_type": "boolean",
       "order": 16,
       "is_required": true,
@@ -155,7 +155,7 @@
     },
     {
       "id": "A17",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا دچار بی‌خوابی یا پرخوابی بودید؟",
       "question_type": "boolean",
       "order": 17,
       "is_required": true,
@@ -163,7 +163,7 @@
     },
     {
       "id": "A18",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا کندی یا بی‌قراری روانی-حرکتی داشتید؟",
       "question_type": "boolean",
       "order": 18,
       "is_required": true,
@@ -171,7 +171,7 @@
     },
     {
       "id": "A19",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا احساس خستگی یا کاهش انرژی داشتید؟",
       "question_type": "boolean",
       "order": 19,
       "is_required": true,
@@ -179,7 +179,7 @@
     },
     {
       "id": "A20",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا احساس بی‌ارزشی یا گناه مفرط داشتید؟",
       "question_type": "boolean",
       "order": 20,
       "is_required": true,
@@ -187,7 +187,7 @@
     },
     {
       "id": "A21",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا مشکل در تمرکز یا تصمیم‌گیری داشتید؟",
       "question_type": "boolean",
       "order": 21,
       "is_required": true,
@@ -195,15 +195,15 @@
     },
     {
       "id": "A22",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "در آن دوره گذشته، آیا افکار مرگ یا خودکشی داشتید؟",
       "question_type": "boolean",
       "order": 22,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A23",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "آیا علائم دوره گذشته باعث افت عملکرد یا پریشانی بالینی شده بودند؟",
       "question_type": "boolean",
       "order": 23,
       "is_required": true,
@@ -211,7 +211,7 @@
     },
     {
       "id": "A24",
-      "text": "آیا بیمار در طول دوره دو هفته‌ای علائم افسردگی را تجربه کرده است؟",
+      "text": "آیا علائم دوره گذشته ناشی از یک بیماری پزشکی عمومی بودند؟",
       "question_type": "boolean",
       "order": 24,
       "is_required": true,
@@ -219,7 +219,7 @@
     },
     {
       "id": "A25",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "آیا علائم دوره گذشته ناشی از مصرف مواد یا دارو بودند؟",
       "question_type": "boolean",
       "order": 25,
       "is_required": true,
@@ -227,7 +227,7 @@
     },
     {
       "id": "A26",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "جمع‌بندی درمانگر: آیا ملاک‌های دوره افسردگی اساسی گذشته برآورده شده است؟",
       "question_type": "boolean",
       "order": 26,
       "is_required": true,
@@ -235,7 +235,7 @@
     },
     {
       "id": "A27",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "text": "آیا بین دوره‌های افسردگی حداقل ۲ ماه متوالی وجود داشته که ملاک‌های افسردگی را نداشته باشید؟",
       "question_type": "boolean",
       "order": 27,
       "is_required": true,
@@ -243,15 +243,15 @@
     },
     {
       "id": "A28",
-      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
-      "question_type": "boolean",
+      "text": "ثبت درمانگر: تعداد کل دوره‌های افسردگی اساسی را مشخص کنید.",
+      "question_type": "text",
       "order": 28,
-      "is_required": true,
+      "is_required": false,
       "has_jump_logic": false
     },
     {
       "id": "A29",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی احساس خلق بالا، انبساط یا بهبود خلق نسبت به حالت طبیعی خود داشتید؟",
+      "text": "در ماه گذشته، آیا دوره‌ای حداقل یک هفته‌ای بوده که احساس کنید بسیار عالی، «بالا» یا روی ابرها هستید، به طوری که غیرطبیعی به نظر برسد؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "1",
@@ -261,17 +261,17 @@
     },
     {
       "id": "A30",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی عصبی، تحریک‌پذیر یا بیش از حد فعال بودید؟",
+      "text": "اگر حالت بالا نداشتید، آیا در ماه گذشته دوره‌ای بوده که به طور غیرعادی و مداوم احساس تحریک‌پذیری یا خشم شدید داشته باشید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "2",
       "order": 30,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A31",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی ابرازخنده بیش از حد داشتید؟",
+      "text": "در آن دوره، آیا احساس خودبزرگ‌بینی یا اعتماد به نفس کاذب و بیش از حد داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "3",
@@ -281,7 +281,7 @@
     },
     {
       "id": "A32",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی بیش از حد حرف زدید یا بیش از usual صحبت کردید؟",
+      "text": "در آن دوره، آیا نیاز شما به خواب کاهش یافته بود؟ (مثلاً با تنها ۳ ساعت خواب احساس می‌کردید کاملاً استراحت کرده‌اید؟)",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "4",
@@ -291,7 +291,7 @@
     },
     {
       "id": "A33",
-      "text": "در طول دوره یک هفته‌ای، آیا افکار شفاف یا افکار با حرکت سریع داشتید؟",
+      "text": "در آن دوره، آیا بیشتر از حد معمول پرحرف شده بودید یا احساس می‌کردید مجبورید مدام صحبت کنید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "5",
@@ -301,7 +301,7 @@
     },
     {
       "id": "A34",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی حواس پرت بودید؟",
+      "text": "آیا افکار شما به سرعت از موضوعی به موضوع دیگر می‌پرید (پرش افکار) یا احساس می‌کردید افکارتان در حال مسابقه دادن هستند؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "6",
@@ -311,7 +311,7 @@
     },
     {
       "id": "A35",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی افزایش فعالیت هدفمند (کار، اجتماعی یا جنسی) داشتید؟",
+      "text": "آیا به شدت حواس‌پرت شده بودید؟ (توجهتان مدام به محرک‌های بی‌اهمیت بیرونی جلب می‌شد؟)",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "7",
@@ -321,7 +321,7 @@
     },
     {
       "id": "A36",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی فعالیت‌های هدفمند را بیش از usual تکرار کردید؟",
+      "text": "آیا فعالیت‌های هدفمند شما (در کار، مدرسه، روابط اجتماعی یا جنسی) به شدت افزایش یافته بود یا دچار بی‌قراری شدید فیزیکی شده بودید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "8",
@@ -331,35 +331,34 @@
     },
     {
       "id": "A37",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی بیش از usual به فعالیت‌های لذت‌بخش پرداختید؟",
+      "text": "آیا بیش از حد درگیر فعالیت‌هایی شدید که احتمال عواقب دردناک و خطرناک داشتند؟ (مثل خریدهای بی‌رویه، بی‌احتیاطی جنسی، سرمایه‌گذاری احمقانه)",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "9",
       "order": 37,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A38",
-      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی درگیر فعالیت‌های پرخطر یا بی‌فکر بودید؟",
+      "text": "آیا این اختلال خلقی به قدری شدید بود که باعث اختلال جدی در عملکرد شغلی یا اجتماعی شود یا منجر به بستری شدن در بیمارستان گردد؟",
       "question_type": "boolean",
-      "is_criteria": true,
-      "criteria_number": "10",
+      "is_criteria": false,
       "order": 38,
       "is_required": true,
       "has_jump_logic": false
     },
     {
       "id": "A39",
-      "text": "آیا بیمار در حال حاضر دچار مانیا است؟",
+      "text": "آیا این دوره مستقیماً ناشی از اثرات فیزیولوژیک یک ماده (دارو، مواد مخدر، درمان الکتروشوک) بوده است؟",
       "question_type": "boolean",
       "order": 39,
       "is_required": true,
-      "has_jump_logic": false
+      "has_jump_logic": true
     },
     {
       "id": "A40",
-      "text": "آیا بیمار در حال حاضر دچار مانیا است؟",
+      "text": "آیا این دوره مستقیماً ناشی از یک بیماری پزشکی عمومی بوده است؟",
       "question_type": "boolean",
       "order": 40,
       "is_required": true,
@@ -367,7 +366,7 @@
     },
     {
       "id": "A41",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی احساس خلق بالا، انبساط یا بهبود خلق نسبت به حالت طبیعی خود داشتید؟",
+      "text": "بررسی هیپومانیا: آیا تا به حال دوره‌ای حداقل ۴ روزه داشته‌اید که احساس خلق بالا، انبساط یا بهبود خلق غیرطبیعی داشته باشید اما به شدت مانیا نباشد؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "1",
@@ -377,7 +376,7 @@
     },
     {
       "id": "A42",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی عصبی، تحریک‌پذیر یا بیش از حد فعال بودید؟",
+      "text": "در آن دوره ۴ روزه، آیا به طور غیرعادی احساس تحریک‌پذیری یا خشم داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "2",
@@ -387,7 +386,7 @@
     },
     {
       "id": "A43",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی ابرازخنده بیش از حد داشتید؟",
+      "text": "در آن دوره ۴ روزه، آیا احساس خودبزرگ‌بینی یا اعتماد به نفس کاذب داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "3",
@@ -397,7 +396,7 @@
     },
     {
       "id": "A44",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی بیش از usual حرف زدید؟",
+      "text": "در آن دوره ۴ روزه، آیا نیاز شما به خواب به طور واضح کاهش یافته بود؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "4",
@@ -407,7 +406,7 @@
     },
     {
       "id": "A45",
-      "text": "آیا در طول دوره چهار روزه افکار شفاف یا افکار با حرکت سریع داشتید؟",
+      "text": "در آن دوره ۴ روزه، آیا بیش از حد معمول پرحرف شده بودید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "5",
@@ -417,7 +416,7 @@
     },
     {
       "id": "A46",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی حواس پرت بودید؟",
+      "text": "در آن دوره ۴ روزه، آیا پرش افکار یا احساس مسابقه دادن افکار در ذهن داشتید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "6",
@@ -427,7 +426,7 @@
     },
     {
       "id": "A47",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی افزایش فعالیت هدفمند داشتید؟",
+      "text": "در آن دوره ۴ روزه، آیا به راحتی حواس‌پرت می‌شدید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "7",
@@ -437,7 +436,7 @@
     },
     {
       "id": "A48",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی فعالیت‌های هدفمند را بیش از usual تکرار کردید؟",
+      "text": "در آن دوره ۴ روزه، آیا فعالیت‌های هدفمند شما به طور مشخصی افزایش یافته بود؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "8",
@@ -447,7 +446,7 @@
     },
     {
       "id": "A49",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی به فعالیت‌های لذت‌بخش پرداختید؟",
+      "text": "در آن دوره ۴ روزه، آیا به شدت درگیر فعالیت‌هایی با احتمال بالای عواقب منفی شدید؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "9",
@@ -457,7 +456,7 @@
     },
     {
       "id": "A50",
-      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی درگیر فعالیت‌های پرخطر بودید؟",
+      "text": "آیا این تغییرات در رفتار و عملکرد توسط دیگران (خانواده/دوستان) قابل مشاهده بود؟",
       "question_type": "boolean",
       "is_criteria": true,
       "criteria_number": "10",
@@ -467,7 +466,7 @@
     },
     {
       "id": "A51",
-      "text": "آیا بیمار در حال حاضر دچار هیپومانیا است؟",
+      "text": "آیا این دوره آنقدر شدید بود که باعث اختلال عملکرد شدید یا بستری شدن شود؟ (اگر بله، تشخیص مانیا است نه هیپومانیا)",
       "question_type": "boolean",
       "order": 51,
       "is_required": true,
@@ -475,7 +474,7 @@
     },
     {
       "id": "A52",
-      "text": "آیا بیمار در حال حاضر دچار هیپومانیا است؟",
+      "text": "آیا این دوره هیپومانیا ناشی از مصرف مواد یا دارو بوده است؟",
       "question_type": "boolean",
       "order": 52,
       "is_required": true,
@@ -483,40 +482,489 @@
     },
     {
       "id": "A53",
-      "text": "آیا بیمار در حال حاضر دچار هیپومانیا است؟",
+      "text": "جمع‌بندی درمانگر: آیا ملاک‌های دوره هیپومانیا برآورده شده است؟",
       "question_type": "boolean",
       "order": 53,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A54",
+      "text": "بررسی مانیای گذشته: آیا تا به حال در گذشته دوره‌ای بوده که احساس کنید بسیار عالی، «بالا» یا روی ابرها هستید (یا به شدت تحریک‌پذیر و خشمگین باشید)، به طوری که دیگران متوجه تغییر شما شوند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 54,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A55",
+      "text": "آیا این حالت حداقل یک هفته طول کشید؟ (یا اگر کمتر طول کشید، آیا منجر به بستری شدن در بیمارستان شد؟)",
+      "question_type": "boolean",
+      "order": 55,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A56",
+      "text": "در آن دوره، آیا احساس خودبزرگ‌بینی یا اعتماد به نفس کاذب داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 56,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A57",
+      "text": "در آن دوره، آیا نیاز شما به خواب کاهش یافته بود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 57,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A58",
+      "text": "در آن دوره، آیا بیشتر از حد معمول پرحرف شده بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 58,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A59",
+      "text": "آیا پرش افکار داشتید یا احساس می‌کردید افکارتان در حال مسابقه دادن هستند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 59,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A60",
+      "text": "آیا به شدت حواس‌پرت شده بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 60,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A61",
+      "text": "آیا فعالیت‌های هدفمند شما افزایش یافته بود یا دچار بی‌قراری شدید فیزیکی شده بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 61,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A62",
+      "text": "آیا بیش از حد درگیر فعالیت‌های پرخطر یا آسیب‌زا شدید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 62,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A63",
+      "text": "آیا حداقل سه مورد از علائم بالا (یا چهار مورد در صورت خلق فقط تحریک‌پذیر) وجود داشت؟",
+      "question_type": "boolean",
+      "order": 63,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A64",
+      "text": "آیا این اختلال خلقی باعث افت شدید عملکرد شغلی یا اجتماعی شد یا نیاز به بستری شدن داشت؟",
+      "question_type": "boolean",
+      "order": 64,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A65",
+      "text": "کدگذاری درمانگر: آیا این دوره مانیای گذشته مستقیماً ناشی از مصرف مواد یا یک بیماری پزشکی نبوده است؟ (اگر نبوده، تشخیص مانیا تایید می‌شود)",
+      "question_type": "boolean",
+      "order": 65,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A66",
+      "text": "بررسی هیپومانیای گذشته: آیا آن دوره خلق بالا یا تحریک‌پذیر، حداقل ۴ روز طول کشید اما شدت آن به اندازه مانیا نبود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 66,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A67",
+      "text": "علائم هیپومانیای گذشته - خودبزرگ‌بینی؟",
+      "question_type": "boolean",
+      "order": 67,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A68",
+      "text": "کاهش نیاز به خواب؟",
+      "question_type": "boolean",
+      "order": 68,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A69",
+      "text": "پرحرفی؟",
+      "question_type": "boolean",
+      "order": 69,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A70",
+      "text": "پرش افکار؟",
+      "question_type": "boolean",
+      "order": 70,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A71",
+      "text": "حواس‌پرتی؟",
+      "question_type": "boolean",
+      "order": 71,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A72",
+      "text": "افزایش فعالیت هدفمند یا بی‌قراری؟",
+      "question_type": "boolean",
+      "order": 72,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A73",
+      "text": "درگیری در فعالیت‌های پرخطر؟",
+      "question_type": "boolean",
+      "order": 73,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A74",
+      "text": "آیا این دوره با تغییر واضح در عملکرد فرد که برای او در حالت بی‌علامتی غیرمعمول است، همراه بود؟",
+      "question_type": "boolean",
+      "order": 74,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A75",
+      "text": "آیا این تغییرات در خلق و عملکرد توسط دیگران قابل مشاهده بود؟",
+      "question_type": "boolean",
+      "order": 75,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A76",
+      "text": "آیا این دوره آن‌قدر شدید نبود که باعث افت جدی عملکرد یا بستری شدن شود؟",
+      "question_type": "boolean",
+      "order": 76,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A77",
+      "text": "کدگذاری درمانگر: آیا این دوره هیپومانیای گذشته مستقیماً ناشی از مصرف مواد یا یک بیماری پزشکی نبوده است؟ (تایید هیپومانیا)",
+      "question_type": "boolean",
+      "order": 77,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A78",
+      "text": "بررسی اختلال افسردگی مداوم (Persistent Depressive Disorder): در طول ۲ سال گذشته، آیا در بیشترِ روزها و بیشتر از نیمی از زمان‌ها، احساس افسردگی داشته‌اید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "order": 78,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A79",
+      "text": "در طول این دوره‌های افسردگی طولانی، آیا دچار کم‌اشتهایی یا پرخوری بوده‌اید؟",
+      "question_type": "boolean",
+      "order": 79,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A80",
+      "text": "آیا دچار بی‌خوابی یا پرخوابی بوده‌اید؟",
+      "question_type": "boolean",
+      "order": 80,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A81",
+      "text": "آیا احساس خستگی زیاد یا انرژی کم داشته‌اید؟",
+      "question_type": "boolean",
+      "order": 81,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A82",
+      "text": "آیا احساس کاهش اعتماد به نفس (احساس بی‌ارزشی) داشته‌اید؟",
+      "question_type": "boolean",
+      "order": 82,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A83",
+      "text": "آیا در تمرکز کردن یا تصمیم‌گیری مشکل داشته‌اید؟",
+      "question_type": "boolean",
+      "order": 83,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A84",
+      "text": "آیا احساس ناامیدی داشته‌اید؟",
+      "question_type": "boolean",
+      "order": 84,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A85",
+      "text": "آیا حداقل دو مورد از علائم بالا همزمان با خلق افسردگی وجود داشته است؟",
+      "question_type": "boolean",
+      "order": 85,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A86",
+      "text": "در طول این ۲ سال، آیا هرگز دوره‌ای طولانی‌تر از ۲ ماه بوده است که شما هیچ‌کدام از این علائم را نداشته باشید؟",
+      "question_type": "boolean",
+      "order": 86,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A87",
+      "text": "کدگذاری درمانگر: آیا مراجع هرگز دوره مانیا یا هیپومانیا نداشته است؟",
+      "question_type": "boolean",
+      "order": 87,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A88",
+      "text": "آیا این علائم با یک اختلال سایکوتیک مداوم (مانند اسکیزوفرنی) بهتر توجیه نمی‌شود؟",
+      "question_type": "boolean",
+      "order": 88,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A89",
+      "text": "آیا این علائم ناشی از یک ماده یا بیماری پزشکی نیست؟",
+      "question_type": "boolean",
+      "order": 89,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A90",
+      "text": "آیا این علائم باعث پریشانی بالینی یا افت عملکرد قابل توجه در زندگی شده‌اند؟ (اگر بله، تشخیص Persistent Depressive Disorder تایید می‌شود)",
+      "question_type": "boolean",
+      "order": 90,
       "is_required": true,
       "has_jump_logic": false
     }
   ],
   "jump_rules": [
     {
-      "from_question": "A1",
-      "condition": "answer == 'no'",
-      "to_question": "A29",
+      "from_question": "A2",
+      "condition": "answer == false",
+      "to_question": "A15",
       "condition_type": "boolean",
       "metadata": {
-        "expected_value": false
+        "expected_value": false,
+        "note": "Jump to A15 if both A1 and A2 are false."
       }
     },
     {
-      "from_question": "A29",
-      "condition": "answer == 'no'",
+      "from_question": "A9",
+      "condition": "symptoms_count < 5",
+      "to_question": "A15",
+      "condition_type": "custom",
+      "metadata": {
+        "expected_value": null,
+        "note": "Jump to A15 if total positive criteria in A1-A9 is less than 5."
+      }
+    },
+    {
+      "from_question": "A11",
+      "condition": "answer == true",
+      "to_question": "A15",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "If symptoms are caused by a general medical condition, jump to A15."
+      }
+    },
+    {
+      "from_question": "A12",
+      "condition": "answer == true",
+      "to_question": "A15",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "If symptoms are caused by substance use, jump to A15."
+      }
+    },
+    {
+      "from_question": "A15",
+      "condition": "answer == false",
+      "to_question": "A29",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no history of past depression, skip the rest of depression module and move to Mania (A29)."
+      }
+    },
+    {
+      "from_question": "A30",
+      "condition": "answer == false",
       "to_question": "A41",
       "condition_type": "boolean",
       "metadata": {
-        "expected_value": false
+        "expected_value": false,
+        "note": "Jump to A41 (Hypomania) if both A29 and A30 are false."
+      }
+    },
+    {
+      "from_question": "A37",
+      "condition": "symptoms_count < 3",
+      "to_question": "A41",
+      "condition_type": "custom",
+      "metadata": {
+        "expected_value": null,
+        "note": "Jump to A41 if total positive criteria in A31-A37 is not sufficient for Mania."
+      }
+    },
+    {
+      "from_question": "A39",
+      "condition": "answer == true",
+      "to_question": "A41",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "If Mania is caused by substance, skip to Hypomania evaluation."
       }
     },
     {
       "from_question": "A41",
-      "condition": "answer == 'no'",
+      "condition": "answer == false",
       "to_question": null,
       "condition_type": "boolean",
       "metadata": {
-        "expected_value": false
+        "expected_value": false,
+        "note": "If A41 is false and A42 is false, end Mood module and proceed to next diagnostic block."
+      }
+    },
+    {
+      "from_question": "A54",
+      "condition": "answer == false",
+      "to_question": "A78",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no past elevated/irritable mood, jump to Persistent Depressive Disorder (A78)."
+      }
+    },
+    {
+      "from_question": "A55",
+      "condition": "answer == false",
+      "to_question": "A66",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If duration < 1 week and no hospitalization, it is not Mania. Jump to check for Hypomania (A66)."
+      }
+    },
+    {
+      "from_question": "A63",
+      "condition": "answer == false",
+      "to_question": "A66",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If insufficient criteria for Mania, jump to check Hypomania (A66)."
+      }
+    },
+    {
+      "from_question": "A66",
+      "condition": "answer == false",
+      "to_question": "A78",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no 4-day elevated mood period, skip Hypomania and jump to A78."
+      }
+    },
+    {
+      "from_question": "A74",
+      "condition": "answer == false",
+      "to_question": "A78",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no unequivocal change in functioning, it's not Hypomania. Jump to A78."
+      }
+    },
+    {
+      "from_question": "A78",
+      "condition": "answer == false",
+      "to_question": "B1",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no chronic depressed mood for 2 years, END Module A and jump to Module B (Psychotic Symptoms)."
+      }
+    },
+    {
+      "from_question": "A85",
+      "condition": "answer == false",
+      "to_question": "B1",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If < 2 criteria met for Persistent Depression, END Module A and jump to Module B."
       }
     }
   ]
 }
+

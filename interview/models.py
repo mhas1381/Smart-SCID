@@ -25,6 +25,10 @@ class Interview(models.Model):
     completed_at = models.DateTimeField(null=True, blank=True)
     current_question = models.ForeignKey('Question', on_delete=models.SET_NULL, null=True, blank=True, related_name='current_in_interviews')
     
+    # ===== Timestamps =====
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
     class Meta:
         ordering = ['-started_at']
     
@@ -42,6 +46,10 @@ class InterviewModule(models.Model):
     version = models.CharField(max_length=20, default='1.0')
     is_active = models.BooleanField(default=True)
     order = models.IntegerField(default=0)
+    
+    # ===== Timestamps =====
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
         ordering = ['order']
