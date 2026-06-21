@@ -9,7 +9,7 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError as DjangoValidationError
 from django.contrib.auth.password_validation import validate_password as django_validate_password
 from drf_spectacular.utils import extend_schema_field
-from ...models import User, UserProfile, Patient, PatientNote, Overview
+from accounts.models import User, UserProfile, Patient, PatientNote, Overview
 import re
 import logging
 
@@ -369,6 +369,7 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     full_name = serializers.SerializerMethodField()
     created_by_name = serializers.SerializerMethodField()
+    age = serializers.SerializerMethodField()  # ← اضافه شد
 
     class Meta:
         model = Patient
@@ -379,6 +380,7 @@ class PatientListSerializer(serializers.ModelSerializer):
             'phone_number',
             'gender',
             'birth_date',
+            'age',  # ← اضافه شد
             'created_by_name',
             'created_at',
             'is_active',
@@ -389,6 +391,16 @@ class PatientListSerializer(serializers.ModelSerializer):
 
     def get_created_by_name(self, obj):
         return obj.created_by.get_full_name()
+
+    def get_age(self, obj):
+        """Calculate age from birth_date"""
+        if obj.birth_date:
+            from django.utils import timezone
+            today = timezone.now().date()
+            return today.year - obj.birth_date.year - (
+                (today.month, today.day) < (obj.birth_date.month, obj.birth_date.day)
+            )
+        return None
 
 
 class PatientDetailSerializer(serializers.ModelSerializer):
@@ -433,7 +445,6 @@ class PatientDetailSerializer(serializers.ModelSerializer):
             'created_at',
             'updated_at',
             'full_name',
-            'age',
         ]
 
     def get_full_name(self, obj):
@@ -569,28 +580,22 @@ class OverviewSerializer(serializers.ModelSerializer):
         model = Overview
         fields = [
             'id', 'patient', 'clinician', 'clinician_name', 'patient_name', 'message',
-            # Demographic (Complementary to Patient)
             'living_with', 'living_place', 'occupation_history',
             'employment_status', 'part_time_hours', 'part_time_reason',
             'unemployment_reason', 'disability_payments', 'disability_reason',
             'unable_to_work_history', 'unable_to_work_reason',
-            # History of Current Illness
             'presenting_problem', 'onset_circumstances', 'last_feeling_ok',
-            # Treatment History
             'first_treatment_age', 'first_treatment_reason',
             'psychiatric_hospitalization', 'hospitalization_count',
             'hospitalization_reason', 'substance_treatment', 'treatment_history',
-            # Medical Problems
             'physical_health', 'medical_hospitalization',
             'medical_hospitalization_reason', 'current_medications',
-            # Suicidal Ideation & Behavior
             'wished_dead', 'wished_dead_details', 'thoughts_past_week',
             'strong_urge_past_week', 'strong_urge_details',
             'intention_past_week', 'intention_details',
             'plan_past_week', 'plan_details',
             'suicide_attempt', 'self_harm', 'suicide_attempt_details',
             'most_severe_attempt', 'attempt_past_week',
-            # Other Current Problems
             'other_problems', 'mood_description', 'alcohol_use',
             'alcohol_with_whom', 'drug_use',
             'created_at', 'updated_at'

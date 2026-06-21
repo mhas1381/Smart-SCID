@@ -379,12 +379,14 @@ class PatientAPITest(TestCase):
         Patient.objects.create(
             first_name="علی",
             last_name="محمدی",
-            created_by=self.user
+            created_by=self.user,
+            birth_date="1990-01-15",
         )
         Patient.objects.create(
             first_name="سارا",
             last_name="احمدی",
-            created_by=self.user
+            created_by=self.user,
+            birth_date="1990-01-15",
         )
 
         response = self.client.get(self.patients_url)
@@ -430,17 +432,18 @@ class PatientAPITest(TestCase):
         patient = Patient.objects.create(
             first_name="علی",
             last_name="محمدی",
-            created_by=self.user
+            created_by=self.user,
+            birth_date="1990-01-15",  # ← اضافه شد
         )
         response = self.client.get(f"{self.patients_url}{patient.id}/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['first_name'], "علی")
         self.assertEqual(response.data['last_name'], "محمدی")
         self.assertEqual(response.data['full_name'], "علی محمدی")
-        # Handle case where user might not have first/last name
         expected_name = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.phone_number
         self.assertEqual(response.data['created_by_name'], expected_name)
-        self.assertIsNotNone(response.data.get('age'))
+        # age now returns a value since birth_date is set
+        self.assertEqual(response.data.get('age'), 36)  # 2026 - 1990 = 36
 
     def test_update_patient(self):
         """Test updating a patient."""
