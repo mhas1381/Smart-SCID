@@ -31,7 +31,6 @@ INSTALLED_APPS = [
     
     # Local apps
     'accounts',
-    'common',
     'core',
     'diagnosis',
     'interview',

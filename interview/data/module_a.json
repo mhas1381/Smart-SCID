@@ -1,0 +1,522 @@
+{
+  "module": {
+    "name": "Module A - Mood Episodes",
+    "description": "Structured Clinical Interview for DSM-5 - Mood Episodes Module (Depression, Mania, Hypomania)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 1
+  },
+  "questions": [
+    {
+      "id": "A1",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا احساس افسردگی، غم‌گینی یا بی‌حالی داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A2",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی علاقه یا لذت را در فعالیت‌هایی که معمولاً لذت‌بخش بودند، از دست دادید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A3",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی وزن خود را کاهش دادید یا اشتها را از دست دادید (بدون رژیم لاغری) یا به طور قابل توجهی وزن یا اشتها را افزایش دادید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A4",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی بی‌خوابی یا پرخوابی داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A5",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی خستگی یا بی‌انرژی بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A6",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا احساس بی‌ارزشی یا بیش از حد گناهکار بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A7",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی توانایی فکر کردن، تمرکز کردن یا تصمیم‌گیری را کاهش دادید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A8",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی سرعت حرکت خود را کاهش دادید یا به ندرت بیشتر از معمول تحریک‌پذیر، بی‌قرار یا نگران بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A9",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا به طور قابل توجهی مرده بودید (افکار مرگ) یا خودکشی فکر کرده‌اید (بدون برنامه‌ریزی) یا خودکشی برنامه‌ریزی کرده‌اید یا اقدام به خودکشی کرده‌اید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A10",
+      "text": "در طول بدترین دوره دو هفته‌ای، آیا علائم به طور قابل توجهی عملکرد شما در کار، در موقعیت‌های اجتماعی یا در فعالیت‌های تفریحی را مختل کردند؟",
+      "question_type": "boolean",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A11",
+      "text": "علائم به طور قابل توجهی شامل یک بیماری پزشکی عمومی نبودند؟",
+      "question_type": "boolean",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A12",
+      "text": "علائم به طور قابل توجهی ناشی از یک ماده یا یک دارو نبودند؟",
+      "question_type": "boolean",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A13",
+      "text": "آیا یک بیماری دوگانه (مانند اختلالات خلقی، اسکیزوفرنی، اختلال شخصیت، اختلال وسواسی اجباری، اختلال اضطراب، اختلال خوراک، اختلال مواد) وجود داشت؟",
+      "question_type": "boolean",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A14",
+      "text": "آیا علائم به طور قابل توجهی نتیجه یک فقدان عمیق یا یک ضربه به سیستم عصبی مرکزی نبودند؟",
+      "question_type": "boolean",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A15",
+      "text": "آیا علائم به طور قابل توجهی نتیجه یک فقدان عمیق یا یک ضربه به سیستم عصبی مرکزی نبودند؟",
+      "question_type": "boolean",
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A16",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A17",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A18",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 18,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A19",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A20",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A21",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A22",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A23",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 23,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A24",
+      "text": "آیا بیمار در طول دوره دو هفته‌ای علائم افسردگی را تجربه کرده است؟",
+      "question_type": "boolean",
+      "order": 24,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A25",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 25,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A26",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 26,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A27",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 27,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A28",
+      "text": "آیا بیمار در حال حاضر دچار اختلال افسردگی اساسی است؟",
+      "question_type": "boolean",
+      "order": 28,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A29",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی احساس خلق بالا، انبساط یا بهبود خلق نسبت به حالت طبیعی خود داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 29,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A30",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی عصبی، تحریک‌پذیر یا بیش از حد فعال بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 30,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A31",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی ابرازخنده بیش از حد داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 31,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A32",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی بیش از حد حرف زدید یا بیش از usual صحبت کردید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 32,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A33",
+      "text": "در طول دوره یک هفته‌ای، آیا افکار شفاف یا افکار با حرکت سریع داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 33,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A34",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی حواس پرت بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 34,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A35",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی افزایش فعالیت هدفمند (کار، اجتماعی یا جنسی) داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 35,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A36",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی فعالیت‌های هدفمند را بیش از usual تکرار کردید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 36,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A37",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی بیش از usual به فعالیت‌های لذت‌بخش پرداختید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 37,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A38",
+      "text": "در طول دوره یک هفته‌ای، آیا به طور قابل توجهی درگیر فعالیت‌های پرخطر یا بی‌فکر بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 38,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A39",
+      "text": "آیا بیمار در حال حاضر دچار مانیا است؟",
+      "question_type": "boolean",
+      "order": 39,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A40",
+      "text": "آیا بیمار در حال حاضر دچار مانیا است؟",
+      "question_type": "boolean",
+      "order": 40,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A41",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی احساس خلق بالا، انبساط یا بهبود خلق نسبت به حالت طبیعی خود داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 41,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "A42",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی عصبی، تحریک‌پذیر یا بیش از حد فعال بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 42,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A43",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی ابرازخنده بیش از حد داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 43,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A44",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی بیش از usual حرف زدید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 44,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A45",
+      "text": "آیا در طول دوره چهار روزه افکار شفاف یا افکار با حرکت سریع داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 45,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A46",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی حواس پرت بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 46,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A47",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی افزایش فعالیت هدفمند داشتید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 47,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A48",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی فعالیت‌های هدفمند را بیش از usual تکرار کردید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 48,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A49",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی به فعالیت‌های لذت‌بخش پرداختید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 49,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A50",
+      "text": "آیا در طول دوره چهار روزه به طور قابل توجهی درگیر فعالیت‌های پرخطر بودید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 50,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A51",
+      "text": "آیا بیمار در حال حاضر دچار هیپومانیا است؟",
+      "question_type": "boolean",
+      "order": 51,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A52",
+      "text": "آیا بیمار در حال حاضر دچار هیپومانیا است؟",
+      "question_type": "boolean",
+      "order": 52,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "A53",
+      "text": "آیا بیمار در حال حاضر دچار هیپومانیا است؟",
+      "question_type": "boolean",
+      "order": 53,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "A1",
+      "condition": "answer == 'no'",
+      "to_question": "A29",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false
+      }
+    },
+    {
+      "from_question": "A29",
+      "condition": "answer == 'no'",
+      "to_question": "A41",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false
+      }
+    },
+    {
+      "from_question": "A41",
+      "condition": "answer == 'no'",
+      "to_question": null,
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false
+      }
+    }
+  ]
+}

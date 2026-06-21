@@ -362,11 +362,17 @@ class PatientAPITest(TestCase):
             print(f"Status: {response.status_code}")
             print(f"Data: {response.data}")
             print("="*50 + "\n")
-        
+
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data.get('first_name'), "علی")
         self.assertEqual(response.data.get('last_name'), "محمدی")
         self.assertIsNotNone(response.data.get('patient_code'))
+        print(f"User full name: {self.user.get_full_name()}")
+        print(f"Response created_by_name: {response.data.get('created_by_name')}")
+        # Handle case where user might not have first/last name
+        expected_name = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.phone_number
+        self.assertEqual(response.data.get('created_by_name'), expected_name)
+        self.assertEqual(response.data.get('full_name'), "علی محمدی")
 
     def test_list_patients(self):
         """Test listing patients."""
@@ -385,6 +391,13 @@ class PatientAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'], 2)
         self.assertEqual(len(response.data['results']), 2)
+        
+        # Test new serializer fields
+        for patient_data in response.data['results']:
+            self.assertIn('full_name', patient_data)
+            self.assertIn('created_by_name', patient_data)
+            # Age might be None if birth_date is not set
+            self.assertIn('age', patient_data)
 
     def test_list_patients_only_own(self):
         """Test user can only see their own patients."""
@@ -406,7 +419,11 @@ class PatientAPITest(TestCase):
         response = self.client.get(self.patients_url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['count'], 1)
+        self.assertEqual(len(response.data['results']), 1)
         self.assertEqual(response.data['results'][0].get('full_name'), "علی محمدی")
+        # Handle case where user might not have first/last name
+        expected_name = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.phone_number
+        self.assertEqual(response.data['results'][0].get('created_by_name'), expected_name)
 
     def test_get_patient_detail(self):
         """Test getting patient details."""
@@ -419,6 +436,11 @@ class PatientAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data['first_name'], "علی")
         self.assertEqual(response.data['last_name'], "محمدی")
+        self.assertEqual(response.data['full_name'], "علی محمدی")
+        # Handle case where user might not have first/last name
+        expected_name = f"{self.user.first_name} {self.user.last_name}".strip() or self.user.phone_number
+        self.assertEqual(response.data['created_by_name'], expected_name)
+        self.assertIsNotNone(response.data.get('age'))
 
     def test_update_patient(self):
         """Test updating a patient."""
