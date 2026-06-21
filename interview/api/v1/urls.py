@@ -11,6 +11,10 @@ from .views import (
     InterviewPauseView,
     InterviewResumeView,
     InterviewSummaryView,
+    InterviewAnswerListView,
+    AnswerDetailView,
+    JumpRuleListView,
+    JumpRuleDetailView,
 )
 
 app_name = 'interviews'
@@ -32,4 +36,12 @@ urlpatterns = [
     path('interviews/<uuid:id>/pause/', InterviewPauseView.as_view(), name='interview-pause'),
     path('interviews/<uuid:id>/resume/', InterviewResumeView.as_view(), name='interview-resume'),
     path('interviews/<uuid:id>/summary/', InterviewSummaryView.as_view(), name='interview-summary'),
+
+    # Answers
+    path('interviews/<uuid:interview_id>/answers/', InterviewAnswerListView.as_view(), name='interview-answers'),
+    path('answers/<int:id>/', AnswerDetailView.as_view(), name='answer-detail'),
+
+    # Jump Rules
+    path('jump-rules/', JumpRuleListView.as_view(), name='jump-rule-list'),
+    path('jump-rules/<int:id>/', JumpRuleDetailView.as_view(), name='jump-rule-detail'),
 ]

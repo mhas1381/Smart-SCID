@@ -13,13 +13,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'phone_number', 'email', 'first_name', 'last_name', 
+            'id', 'phone_number', 'email', 'first_name', 'last_name',
             'full_name', 'is_verified', 'is_active', 'is_staff', 'is_superuser',
-            'created_date', 'updated_at', 'age'
+            'created_date', 'updated_date', 'age'
         ]
         read_only_fields = [
-            'id', 'is_verified', 'is_active', 'is_staff', 
-            'is_superuser', 'created_date', 'updated_at'
+            'id', 'is_verified', 'is_active', 'is_staff',
+            'is_superuser', 'created_date', 'updated_date'
         ]
 
     def get_age(self, obj):
@@ -61,19 +61,23 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
 class PatientListSerializer(serializers.ModelSerializer):
     """Serializer for listing patients with basic information"""
-    
+
     full_name = serializers.CharField(source='get_full_name', read_only=True)
     age = serializers.SerializerMethodField()
     created_by_name = serializers.CharField(source='created_by.get_full_name', read_only=True)
-    
+
     class Meta:
         model = Patient
         fields = [
             'id', 'patient_code', 'first_name', 'last_name', 'full_name',
-            'phone_number', 'email', 'age', 'gender', 'created_by', 
+            'phone_number', 'email', 'age', 'gender', 'created_by',
             'created_by_name', 'created_at', 'is_active'
         ]
         read_only_fields = ['id', 'patient_code', 'created_by', 'created_at']
+
+    def get_age(self, obj):
+        """Calculate patient age"""
+        return obj.get_age()
 
 
 class PatientDetailSerializer(serializers.ModelSerializer):

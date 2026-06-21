@@ -137,12 +137,21 @@ class Answer(models.Model):
     
     @property
     def boolean_value(self):
-        return self.value.get('boolean', False)
-    
+        if isinstance(self.value, dict):
+            return self.value.get('boolean', False)
+        return bool(self.value)
+
     @property
     def text_value(self):
-        return self.value.get('text', '')
-    
+        if isinstance(self.value, dict):
+            return self.value.get('text', '')
+        return str(self.value) if self.value is not None else ''
+
     @property
     def number_value(self):
-        return self.value.get('number', 0)
+        if isinstance(self.value, dict):
+            return self.value.get('number', 0)
+        try:
+            return float(self.value)
+        except (TypeError, ValueError):
+            return 0

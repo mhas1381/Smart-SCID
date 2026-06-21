@@ -273,7 +273,8 @@ class InterviewAPITests(APITestCase):
             patient=self.patient,
             clinician=self.clinician,
             module=self.module,
-            status='paused'
+            status='paused',
+            current_question=self.q1
         )
 
         response = self.client.post(f'/api/interviews/interviews/{interview.id}/resume/')

@@ -250,13 +250,17 @@ class InterviewProgressSerializer(serializers.Serializer):
     def validate_answer_value(self, value):
         """Validate answer value based on answer type"""
         answer_type = self.initial_data.get('answer_type')
-        
+
+        # Handle nested value like {'boolean': True}
+        if isinstance(value, dict) and answer_type in value:
+            value = value[answer_type]
+
         if answer_type == 'boolean' and not isinstance(value, bool):
             raise ValidationError("Boolean answer must be true or false")
-        
+
         if answer_type == 'number' and not isinstance(value, (int, float)):
             raise ValidationError("Number answer must be a numeric value")
-        
+
         if answer_type == 'date':
             try:
                 if isinstance(value, str):
@@ -267,7 +271,7 @@ class InterviewProgressSerializer(serializers.Serializer):
                     raise ValidationError("Date must be in YYYY-MM-DD format")
             except ValueError:
                 raise ValidationError("Date must be in YYYY-MM-DD format")
-        
+
         return value
 
 

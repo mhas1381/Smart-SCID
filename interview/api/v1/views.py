@@ -20,6 +20,8 @@ from .serializers import (
     InterviewSummarySerializer,
     AnswerListSerializer,
     AnswerDetailSerializer,
+    JumpRuleListSerializer,
+    JumpRuleDetailSerializer,
 )
 from .openapi.schema import (
     module_list_schema,
@@ -113,8 +115,11 @@ class InterviewListView(generics.ListAPIView):
 )
 class InterviewDetailView(generics.RetrieveAPIView):
     permission_classes = [IsAuthenticated]
-    serializer_class = InterviewListSerializer
-    queryset = Interview.objects.all()
+    serializer_class = InterviewDetailSerializer
+
+    def get_queryset(self):
+        return Interview.objects.all()
+
     lookup_field = 'id'
 
 
@@ -207,14 +212,14 @@ class InterviewProgressView(APIView):
             question=question,
             defaults={
                 'answer_type': serializer.validated_data['answer_type'],
-                'value': serializer.validated_data['answer_value'],
+                'value': self._extract_answer_value(serializer),
                 'notes': serializer.validated_data.get('notes', '')
             }
         )
 
         if not created:
             answer.answer_type = serializer.validated_data['answer_type']
-            answer.value = serializer.validated_data['answer_value']
+            answer.value = self._extract_answer_value(serializer)
             answer.notes = serializer.validated_data.get('notes', '')
             answer.save()
 
@@ -242,8 +247,19 @@ class InterviewProgressView(APIView):
             'interview_status': 'completed',
             'answered_questions': interview.answers.count(),
             'total_questions': interview.module.questions.count(),
-            'diagnosis_result': self._calculate_diagnosis(interview)
+            'diagnosis_result': self._calculate_diagnosis(interview),
+            'patient_name': interview.patient.get_full_name(),
+            'clinician_name': interview.clinician.get_full_name(),
+            'module_name': interview.module.name,
         })
+
+    def _extract_answer_value(self, serializer):
+        """Extract the actual answer value, unwrapping nested dicts like {'boolean': True}"""
+        value = serializer.validated_data['answer_value']
+        answer_type = serializer.validated_data['answer_type']
+        if isinstance(value, dict) and answer_type in value:
+            return value[answer_type]
+        return value
 
     def _get_next_question(self, interview, current_question):
         jump_rules = JumpRule.objects.filter(from_question=current_question)
@@ -451,5 +467,54 @@ class InterviewSummaryView(APIView):
             'completion_percentage': (
                 (interview.answers.count() / interview.module.questions.count()) * 100
                 if interview.module.questions.count() > 0 else 0
-            )
+            ),
+            'duration': self._calculate_duration(interview),
         })
+
+    def _calculate_duration(self, interview):
+        """Calculate interview duration in minutes"""
+        if interview.started_at and interview.completed_at:
+            duration = interview.completed_at - interview.started_at
+            return duration.total_seconds() / 60  # Return in minutes
+        return None
+
+
+# ============================================================
+# 📝 ANSWER VIEWS
+# ============================================================
+
+class InterviewAnswerListView(generics.ListAPIView):
+    """List answers for a specific interview"""
+    permission_classes = [IsAuthenticated]
+    serializer_class = AnswerListSerializer
+
+    def get_queryset(self):
+        interview_id = self.kwargs['interview_id']
+        return Answer.objects.filter(interview_id=interview_id)
+
+
+class AnswerDetailView(generics.RetrieveAPIView):
+    """Retrieve a specific answer"""
+    permission_classes = [IsAuthenticated]
+    serializer_class = AnswerDetailSerializer
+    queryset = Answer.objects.all()
+    lookup_field = 'id'
+
+
+# ============================================================
+# 🔄 JUMP RULE VIEWS
+# ============================================================
+
+class JumpRuleListView(generics.ListAPIView):
+    """List all jump rules"""
+    permission_classes = [IsAuthenticated]
+    serializer_class = JumpRuleListSerializer
+    queryset = JumpRule.objects.all()
+
+
+class JumpRuleDetailView(generics.RetrieveAPIView):
+    """Retrieve a specific jump rule"""
+    permission_classes = [IsAuthenticated]
+    serializer_class = JumpRuleDetailSerializer
+    queryset = JumpRule.objects.all()
+    lookup_field = 'id'
