@@ -4,7 +4,17 @@
       "Bash(venv\\scripts\\python *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git push)"
+      "Bash(git push)",
+      "Bash(venv\\scripts\\pip *)",
+      "Bash(dir *)",
+      "Bash(del *)",
+      "Bash(findstr *)",
+      "Bash(type *)",
+      "Bash(uv *)",
+      "Bash(irm *)",
+      "Bash(iex)",
+      "Bash(set *)",
+      "Bash(rmdir *)"
     ]
   },
   "$version": 4

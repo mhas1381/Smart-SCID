@@ -32,10 +32,7 @@ INSTALLED_APPS = [
     # Local apps
     'accounts',
     'core',
-    'diagnosis',
     'interview',
-    'patients',
-    'interview_sessions',
 ]
 
 # ============ MIDDLEWARE ============
@@ -55,7 +52,7 @@ ROOT_URLCONF = 'core.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -96,7 +93,8 @@ USE_TZ = True
 
 # ============ STATIC & MEDIA FILES ============
 STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'static'
+STATIC_ROOT = BASE_DIR / 'collected_static'
+STATICFILES_DIRS = [BASE_DIR / 'static']
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -210,24 +208,6 @@ LOGGING = {
         },
         # Custom app - interview
         'interview': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        # Custom app - diagnosis
-        'diagnosis': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        # Custom app - patients
-        'patients': {
-            'handlers': ['console', 'file'],
-            'level': 'DEBUG',
-            'propagate': False,
-        },
-        # Custom app - sessions
-        'sessions': {
             'handlers': ['console', 'file'],
             'level': 'DEBUG',
             'propagate': False,
