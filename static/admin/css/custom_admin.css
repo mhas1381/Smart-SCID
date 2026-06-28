@@ -228,15 +228,28 @@ body {
     color: rgba(255,255,255,0.4) !important;
 }
 
-#nav-sidebar .module {
+/* Force ALL sidebar child elements to be transparent */
+#nav-sidebar .module,
+#nav-sidebar .module table,
+#nav-sidebar .module caption,
+#nav-sidebar .module thead,
+#nav-sidebar .module tbody,
+#nav-sidebar .module tr,
+#nav-sidebar .module th,
+#nav-sidebar .module td {
     background: transparent !important;
+    background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
+}
+
+#nav-sidebar .module {
     margin: 0 !important;
 }
 
 #nav-sidebar .module table {
     width: 100% !important;
+    border-collapse: collapse !important;
 }
 
 #nav-sidebar .module caption {
