@@ -807,21 +807,23 @@
   "jump_rules": [
     {
       "from_question": "A2",
-      "condition": "answer == false",
+      "condition": "criteria_count < 1",
       "to_question": "A15",
-      "condition_type": "boolean",
+      "condition_type": "criteria_count",
       "metadata": {
-        "expected_value": false,
-        "note": "Jump to A15 if both A1 and A2 are false."
+        "question_ids": ["A1", "A2"],
+        "min_count": 1,
+        "note": "Jump to A15 if both A1 and A2 are false (need at least 1 of the 2 core criteria)."
       }
     },
     {
       "from_question": "A9",
-      "condition": "symptoms_count < 5",
+      "condition": "criteria_count < 5",
       "to_question": "A15",
-      "condition_type": "custom",
+      "condition_type": "criteria_count",
       "metadata": {
-        "expected_value": null,
+        "question_ids": ["A1", "A2", "A3", "A4", "A5", "A6", "A7", "A8", "A9"],
+        "min_count": 5,
         "note": "Jump to A15 if total positive criteria in A1-A9 is less than 5."
       }
     },
@@ -867,11 +869,12 @@
     },
     {
       "from_question": "A37",
-      "condition": "symptoms_count < 3",
+      "condition": "criteria_count < 3",
       "to_question": "A41",
-      "condition_type": "custom",
+      "condition_type": "criteria_count",
       "metadata": {
-        "expected_value": null,
+        "question_ids": ["A31", "A32", "A33", "A34", "A35", "A36", "A37"],
+        "min_count": 3,
         "note": "Jump to A41 if total positive criteria in A31-A37 is not sufficient for Mania."
       }
     },

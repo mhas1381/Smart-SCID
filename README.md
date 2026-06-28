@@ -1,180 +1,123 @@
-
-
-```markdown
 # 🧠 Smart SCID
 
-**توسعه نرم افزاری مصاحبه (Software Development of the Interview)**
+**توسعه نرم‌افزاری مصاحبه (Software Development of the Interview)**
 
-> A comprehensive web-based platform for conducting SCID-5-CV interviews, managing patients, and generating clinical diagnoses.
-
----
-
-## 📖 Overview
-
-Smart SCID is a Django-based web application designed to digitize the Structured Clinical Interview for DSM-5 Disorders (SCID-5-CV). It provides a modern, secure, and user-friendly interface for clinicians to conduct standardized diagnostic interviews, manage patient records, and track interview progress efficiently.
-
-### 🎯 Key Features
-
-| Feature | Description |
-|---------|-------------|
-| **🔐 Authentication** | Secure JWT-based authentication with OTP verification via SMS. |
-| **👤 User Management** | Role-based access control (Admin, Clinician, Researcher). |
-| **👥 Patient Management** | Complete CRUD operations with auto-generated unique, anonymized codes. |
-| **📋 SCID-5-CV Overview** | Persian-translated interview questions with structured data storage. |
-| **📝 Clinical Notes** | Add notes and clinical observations dynamically during interviews. |
-| **📊 Progress Tracking** | Monitor interview completion and status per diagnostic module. |
-| **📚 OpenAPI Documentation** | Full Swagger/ReDoc documentation with Persian descriptions. |
-| **🖥️ Admin Panel** | Customized Django admin with professional, role-based styling. |
-| **🧪 Testing** | Comprehensive test suite with 40+ passing tests ensuring reliability. |
+> A Django-based web platform that digitizes the SCID-5-CV (Structured Clinical Interview for DSM-5, Clinician Version) — providing clinicians with a guided, rule-driven diagnostic interview system.
 
 ---
 
-## 🔬 Research & Validation Methodology
+## 📖 What is Smart SCID?
 
-This software is being developed and validated as a rigorous academic and clinical tool. To ensure the diagnostic accuracy, reliability, and clinical utility of the platform compared to the traditional paper-and-pencil method, the system is being evaluated using a **hybrid sample of 100 cases**. This robust validation process ensures the software meets high clinical standards for real-world psychiatric and psychological assessment.
+Smart SCID transforms the paper-based SCID-5-CV interview into an interactive digital system. A clinician registers, creates a patient record, fills out the **Overview** section (demographics, treatment history, suicidal ideation, etc.), and then conducts structured diagnostic interviews module by module. The system enforces **skip logic** (jump rules) based on the patient's answers, automatically navigates the SCID-5 decision tree, and calculates preliminary diagnoses at the end of each module.
+
+All clinical content and questions are in **Persian (Farsi)**.
 
 ---
 
-## 🏗️ Architecture
+## 🔬 How It Works
 
-```text
+### The Interview Flow
+
+```
+Register/Login → Create Patient → Fill Overview → Start Module Interview → Answer Questions → Auto-Diagnosis
+```
+
+1. **Authentication**: Clinician registers with phone number + password, or logs in via OTP (SMS). JWT tokens are used for all subsequent API calls.
+
+2. **Patient Management**: Clinician creates patient records. Each patient gets an auto-generated anonymized code (`P-YYYYMM-XXXXXX`) to protect identity.
+
+3. **Overview (SCID-5-CV Introductory Section)**: Before starting the diagnostic modules, the clinician fills out the Overview — a comprehensive intake form covering:
+   - Demographics & living situation
+   - History of current illness
+   - Treatment history (medications, hospitalizations)
+   - Medical problems
+   - **Suicidal ideation & behavior** (with branching logic)
+   - Substance use & other current problems
+
+4. **Module Interview**: The clinician starts a module (e.g., Module A — Mood Episodes). The system presents questions one by one. After each answer, **jump rules** are evaluated to determine the next question — skipping irrelevant sections based on the SCID-5 decision tree.
+
+5. **Diagnosis Calculation**: When a module is completed, the system automatically evaluates the collected answers against DSM-5 criteria and returns a diagnosis result.
+
+### Jump Logic (Skip Rules)
+
+The core of the SCID-5 methodology. Each question can have conditional jump rules:
+
+```
+If patient answers "No" to A15 (past depression) → Skip to A29 (Mania section)
+If patient answers "Yes" to A11 (medical cause) → Skip to A15 (past depression check)
+```
+
+Jump rules support these condition types:
+- **boolean**: Direct true/false comparison
+- **multiple_choice**: Match against a specific choice value
+- **text**: Pattern matching in text answers
+- **range**: Numeric range checks
+- **criteria_count**: Count positive answers across a set of questions (e.g., "if fewer than 5 of A1–A9 are positive, skip")
+
+### Diagnosis Criteria (Module A — Mood Episodes)
+
+| Diagnosis | Rule |
+|-----------|------|
+| **Major Depressive Episode** | A1 (depressed mood) + ≥4 of A2–A9 (5 total criteria) |
+| **Manic Episode** | A29 (elevated mood) + ≥3 of A30–A38 (4 total criteria) |
+| **Hypomanic Episode** | A41 (elevated mood, 4+ days) + ≥3 of A42–A50 (4 total criteria) |
+
+---
+
+## 🏗️ Project Structure
+
+```
 smart_scid/
-├── accounts/              # User authentication, patients, overview, and notes
-│   ├── models.py          # User, UserProfile, Patient, Overview, PatientNote
-│   ├── api/v1/            # REST API endpoints & serializers
-│   └── admin.py           # Custom admin interface
-├── interviews/            # Core interview modules & skip logic (coming soon)
-├── diagnosis/             # Diagnostic algorithms & scoring (coming soon)
-├── core/                  # Project configuration & main settings
-└── utils/                 # Shared utilities (SMS integration, validators, etc.)
-
+├── accounts/                    # User auth, patients, overview, notes
+│   ├── models.py                # User, UserProfile, Patient, Overview, PatientNote
+│   ├── api/v1/
+│   │   ├── views.py             # Auth, patient, overview, notes API endpoints
+│   │   ├── serializers.py       # API serializers (registration, OTP, patients, overview)
+│   │   └── urls.py              # URL routing for accounts API
+│   ├── serializers.py           # Shared serializers (used by interview app)
+│   ├── admin.py                 # Custom admin panel configuration
+│   └── tests.py                 # 35 tests (auth, patients, overview, notes)
+│
+├── interview/                   # Interview engine & diagnostic modules
+│   ├── models.py                # Interview, InterviewModule, Question, JumpRule, Answer
+│   ├── api/v1/
+│   │   ├── views.py             # Module, question, interview lifecycle, diagnosis API
+│   │   ├── serializers.py       # Interview serializers
+│   │   └── urls.py              # URL routing for interview API
+│   ├── data/
+│   │   └── module_a.json        # Module A data: 90 questions + 15 jump rules
+│   ├── management/commands/
+│   │   └── load_interview_data.py   # Loads module data from JSON into database
+│   ├── admin.py                 # Interview admin with inline questions & answers
+│   └── tests.py                 # 21 tests (interview flow, jump logic, diagnosis)
+│
+├── core/                        # Django project settings & root URL config
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+│
+├── diagnosis/                   # (Planned) Diagnostic algorithms & scoring
+├── patients/                    # (Planned) Patient app — currently empty
+├── interview_sessions/          # (Planned) Session management — currently empty
+├── utils/                       # SMS integration (sms.py) & validators
+│
+├── manage.py
+├── requirements.txt
+└── README.md
 ```
 
 ---
 
 ## 🚀 Tech Stack
 
-### Backend
-
 | Technology | Purpose |
-| --- | --- |
-| **Django 4.2** | Core web framework |
-| **Django REST Framework** | REST API architecture |
-| **Simple JWT** | Stateless token-based authentication |
-| **drf-spectacular** | OpenAPI/Swagger schema generation |
-| **SQLite / PostgreSQL** | Database management |
-
-### Authentication & Security
-
-* JWT tokens for secure, stateless API communication.
-* OTP verification via SMS (includes a mock mode for local development).
-* Phone number utilized as the primary, regex-validated identifier.
-
-### Documentation
-
-* **Swagger UI**: Available at `/api/schema/swagger-ui/`
-* **ReDoc**: Available at `/api/schema/redoc/`
-* Full Persian translations integrated for clinical content and API descriptions.
-
----
-
-## 📦 Installation
-
-### Prerequisites
-
-* Python 3.10+
-* pip
-* virtualenv (recommended)
-
-### Steps
-
-1. **Clone the repository**
-
-```bash
-git clone [https://github.com/yourusername/smart-scid.git](https://github.com/yourusername/smart-scid.git)
-cd smart-scid
-
-```
-
-2. **Create and activate virtual environment**
-
-```bash
-python -m venv venv
-# On Linux/macOS:
-source venv/bin/activate  
-# On Windows:
-venv\Scripts\activate
-
-```
-
-3. **Install dependencies**
-
-```bash
-pip install -r requirements.txt
-
-```
-
-4. **Configure environment variables**
-
-```bash
-cp .env.example .env
-# Edit .env with your specific local configuration
-
-```
-
-5. **Run migrations**
-
-```bash
-python manage.py makemigrations
-python manage.py migrate
-
-```
-
-6. **Create superuser**
-
-```bash
-python manage.py createsuperuser
-
-```
-
-7. **Run development server**
-
-```bash
-python manage.py runserver
-
-```
-
-8. **Access the application**
-
-* API Base: `http://127.0.0.1:8000/api/`
-* Admin Panel: `http://127.0.0.1:8000/admin/`
-* Swagger UI: `http://127.0.0.1:8000/api/schema/swagger-ui/`
-
----
-
-## 🔧 Configuration (.env)
-
-```env
-# Django
-SECRET_KEY=your-secret-key
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-
-# Database (PostgreSQL example)
-DB_NAME=smart_scid_db
-DB_USER=postgres
-DB_PASSWORD=your-password
-DB_HOST=localhost
-DB_PORT=5432
-
-# SMS Configuration
-SMS_IR_API_KEY=your-sms-api-key
-SMS_IR_VERIFY_TEMPLATE_ID=100000
-SMS_MOCK_MODE=True  # Set to False for production
-OTP_CACHE_TIMEOUT=120
-OTP_LENGTH=5
-
-```
+|------------|---------|
+| **Django 5.2** | Core web framework |
+| **Django REST Framework 3.17** | REST API |
+| **Simple JWT** | Token-based authentication |
+| **drf-spectacular** | OpenAPI/Swagger documentation |
+| **SQLite** | Database (PostgreSQL ready) |
+| **SMS.ir** | OTP via SMS (mock mode for development) |
 
 ---
 
@@ -183,100 +126,209 @@ OTP_LENGTH=5
 ### Authentication
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
-| `POST` | `/api/accounts/auth/send-otp/` | Send OTP to phone |
-| `POST` | `/api/accounts/auth/verify-otp/` | Verify OTP and authenticate |
-| `POST` | `/api/accounts/register/` | Register new user |
-| `POST` | `/api/accounts/token/` | Login with phone & password |
-| `POST` | `/api/accounts/token/refresh/` | Refresh JWT token |
+|--------|----------|-------------|
+| `POST` | `/api/accounts/register/` | Register with phone + password |
+| `POST` | `/api/accounts/token/` | Login (phone + password) → JWT |
+| `POST` | `/api/accounts/token/refresh/` | Refresh access token |
+| `POST` | `/api/accounts/auth/send-otp/` | Send OTP to phone number |
+| `POST` | `/api/accounts/auth/verify-otp/` | Verify OTP → authenticate |
+| `POST` | `/api/accounts/auth/set-password/` | Set/change password |
 
-### User Profile & Patients
-
-| Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET/PUT` | `/api/accounts/profile/` | Manage user profile |
-| `GET/POST` | `/api/accounts/patients/` | List or create patients |
-| `GET/PUT/DEL` | `/api/accounts/patients/{id}/` | Manage specific patient |
-| `GET/POST` | `/api/accounts/patients/{id}/notes/` | Manage patient notes |
-
-### Overview (SCID-5-CV)
+### User Profile
 
 | Method | Endpoint | Description |
-| --- | --- | --- |
-| `GET/POST` | `/api/accounts/patients/{id}/overviews/` | List or create clinical overviews |
-| `GET/PUT` | `/api/accounts/overviews/{id}/` | Manage specific overview data |
+|--------|----------|-------------|
+| `GET` | `/api/accounts/me/` | Current user info |
+| `GET/PUT/PATCH` | `/api/accounts/profile/` | Manage profile |
+
+### Patients & Notes
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET/POST` | `/api/accounts/patients/` | List/create patients |
+| `GET/PUT/PATCH/DELETE` | `/api/accounts/patients/{id}/` | Patient detail |
+| `GET/POST` | `/api/accounts/patients/{id}/notes/` | Patient notes |
+
+### Overview (SCID-5-CV Intake)
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/accounts/overview-questions/` | Dynamic question schema from model |
+| `GET/POST` | `/api/accounts/patients/{id}/overviews/` | List/create overviews |
+| `GET/PUT/PATCH` | `/api/accounts/overviews/{id}/` | Overview detail |
+
+### Interview Modules & Questions
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/interviews/modules/` | List active modules |
+| `GET` | `/api/interviews/modules/{id}/` | Module detail |
+| `GET` | `/api/interviews/questions/?module_id=` | Questions (filterable) |
+| `GET` | `/api/interviews/questions/{id}/` | Question detail |
+
+### Interview Lifecycle
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/interviews/interviews/` | List clinician's interviews |
+| `GET` | `/api/interviews/interviews/{id}/` | Interview detail + answers |
+| `POST` | `/api/interviews/interviews/start/` | Start new interview |
+| `POST` | `/api/interviews/interviews/{id}/progress/` | Submit answer → get next question |
+| `POST` | `/api/interviews/interviews/{id}/pause/` | Pause interview |
+| `POST` | `/api/interviews/interviews/{id}/resume/` | Resume interview |
+| `GET` | `/api/interviews/interviews/{id}/summary/` | Completed interview summary + diagnosis |
+
+### Jump Rules
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| `GET` | `/api/interviews/jump-rules/` | List all jump rules |
+| `GET` | `/api/interviews/jump-rules/{id}/` | Jump rule detail |
+
+---
+
+## 📋 Module A — Mood Episodes (Implemented)
+
+Module A contains **90 questions** (A1–A90) organized into 7 sections:
+
+| Section | Questions | Topic |
+|---------|-----------|-------|
+| Current Major Depression | A1–A14 | DSM-5 MDE criteria, functional impairment, exclusions |
+| Past Major Depression | A15–A28 | History, severity, episode count |
+| Current Manic Episode | A29–A40 | Elevated mood, grandiosity, risky behavior, exclusions |
+| Current Hypomanic Episode | A41–A53 | 4-day threshold, observable change, exclusions |
+| Past Manic Episode | A54–A65 | Historical mania verification |
+| Past Hypomanic Episode | A66–A77 | Historical hypomania verification |
+| Persistent Depressive Disorder | A78–A90 | 2-year chronic depression, associated symptoms |
+
+**16 jump rules** implement the SCID-5 decision tree for conditional navigation (14 active; 2 reference Module B which is not yet implemented).
+
+---
+
+## 📦 Installation
+
+### Prerequisites
+
+- Python 3.10+
+- pip
+
+### Steps
+
+```bash
+# Clone
+git clone https://github.com/mhas1381/Smart-SCID.git
+cd Smart-SCID
+
+# Virtual environment
+python -m venv venv
+venv\Scripts\activate          # Windows
+# source venv/bin/activate    # Linux/macOS
+
+# Dependencies
+pip install -r requirements.txt
+
+# Migrate database
+python manage.py makemigrations
+python manage.py migrate
+
+# Load Module A interview data
+python manage.py load_interview_data
+
+# Create admin user
+python manage.py createsuperuser
+
+# Run server
+python manage.py runserver
+```
+
+### Access Points
+
+| URL | Description |
+|-----|-------------|
+| `http://127.0.0.1:8000/api/` | API root |
+| `http://127.0.0.1:8000/admin/` | Django admin panel |
+| `http://127.0.0.1:8000/swagger/` | Swagger UI |
+| `http://127.0.0.1:8000/api/schema/redoc/` | ReDoc |
 
 ---
 
 ## 🧪 Testing
 
-The project uses Django's built-in testing framework to ensure data integrity and API reliability.
-
-**Run all tests:**
-
 ```bash
-python manage.py test accounts --verbosity=2
-
+python manage.py test accounts interview --verbosity=2
 ```
 
-**Test Coverage Includes:**
-
-* ✅ Model validations and constraints
-* ✅ API endpoint responses and status codes
-* ✅ Authentication and OTP logic
-* ✅ Signal triggers (e.g., auto-profile creation)
+**56 tests** covering:
+- User registration, login, OTP flow
+- Patient CRUD, soft delete, access control
+- Overview creation, branching logic, updates
+- Interview start, progress, pause/resume, completion
+- Jump rule evaluation
+- Diagnosis calculation
+- Serializer output validation
 
 ---
 
-## 🗄️ Database Schema Highlights
+## 📊 Database Schema
 
-* **User & Profile**: Separated `User` (auth) and `UserProfile` (clinical metadata) with strict regex validation for phone numbers and Iranian National Codes.
-* **Patient**: Stores demographic and contact data securely with an auto-generated, untraceable `patient_code` to maintain confidentiality.
-* **Overview**: A comprehensive model mapping directly to the SCID-5-CV introductory section (Demographics, Treatment History, Suicidal Ideation, etc.).
-* **PatientNote**: Allows clinicians to categorize and store real-time interview observations.
+### Core Models
+
+- **User** / **UserProfile**: Custom auth with phone number as identifier. Profile stores role (admin/clinician/researcher), license number, specialization.
+- **Patient**: Demographics with auto-generated anonymized code. Soft-delete support.
+- **Overview**: ~40 fields mapping to SCID-5-CV intake sections. JSONField for treatment history.
+- **PatientNote**: Clinician observations with note types (general/progress/follow_up/referral).
+- **InterviewModule**: Named modules (e.g., "Module A — Mood Episodes") with versioning.
+- **Question**: Questions with CharField PKs (e.g., "A1"), criteria flags, and jump logic flags.
+- **JumpRule**: Conditional routing between questions with JSON metadata.
+- **Answer**: JSONField-based answers with typed properties (`boolean_value`, `text_value`, `number_value`).
+- **Interview**: Session linking patient + clinician + module, with status tracking and current question pointer.
 
 ---
 
 ## 📝 Development Status
 
-### ✅ Phase 1: Completed
+### ✅ Completed
 
-* User authentication infrastructure (JWT, OTP)
-* Secure Patient Management (CRUD)
-* Digital mapping of the SCID-5-CV Overview section
-* Clinical notes system
-* Customized Admin Panel
-* OpenAPI documentation
+- [x] JWT + OTP authentication system
+- [x] Patient management (CRUD + soft delete + anonymized codes)
+- [x] SCID-5-CV Overview section (demographics, treatment, suicidal ideation, substances)
+- [x] Clinical notes system
+- [x] Interview engine (start, progress, pause, resume, complete)
+- [x] **Module A — Mood Episodes** (90 questions, 15 jump rules, auto-diagnosis)
+- [x] Jump rule evaluation (boolean, multiple_choice, text, range)
+- [x] Diagnosis calculation for Depression, Mania, Hypomania
+- [x] Custom admin panel with inline editing
+- [x] OpenAPI/Swagger documentation (Persian descriptions)
+- [x] 56 passing tests
 
-### 🚧 Phase 2: In Progress
+### 🚧 In Progress
 
-* Implementation of Clinical Modules (e.g., Mood Episodes)
-* Algorithm-driven Skip Logic (Jump routing)
-* Dynamic UI for module-based question flow
+- [ ] **Module B — Psychotic and Associated Symptoms**
 
-### 📋 Phase 3: Planned
+### 📋 Planned
 
-* Automated diagnostic scoring and summary generation
-* Psychometric data aggregation
-* PDF clinical report generation
+- [ ] Module C–M (additional SCID-5-CV modules)
+- [ ] Cross-module diagnostic summary
+- [ ] PDF clinical report generation
+- [ ] Psychometric data aggregation
+
+---
+
+## 📚 API Documentation
+
+Interactive docs available at:
+- **Swagger UI**: `/swagger/`
+- **ReDoc**: `/api/schema/redoc/`
 
 ---
 
 ## 👨‍💻 Author
 
-**Mohammad Hossein Esnavandi** *Project Lead & Clinical Architecture*
+**Mohammad Hossein Esnavandi** — Project Lead & Clinical Architecture
 
 ---
 
 ## 🙏 Acknowledgments
 
-* Based on the Structured Clinical Interview for DSM-5® Disorders (SCID-5-CV) by the American Psychiatric Association.
-* Built with Django and Django REST Framework.
-
----
-
-**Made with ❤️ for the clinical psychology and psychiatric community.**
-
-```
-
-```
+- Based on the **Structured Clinical Interview for DSM-5® Disorders — Clinician Version (SCID-5-CV)** by the American Psychiatric Association.
+- Built with Django and Django REST Framework.

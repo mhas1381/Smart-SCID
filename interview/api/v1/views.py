@@ -288,6 +288,14 @@ class InterviewProgressView(APIView):
                 min_val = rule.metadata.get('min_value', 0)
                 max_val = rule.metadata.get('max_value', float('inf'))
                 return min_val <= answer.number_value <= max_val
+            elif rule.condition_type == 'criteria_count':
+                question_ids = rule.metadata.get('question_ids', [])
+                min_count = rule.metadata.get('min_count', 1)
+                positive_count = Answer.objects.filter(
+                    interview=interview,
+                    question_id__in=question_ids
+                ).filter(value__boolean=True).count()
+                return positive_count < min_count
         except Answer.DoesNotExist:
             return False
 

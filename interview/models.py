@@ -99,6 +99,7 @@ class JumpRule(models.Model):
         ('multiple_choice', 'Multiple Choice'),
         ('text', 'Text Match'),
         ('range', 'Number Range'),
+        ('criteria_count', 'Criteria Count'),
     ]
     
     from_question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='jump_rules')
