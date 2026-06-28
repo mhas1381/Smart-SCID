@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(venv\\scripts\\python *)"
+      "Bash(venv\\scripts\\python *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push)"
     ]
   },
   "$version": 4
