@@ -1,0 +1,18 @@
+[project]
+name = "smart-scid"
+version = "1.0.0"
+description = "Smart SCID - Digitized SCID-5-CV Clinical Interview System"
+requires-python = ">=3.12"
+dependencies = [
+    "django>=5.2,<5.3",
+    "django-cors-headers>=4.9",
+    "djangorestframework>=3.17",
+    "djangorestframework-simplejwt>=5.5",
+    "drf-spectacular>=0.29",
+    "Pillow>=11.0",
+    "python-dotenv>=1.2",
+    "PyYAML>=6.0",
+]
+
+[dependency-groups]
+dev = []
