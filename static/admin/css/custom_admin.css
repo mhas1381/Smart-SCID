@@ -1,75 +1,113 @@
 /* ====================================================
-   SMART SCID - CUSTOM ADMIN STYLES (DARK MODE)
-   Applied to default Django Admin Panel
+   SMART SCID - CUSTOM ADMIN STYLES
+   Supports Light & Dark mode via Django's theme toggle
    Django 5.2 Compatible
    ==================================================== */
 
-/* ---------- ROOT VARIABLES ---------- */
+/* ======================== LIGHT MODE (default) ======================== */
 :root {
-    --primary: #3B82F6;
-    --primary-light: #60A5FA;
-    --primary-dark: #2563EB;
-    --primary-gradient: linear-gradient(135deg, #2563EB, #7C3AED);
+    --sc-primary: #2563EB;
+    --sc-primary-light: #3B82F6;
+    --sc-primary-dark: #1D4ED8;
+    --sc-primary-gradient: linear-gradient(135deg, #2563EB, #7C3AED);
 
-    --secondary: #94A3B8;
-    --success: #22C55E;
-    --warning: #F59E0B;
-    --danger: #EF4444;
-    --info: #06B6D4;
+    --sc-secondary: #64748B;
+    --sc-success: #22C55E;
+    --sc-warning: #F59E0B;
+    --sc-danger: #EF4444;
+    --sc-info: #06B6D4;
 
-    --bg-dark: #0F172A;
-    --bg-header: #1E293B;
-    --bg-sidebar: #0F172A;
-    --bg-main: #0F172A;
-    --bg-card: #1E293B;
-    --bg-input: #334155;
+    --sc-bg-body: #F1F5F9;
+    --sc-bg-header: #1E293B;
+    --sc-bg-sidebar: #1E293B;
+    --sc-bg-card: #FFFFFF;
+    --sc-bg-input: #FFFFFF;
+    --sc-bg-table-hover: #F8FAFC;
 
-    --text-primary: #F1F5F9;
-    --text-secondary: #CBD5E1;
-    --text-light: #94A3B8;
-    --text-white: #FFFFFF;
+    --sc-text-primary: #0F172A;
+    --sc-text-secondary: #475569;
+    --sc-text-light: #94A3B8;
+    --sc-text-white: #FFFFFF;
 
-    --border-color: #334155;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
-    --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+    --sc-border: #E2E8F0;
+    --sc-shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+    --sc-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+    --sc-shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1);
 
-    --radius-sm: 6px;
-    --radius-md: 10px;
-    --radius-lg: 16px;
+    --sc-radius-sm: 6px;
+    --sc-radius-md: 10px;
+    --sc-radius-lg: 16px;
+}
 
-    /* Override Django's built-in CSS variables */
+/* ======================== DARK MODE ======================== */
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] {
+        --sc-bg-body: #0F172A;
+        --sc-bg-header: #1E293B;
+        --sc-bg-sidebar: #0F172A;
+        --sc-bg-card: #1E293B;
+        --sc-bg-input: #334155;
+        --sc-bg-table-hover: #253348;
+
+        --sc-text-primary: #F1F5F9;
+        --sc-text-secondary: #CBD5E1;
+        --sc-text-light: #94A3B8;
+
+        --sc-border: #334155;
+        --sc-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+        --sc-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+        --sc-shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+
+        --body-fg: #F1F5F9;
+        --body-bg: #0F172A;
+        --body-quiet-color: #94A3B8;
+        --body-medium-color: #CBD5E1;
+        --body-loud-color: #FFFFFF;
+        --header-bg: #1E293B;
+        --header-link-color: #FFFFFF;
+        --link-fg: #60A5FA;
+        --link-hover-color: #3B82F6;
+        --hairline-color: #334155;
+        --border-color: #334155;
+        --darkened-bg: #1E293B;
+        --selected-bg: #253348;
+        --selected-row: rgba(59,130,246,0.15);
+
+        color-scheme: dark;
+    }
+}
+
+html[data-theme="dark"] {
+    --sc-bg-body: #0F172A;
+    --sc-bg-header: #1E293B;
+    --sc-bg-sidebar: #0F172A;
+    --sc-bg-card: #1E293B;
+    --sc-bg-input: #334155;
+    --sc-bg-table-hover: #253348;
+
+    --sc-text-primary: #F1F5F9;
+    --sc-text-secondary: #CBD5E1;
+    --sc-text-light: #94A3B8;
+
+    --sc-border: #334155;
+    --sc-shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+    --sc-shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4);
+    --sc-shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.5);
+
     --body-fg: #F1F5F9;
     --body-bg: #0F172A;
     --body-quiet-color: #94A3B8;
     --body-medium-color: #CBD5E1;
     --body-loud-color: #FFFFFF;
-
-    --header-color: #FFFFFF;
     --header-bg: #1E293B;
     --header-link-color: #FFFFFF;
-
-    --breadcrumbs-bg: #1E293B;
-    --breadcrumbs-link-fg: #60A5FA;
-
     --link-fg: #60A5FA;
     --link-hover-color: #3B82F6;
-    --link-selected-fg: #93C5FD;
-
     --hairline-color: #334155;
     --border-color: #334155;
-
     --darkened-bg: #1E293B;
     --selected-bg: #253348;
-    --selected-row: rgba(59, 130, 246, 0.15);
-
-    --error-fg: #EF4444;
-    --message-success-bg: rgba(34, 197, 94, 0.15);
-    --message-warning-bg: rgba(245, 158, 11, 0.15);
-    --message-error-bg: rgba(239, 68, 68, 0.15);
-
-    --close-button-bg: #334155;
-    --close-button-hover-bg: #475569;
+    --selected-row: rgba(59,130,246,0.15);
 
     color-scheme: dark;
 }
@@ -81,24 +119,16 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-    background-color: var(--bg-main);
-    color: var(--text-primary);
+    background-color: var(--sc-bg-body) !important;
+    color: var(--sc-text-primary) !important;
 }
 
-a {
-    color: var(--primary-light);
-}
-
-a:visited {
-    color: var(--primary-light);
-}
-
-/* ---------- HEADER ---------- */
+/* ---------- HEADER (always dark) ---------- */
 #header {
-    background: var(--primary-gradient) !important;
+    background: var(--sc-primary-gradient) !important;
     padding: 12px 40px !important;
     height: auto !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: var(--sc-shadow-md) !important;
     border-bottom: none !important;
 }
 
@@ -107,7 +137,7 @@ a:visited {
 }
 
 #header #branding h1 a {
-    color: var(--text-white) !important;
+    color: var(--sc-text-white) !important;
     font-weight: 700 !important;
     font-size: 22px !important;
     letter-spacing: -0.5px !important;
@@ -118,103 +148,86 @@ a:visited {
     font-size: 24px;
 }
 
+#header #user-tools,
 #header .user-tools {
     color: rgba(255,255,255,0.9) !important;
 }
 
+#header #user-tools a,
 #header .user-tools a {
-    color: var(--text-white) !important;
+    color: var(--sc-text-white) !important;
     font-weight: 500 !important;
     padding: 6px 14px !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
     transition: background 0.2s ease !important;
 }
 
+#header #user-tools a:hover,
 #header .user-tools a:hover,
+#header #user-tools button:hover,
 #header .user-tools button:hover {
     background: rgba(255,255,255,0.15) !important;
     text-decoration: none !important;
 }
 
-/* Logout button in header */
 #header #logout-form button {
-    color: var(--text-white) !important;
+    color: var(--sc-text-white) !important;
     background: transparent !important;
     border: none !important;
     font-weight: 500 !important;
     padding: 6px 14px !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
     cursor: pointer !important;
     font-size: inherit !important;
 }
 
-/* Theme toggle button */
-.theme-toggle {
-    color: var(--text-white) !important;
-}
-
 .theme-toggle svg {
-    fill: var(--text-white) !important;
-    color: var(--text-white) !important;
+    fill: var(--sc-text-white) !important;
+    color: var(--sc-text-white) !important;
 }
 
-/* Footer */
-#footer {
-    background: var(--bg-header) !important;
-    color: var(--text-light) !important;
-    border-top: 1px solid var(--border-color) !important;
-    padding: 16px 40px !important;
-}
-
-/* Skip to content link */
-.skip-to-content-link {
-    background: var(--primary) !important;
-    color: var(--text-white) !important;
-}
-
-/* ---------- SIDEBAR (Django 5.2 structure) ---------- */
+/* ---------- SIDEBAR (always dark) ---------- */
 .main {
-    background: var(--bg-main) !important;
+    background: var(--sc-bg-body) !important;
 }
 
 .toggle-nav-sidebar {
-    background: var(--bg-sidebar) !important;
-    border-right: 1px solid var(--border-color) !important;
-    color: var(--primary-light) !important;
+    background: var(--sc-bg-sidebar) !important;
+    border-right: 1px solid var(--sc-border) !important;
+    color: var(--sc-primary-light) !important;
 }
 
 .toggle-nav-sidebar:hover,
 .toggle-nav-sidebar:focus {
-    background: var(--bg-header) !important;
+    background: var(--sc-bg-header) !important;
 }
 
 #nav-sidebar {
-    background: var(--bg-sidebar) !important;
-    border-right: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-sidebar) !important;
+    border-right: 1px solid var(--sc-border) !important;
     box-shadow: none !important;
 }
 
 #nav-filter {
-    background: var(--bg-input) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-sm) !important;
+    background: rgba(255,255,255,0.1) !important;
+    color: var(--sc-text-white) !important;
+    border: 1px solid rgba(255,255,255,0.15) !important;
+    border-radius: var(--sc-radius-sm) !important;
     margin: 8px 12px !important;
     padding: 8px 12px !important;
     font-size: 13px !important;
 }
 
 #nav-filter:focus {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+    border-color: var(--sc-primary) !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.25) !important;
     outline: none !important;
 }
 
 #nav-filter::placeholder {
-    color: var(--text-light) !important;
+    color: rgba(255,255,255,0.4) !important;
 }
 
-/* App modules in sidebar */
 #nav-sidebar .module {
     background: transparent !important;
     border: none !important;
@@ -226,13 +239,12 @@ a:visited {
     width: 100% !important;
 }
 
-/* App name (caption) */
 #nav-sidebar .module caption {
     padding: 12px 16px 6px !important;
 }
 
 #nav-sidebar .module caption a.section {
-    color: var(--text-light) !important;
+    color: var(--sc-text-light) !important;
     font-size: 11px !important;
     font-weight: 700 !important;
     text-transform: uppercase !important;
@@ -241,24 +253,23 @@ a:visited {
 }
 
 #nav-sidebar .module caption a.section:hover {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
 }
 
 #nav-sidebar .current-app .section:link,
 #nav-sidebar .current-app .section:visited {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
     font-weight: 700 !important;
 }
 
-/* Model links in sidebar */
 #nav-sidebar .module th {
     background: transparent !important;
-    color: var(--text-secondary) !important;
+    color: rgba(255,255,255,0.7) !important;
     padding: 0 !important;
 }
 
 #nav-sidebar .module th a {
-    color: var(--text-secondary) !important;
+    color: rgba(255,255,255,0.7) !important;
     font-weight: 500 !important;
     font-size: 14px !important;
     padding: 8px 16px 8px 24px !important;
@@ -269,61 +280,60 @@ a:visited {
 }
 
 #nav-sidebar .module th a:hover {
-    background: rgba(59, 130, 246, 0.1) !important;
-    color: var(--text-white) !important;
+    background: rgba(255,255,255,0.08) !important;
+    color: var(--sc-text-white) !important;
 }
 
-/* Current model highlight */
 #nav-sidebar .current-model {
-    background: var(--selected-row) !important;
+    background: rgba(59,130,246,0.2) !important;
 }
 
 #nav-sidebar .current-model a,
 #nav-sidebar .current-model a:hover {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
     font-weight: 600 !important;
 }
 
-/* Add/Change links in sidebar */
 #nav-sidebar .module td {
     background: transparent !important;
 }
 
 #nav-sidebar .module td a {
-    color: var(--text-light) !important;
+    color: rgba(255,255,255,0.5) !important;
     font-size: 12px !important;
     padding: 4px 12px !important;
 }
 
 #nav-sidebar .module td a:hover {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
 }
 
 #nav-sidebar .module td a.addlink {
-    color: var(--success) !important;
+    color: var(--sc-success) !important;
 }
 
 #nav-sidebar .module td a.changelink {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
 }
 
-/* Spacer between modules */
-#nav-sidebar .module table + table {
-    border-top: 1px solid var(--border-color) !important;
-    margin-top: 4px !important;
-    padding-top: 4px !important;
-}
-
-/* Toggle arrow color */
 .main > #nav-sidebar + .content {
-    background: var(--bg-main) !important;
+    background: var(--sc-bg-body) !important;
 }
 
-/* Override responsive sidebar hide */
-@media (max-width: 768px) {
-    #header #branding h1 a {
-        font-size: 16px !important;
-    }
+/* ---------- BREADCRUMBS (always dark) ---------- */
+div.breadcrumbs {
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-light) !important;
+    padding: 10px 40px !important;
+    border-bottom: 1px solid var(--sc-border) !important;
+}
+
+div.breadcrumbs a {
+    color: var(--sc-primary-light) !important;
+}
+
+div.breadcrumbs a:hover {
+    color: var(--sc-primary) !important;
 }
 
 /* ---------- MAIN CONTENT ---------- */
@@ -332,44 +342,38 @@ a:visited {
 }
 
 #content h1 {
-    color: var(--text-primary) !important;
+    color: var(--sc-text-primary) !important;
     font-size: 22px !important;
     font-weight: 700 !important;
     margin: 0 0 20px 0 !important;
 }
 
-#content-main {
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-}
-
-/* Content wrapper */
 .content {
-    background: var(--bg-main) !important;
+    background: var(--sc-bg-body) !important;
 }
 
 /* ---------- CARDS / MODULES ---------- */
 .module {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
-    box-shadow: var(--shadow-sm) !important;
+    background: var(--sc-bg-card) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) !important;
+    box-shadow: var(--sc-shadow-sm) !important;
     overflow: hidden !important;
 }
 
 .module h2 {
-    background: var(--bg-header) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-white) !important;
     padding: 14px 20px !important;
     font-weight: 600 !important;
     font-size: 15px !important;
     letter-spacing: 0.3px !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
 .module .form-row {
     padding: 14px 20px !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
 .module .form-row:last-child {
@@ -387,10 +391,10 @@ input[type="datetime-local"],
 input[type="search"],
 textarea,
 select {
-    background: var(--bg-input) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-sm) !important;
+    background: var(--sc-bg-input) !important;
+    color: var(--sc-text-primary) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-sm) !important;
     padding: 8px 12px !important;
     font-family: inherit !important;
     font-size: 14px !important;
@@ -406,8 +410,8 @@ input[type="datetime-local"]:focus,
 input[type="search"]:focus,
 textarea:focus,
 select:focus {
-    border-color: var(--primary) !important;
-    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+    border-color: var(--sc-primary) !important;
+    box-shadow: 0 0 0 2px rgba(59,130,246,0.25) !important;
     outline: none !important;
 }
 
@@ -419,37 +423,35 @@ select {
     -webkit-appearance: none !important;
 }
 
-/* ---------- LABELS ---------- */
 label {
-    color: var(--text-secondary) !important;
+    color: var(--sc-text-secondary) !important;
     font-weight: 500 !important;
 }
 
-/* ---------- FIELDSET LEGENDS ---------- */
 fieldset h2,
 fieldset legend {
-    color: var(--text-primary) !important;
+    color: var(--sc-text-primary) !important;
 }
 
 /* ---------- TABLES ---------- */
 #changelist {
-    background: var(--bg-card) !important;
-    border-radius: var(--radius-md) !important;
-    box-shadow: var(--shadow-sm) !important;
-    border: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-card) !important;
+    border-radius: var(--sc-radius-md) !important;
+    box-shadow: var(--sc-shadow-sm) !important;
+    border: 1px solid var(--sc-border) !important;
 }
 
 #changelist #toolbar {
     padding: 16px 20px !important;
-    background: var(--bg-header) !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+    background: var(--sc-bg-header) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) var(--sc-radius-md) 0 0 !important;
 }
 
 #changelist #toolbar input#searchbar {
-    background: var(--bg-input) !important;
-    color: var(--text-primary) !important;
-    border: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-input) !important;
+    color: var(--sc-text-primary) !important;
+    border: 1px solid var(--sc-border) !important;
 }
 
 #changelist .results {
@@ -462,43 +464,42 @@ fieldset legend {
 }
 
 #changelist table th {
-    background: var(--bg-header) !important;
-    color: var(--text-light) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-light) !important;
     font-weight: 600 !important;
     font-size: 12px !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
     padding: 12px 16px !important;
-    border-bottom: 2px solid var(--border-color) !important;
+    border-bottom: 2px solid var(--sc-border) !important;
 }
 
 #changelist table th a {
-    color: var(--text-light) !important;
+    color: var(--sc-text-light) !important;
 }
 
 #changelist table th a:hover {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
 }
 
 #changelist table td {
     padding: 12px 16px !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
     vertical-align: middle !important;
-    color: var(--text-secondary) !important;
-    background: var(--bg-card) !important;
+    color: var(--sc-text-secondary) !important;
+    background: var(--sc-bg-card) !important;
 }
 
 #changelist table tr:hover td {
-    background: #253348 !important;
+    background: var(--sc-bg-table-hover) !important;
 }
 
 #changelist table td a {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
 }
 
-/* ---------- ROW LINKS (change list) ---------- */
 tr .action-checkbox {
-    background: var(--bg-card) !important;
+    background: var(--sc-bg-card) !important;
 }
 
 /* ---------- ACTION CHECKBOXES ---------- */
@@ -510,7 +511,7 @@ tr .action-checkbox {
 input[type="checkbox"] {
     width: 16px !important;
     height: 16px !important;
-    accent-color: var(--primary) !important;
+    accent-color: var(--sc-primary) !important;
     cursor: pointer !important;
 }
 
@@ -519,10 +520,10 @@ input[type="checkbox"] {
 .submit-row input[type="submit"],
 input[type="submit"],
 input[type="button"] {
-    background: var(--primary-gradient) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-primary-gradient) !important;
+    color: var(--sc-text-white) !important;
     border: none !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
     padding: 8px 20px !important;
     font-weight: 600 !important;
     font-size: 14px !important;
@@ -535,61 +536,52 @@ input[type="button"] {
 .submit-row input[type="submit"]:hover,
 input[type="submit"]:hover {
     transform: translateY(-1px) !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: var(--sc-shadow-md) !important;
     opacity: 0.9 !important;
 }
 
 .button.default {
-    background: var(--primary) !important;
+    background: var(--sc-primary) !important;
 }
 
 .button.default:hover {
-    background: var(--primary-dark) !important;
+    background: var(--sc-primary-dark) !important;
 }
 
-.button.warning {
-    background: var(--warning) !important;
-}
-
-.button.danger {
-    background: var(--danger) !important;
-}
-
-/* Selector widget buttons */
 .selector-available h2,
 .selector-chosen h2 {
-    background: var(--bg-header) !important;
-    color: var(--text-white) !important;
-    border-radius: var(--radius-sm) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-white) !important;
+    border-radius: var(--sc-radius-sm) !important;
     padding: 8px 12px !important;
     font-size: 13px !important;
 }
 
 .selector-add,
 .selector-remove {
-    background: var(--primary) !important;
+    background: var(--sc-primary) !important;
     color: white !important;
     border: none !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
 }
 
 /* ---------- SUBMIT ROW ---------- */
 .submit-row {
-    background: var(--bg-header) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-sm) !important;
+    background: var(--sc-bg-header) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-sm) !important;
     padding: 16px 20px !important;
     margin-top: 20px !important;
 }
 
 .submit-row a.closelink {
-    color: var(--danger) !important;
+    color: var(--sc-danger) !important;
     font-weight: 600 !important;
 }
 
 /* ---------- LOGIN PAGE ---------- */
 .login #header {
-    background: var(--primary-gradient) !important;
+    background: var(--sc-primary-gradient) !important;
     padding: 20px !important;
 }
 
@@ -614,40 +606,24 @@ input[type="submit"]:hover {
 /* ---------- DASHBOARD ---------- */
 .dashboard .module table th {
     width: 60% !important;
-    background: var(--bg-header) !important;
-    color: var(--text-secondary) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-secondary) !important;
 }
 
 .dashboard .module table td {
     width: 40% !important;
     font-weight: 600 !important;
-    background: var(--bg-card) !important;
-    color: var(--text-primary) !important;
+    background: var(--sc-bg-card) !important;
+    color: var(--sc-text-primary) !important;
 }
 
 .dashboard .module table td a {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
     font-weight: 600 !important;
 }
 
 .dashboard .module table td a:hover {
-    color: var(--primary) !important;
-}
-
-/* ---------- BREADCRUMBS ---------- */
-div.breadcrumbs {
-    background: var(--bg-header) !important;
-    color: var(--text-light) !important;
-    padding: 10px 40px !important;
-    border-bottom: 1px solid var(--border-color) !important;
-}
-
-div.breadcrumbs a {
-    color: var(--primary-light) !important;
-}
-
-div.breadcrumbs a:hover {
-    color: var(--primary) !important;
+    color: var(--sc-primary) !important;
 }
 
 /* ---------- MESSAGES / ALERTS ---------- */
@@ -658,113 +634,123 @@ div.breadcrumbs a:hover {
 
 .messagelist li {
     padding: 12px 20px !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
     font-weight: 500 !important;
     margin-bottom: 8px !important;
 }
 
 .messagelist li.success {
-    background: rgba(34, 197, 94, 0.15) !important;
-    color: var(--success) !important;
-    border-left: 4px solid var(--success) !important;
+    background: rgba(34,197,94,0.1) !important;
+    color: #166534 !important;
+    border-left: 4px solid var(--sc-success) !important;
 }
 
 .messagelist li.warning {
-    background: rgba(245, 158, 11, 0.15) !important;
-    color: var(--warning) !important;
-    border-left: 4px solid var(--warning) !important;
+    background: rgba(245,158,11,0.1) !important;
+    color: #92400E !important;
+    border-left: 4px solid var(--sc-warning) !important;
 }
 
 .messagelist li.error {
-    background: rgba(239, 68, 68, 0.15) !important;
-    color: var(--danger) !important;
-    border-left: 4px solid var(--danger) !important;
+    background: rgba(239,68,68,0.1) !important;
+    color: #991B1B !important;
+    border-left: 4px solid var(--sc-danger) !important;
 }
 
 .messagelist li.info {
-    background: rgba(6, 182, 212, 0.15) !important;
-    color: var(--info) !important;
-    border-left: 4px solid var(--info) !important;
+    background: rgba(6,182,212,0.1) !important;
+    color: #155E75 !important;
+    border-left: 4px solid var(--sc-info) !important;
+}
+
+/* Dark mode message overrides */
+html[data-theme="dark"] .messagelist li.success,
+html[data-theme="dark"] .messagelist li.warning,
+html[data-theme="dark"] .messagelist li.error,
+html[data-theme="dark"] .messagelist li.info {
+    color: var(--sc-text-primary) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+    html[data-theme="auto"] .messagelist li.success,
+    html[data-theme="auto"] .messagelist li.warning,
+    html[data-theme="auto"] .messagelist li.error,
+    html[data-theme="auto"] .messagelist li.info {
+        color: var(--sc-text-primary) !important;
+    }
 }
 
 /* ---------- FILTERS ---------- */
 #changelist-filter {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
+    background: var(--sc-bg-card) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) !important;
     padding: 16px !important;
-    box-shadow: var(--shadow-sm) !important;
+    box-shadow: var(--sc-shadow-sm) !important;
 }
 
 #changelist-filter h2 {
-    background: var(--bg-header) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-white) !important;
     padding: 10px 16px !important;
-    border-radius: var(--radius-sm) var(--radius-sm) 0 0 !important;
     font-size: 14px !important;
     margin: -16px -16px 12px !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
 #changelist-filter h3 {
-    color: var(--text-secondary) !important;
+    color: var(--sc-text-secondary) !important;
     font-size: 13px !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
     padding-bottom: 6px !important;
     margin-top: 12px !important;
 }
 
 #changelist-filter a {
-    color: var(--text-secondary) !important;
+    color: var(--sc-text-secondary) !important;
     padding: 6px 12px !important;
     display: block !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
     transition: all 0.15s ease !important;
 }
 
 #changelist-filter a:hover {
-    background: var(--bg-input) !important;
-    color: var(--primary-light) !important;
+    background: var(--sc-bg-body) !important;
+    color: var(--sc-primary) !important;
     text-decoration: none !important;
 }
 
 #changelist-filter a.selected {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary) !important;
     font-weight: 600 !important;
-}
-
-#changelist-filter .active-filters {
-    background: var(--bg-input) !important;
-    border-radius: var(--radius-sm) !important;
-    padding: 8px 12px !important;
 }
 
 /* ---------- PAGINATION ---------- */
 .paginator {
     padding: 12px 20px !important;
-    background: var(--bg-header) !important;
-    border-top: 1px solid var(--border-color) !important;
-    color: var(--text-light) !important;
+    background: var(--sc-bg-header) !important;
+    border-top: 1px solid var(--sc-border) !important;
+    color: var(--sc-text-light) !important;
 }
 
 .paginator a {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
     padding: 4px 12px !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
     transition: all 0.15s ease !important;
 }
 
 .paginator a:hover {
-    background: var(--primary) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-primary) !important;
+    color: var(--sc-text-white) !important;
     text-decoration: none !important;
 }
 
 .paginator .this-page {
-    background: var(--primary) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-primary) !important;
+    color: var(--sc-text-white) !important;
     padding: 4px 12px !important;
-    border-radius: var(--radius-sm) !important;
+    border-radius: var(--sc-radius-sm) !important;
 }
 
 /* ---------- CUSTOM SCROLLBAR ---------- */
@@ -774,23 +760,23 @@ div.breadcrumbs a:hover {
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--bg-dark);
+    background: var(--sc-bg-body);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: var(--sc-secondary);
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--primary);
+    background: var(--sc-primary);
 }
 
 /* ---------- OBJECT TOOLS ---------- */
 .object-tools a {
-    background: var(--primary-gradient) !important;
-    color: var(--text-white) !important;
-    border-radius: var(--radius-sm) !important;
+    background: var(--sc-primary-gradient) !important;
+    color: var(--sc-text-white) !important;
+    border-radius: var(--sc-radius-sm) !important;
     padding: 6px 16px !important;
     font-weight: 600 !important;
     transition: all 0.2s ease !important;
@@ -798,164 +784,90 @@ div.breadcrumbs a:hover {
 
 .object-tools a:hover {
     transform: translateY(-1px) !important;
-    box-shadow: var(--shadow-md) !important;
+    box-shadow: var(--sc-shadow-md) !important;
     opacity: 0.9 !important;
 }
 
 /* ---------- INLINE GROUPS ---------- */
 .inline-group {
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) !important;
     overflow: hidden !important;
-    background: var(--bg-card) !important;
+    background: var(--sc-bg-card) !important;
 }
 
 .inline-group h2 {
-    background: var(--bg-header) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-white) !important;
     padding: 12px 20px !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
 .inline-group .add-row {
-    background: var(--bg-header) !important;
-    border-top: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-header) !important;
+    border-top: 1px solid var(--sc-border) !important;
 }
 
 .inline-group .add-row a {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary) !important;
     font-weight: 600 !important;
 }
 
 .inline-related {
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
 .inline-related h3 {
-    background: var(--bg-header) !important;
-    color: var(--text-secondary) !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-secondary) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
-/* ---------- FORM ROWS ---------- */
+/* ---------- FORM ROWS / FIELDSETS ---------- */
 .form-row {
-    border-bottom: 1px solid var(--border-color) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
 }
 
 fieldset {
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
-    background: var(--bg-card) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) !important;
+    background: var(--sc-bg-card) !important;
     margin: 16px 0 !important;
     padding: 0 !important;
 }
 
 fieldset h2 {
-    background: var(--bg-header) !important;
-    color: var(--text-white) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-white) !important;
     padding: 12px 20px !important;
     margin: 0 !important;
     font-size: 15px !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) var(--radius-md) 0 0 !important;
+    border-bottom: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) var(--sc-radius-md) 0 0 !important;
 }
 
 fieldset .form-row {
     padding: 12px 20px !important;
 }
 
-/* ---------- COLLAPSE TOGGLE ---------- */
-fieldset.collapse {
-    border: 1px solid var(--border-color) !important;
-}
-
 fieldset.collapse h2 {
-    background: var(--bg-header) !important;
-    color: var(--text-secondary) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-secondary) !important;
 }
 
 fieldset.collapse h2 a {
-    color: var(--text-secondary) !important;
+    color: var(--sc-text-secondary) !important;
 }
 
 fieldset.collapse h2 a:hover {
-    color: var(--primary-light) !important;
-}
-
-/* ---------- HELP TEXT ---------- */
-.help {
-    color: var(--text-light) !important;
-    font-size: 13px !important;
-}
-
-p.help {
-    color: var(--text-light) !important;
-}
-
-/* ---------- REQUIRED FIELDS ---------- */
-.required label,
-.required label::after {
-    color: var(--text-secondary) !important;
-}
-
-.required label::after {
-    content: " *" !important;
-    color: var(--danger) !important;
-    font-weight: 700 !important;
-}
-
-/* ---------- ERROR MESSAGES ---------- */
-.errornote {
-    background: rgba(239, 68, 68, 0.15) !important;
-    color: var(--danger) !important;
-    border: 1px solid var(--danger) !important;
-    border-radius: var(--radius-sm) !important;
-    padding: 10px 16px !important;
-}
-
-.errorlist {
-    color: var(--danger) !important;
-    padding: 0 !important;
-    margin: 4px 0 !important;
-    list-style: none !important;
-}
-
-.errorlist li {
-    background: rgba(239, 68, 68, 0.1) !important;
-    color: var(--danger) !important;
-    padding: 6px 10px !important;
-    border-radius: var(--radius-sm) !important;
-    margin: 2px 0 !important;
-    font-size: 13px !important;
-}
-
-/* ---------- DATE HIERARCHY ---------- */
-#changelist .xfull {
-    background: var(--bg-header) !important;
-    border-bottom: 1px solid var(--border-color) !important;
-    padding: 8px 16px !important;
-}
-
-#changelist .xfull a {
-    color: var(--primary-light) !important;
-}
-
-/* ---------- CHANGE FORM ---------- */
-.change-form #content {
-    max-width: 1200px !important;
-    margin: 0 auto !important;
-}
-
-/* ---------- RELATED WIDGET LINKS ---------- */
-.related-widget-wrapper-link {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary-light) !important;
 }
 
 /* ---------- TABULAR INLINE ---------- */
 .tabular {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-md) !important;
+    background: var(--sc-bg-card) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-md) !important;
 }
 
 .tabular table {
@@ -963,47 +875,163 @@ p.help {
 }
 
 .tabular th {
-    background: var(--bg-header) !important;
-    color: var(--text-light) !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-light) !important;
     font-weight: 600 !important;
     font-size: 12px !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
     padding: 10px 12px !important;
-    border-bottom: 2px solid var(--border-color) !important;
+    border-bottom: 2px solid var(--sc-border) !important;
 }
 
 .tabular td {
-    background: var(--bg-card) !important;
-    color: var(--text-secondary) !important;
-    border-bottom: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-card) !important;
+    color: var(--sc-text-secondary) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
     padding: 8px 12px !important;
 }
 
 .tabular tr:hover td {
-    background: #253348 !important;
+    background: var(--sc-bg-table-hover) !important;
 }
 
 .tabular .add-row {
-    background: var(--bg-header) !important;
-    border-top: 1px solid var(--border-color) !important;
+    background: var(--sc-bg-header) !important;
+    border-top: 1px solid var(--sc-border) !important;
 }
 
 .tabular .add-row a {
-    color: var(--primary-light) !important;
+    color: var(--sc-primary) !important;
 }
 
-/* ---------- SORTABLE / DRAG HANDLE ---------- */
-.sortable-handler {
-    color: var(--text-light) !important;
+/* ---------- HELP TEXT ---------- */
+.help {
+    color: var(--sc-text-light) !important;
+    font-size: 13px !important;
+}
+
+p.help {
+    color: var(--sc-text-light) !important;
+}
+
+/* ---------- REQUIRED FIELDS ---------- */
+.required label,
+.required label::after {
+    color: var(--sc-text-secondary) !important;
+}
+
+.required label::after {
+    content: " *" !important;
+    color: var(--sc-danger) !important;
+    font-weight: 700 !important;
+}
+
+/* ---------- ERROR MESSAGES ---------- */
+.errornote {
+    background: rgba(239,68,68,0.1) !important;
+    color: var(--sc-danger) !important;
+    border: 1px solid var(--sc-danger) !important;
+    border-radius: var(--sc-radius-sm) !important;
+    padding: 10px 16px !important;
+}
+
+.errorlist {
+    color: var(--sc-danger) !important;
+    padding: 0 !important;
+    margin: 4px 0 !important;
+    list-style: none !important;
+}
+
+.errorlist li {
+    background: rgba(239,68,68,0.08) !important;
+    color: var(--sc-danger) !important;
+    padding: 6px 10px !important;
+    border-radius: var(--sc-radius-sm) !important;
+    margin: 2px 0 !important;
+    font-size: 13px !important;
+}
+
+/* ---------- DATE HIERARCHY ---------- */
+#changelist .xfull {
+    background: var(--sc-bg-header) !important;
+    border-bottom: 1px solid var(--sc-border) !important;
+    padding: 8px 16px !important;
+}
+
+#changelist .xfull a {
+    color: var(--sc-primary-light) !important;
+}
+
+/* ---------- RELATED WIDGETS ---------- */
+.related-widget-wrapper-link {
+    color: var(--sc-primary-light) !important;
 }
 
 /* ---------- OBJECT HISTORY ---------- */
 #change-history table th,
 #change-history table td {
-    background: var(--bg-card) !important;
-    color: var(--text-secondary) !important;
-    border-color: var(--border-color) !important;
+    background: var(--sc-bg-card) !important;
+    color: var(--sc-text-secondary) !important;
+    border-color: var(--sc-border) !important;
+}
+
+/* ---------- DATE PICKER ---------- */
+.calendarbox,
+.clockbox {
+    background: var(--sc-bg-card) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-sm) !important;
+    box-shadow: var(--sc-shadow-lg) !important;
+}
+
+.calendarbox th,
+.clockbox th {
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-white) !important;
+}
+
+.calendarbox td,
+.clockbox td {
+    color: var(--sc-text-secondary) !important;
+}
+
+.calendarbox td a,
+.clockbox td a {
+    color: var(--sc-primary) !important;
+}
+
+/* ---------- SELECT2 (if used) ---------- */
+.select2-container--default .select2-selection--single {
+    background: var(--sc-bg-input) !important;
+    border: 1px solid var(--sc-border) !important;
+    color: var(--sc-text-primary) !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: var(--sc-text-primary) !important;
+}
+
+.select2-dropdown {
+    background: var(--sc-bg-card) !important;
+    border: 1px solid var(--sc-border) !important;
+}
+
+.select2-results__option {
+    color: var(--sc-text-secondary) !important;
+}
+
+.select2-results__option--highlighted {
+    background: var(--sc-primary) !important;
+    color: var(--sc-text-white) !important;
+}
+
+/* ---------- FOOTER ---------- */
+#footer {
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-light) !important;
+    border-top: 1px solid var(--sc-border) !important;
+    padding: 16px 40px !important;
 }
 
 /* ---------- RESPONSIVE ---------- */
@@ -1021,75 +1049,4 @@ p.help {
     #header #branding h1 a {
         font-size: 16px !important;
     }
-
-    #nav-sidebar {
-        width: 220px !important;
-    }
-
-    #changelist table th,
-    #changelist table td {
-        padding: 8px 12px !important;
-        font-size: 13px !important;
-    }
-}
-
-/* ---------- DATE PICKER (DATETIME WIDGETS) ---------- */
-.calendarbox,
-.clockbox {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-    border-radius: var(--radius-sm) !important;
-    box-shadow: var(--shadow-lg) !important;
-}
-
-.calendarbox th,
-.clockbox th {
-    background: var(--bg-header) !important;
-    color: var(--text-white) !important;
-}
-
-.calendarbox td,
-.clockbox td {
-    color: var(--text-secondary) !important;
-}
-
-.calendarbox td a,
-.clockbox td a {
-    color: var(--primary-light) !important;
-}
-
-/* ---------- AUTO-COMPLETE LIGHT ---------- */
-.autocomplete-light {
-    background: var(--bg-input) !important;
-    color: var(--text-primary) !important;
-}
-
-/* ---------- SELECT2 OVERRIDES (if used) ---------- */
-.select2-container--default .select2-selection--single {
-    background: var(--bg-input) !important;
-    border: 1px solid var(--border-color) !important;
-    color: var(--text-primary) !important;
-}
-
-.select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: var(--text-primary) !important;
-}
-
-.select2-dropdown {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-color) !important;
-}
-
-.select2-results__option {
-    color: var(--text-secondary) !important;
-}
-
-.select2-results__option--highlighted {
-    background: var(--primary) !important;
-    color: var(--text-white) !important;
-}
-
-/* ---------- QUICK LINK ROW IN CHANGELIST ---------- */
-td.original {
-    background: var(--bg-card) !important;
 }
