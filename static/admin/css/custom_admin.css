@@ -1,6 +1,7 @@
 /* ====================================================
    SMART SCID - CUSTOM ADMIN STYLES (DARK MODE)
    Applied to default Django Admin Panel
+   Django 5.2 Compatible
    ==================================================== */
 
 /* ---------- ROOT VARIABLES ---------- */
@@ -18,7 +19,7 @@
 
     --bg-dark: #0F172A;
     --bg-header: #1E293B;
-    --bg-sidebar: #1E293B;
+    --bg-sidebar: #0F172A;
     --bg-main: #0F172A;
     --bg-card: #1E293B;
     --bg-input: #334155;
@@ -36,6 +37,41 @@
     --radius-sm: 6px;
     --radius-md: 10px;
     --radius-lg: 16px;
+
+    /* Override Django's built-in CSS variables */
+    --body-fg: #F1F5F9;
+    --body-bg: #0F172A;
+    --body-quiet-color: #94A3B8;
+    --body-medium-color: #CBD5E1;
+    --body-loud-color: #FFFFFF;
+
+    --header-color: #FFFFFF;
+    --header-bg: #1E293B;
+    --header-link-color: #FFFFFF;
+
+    --breadcrumbs-bg: #1E293B;
+    --breadcrumbs-link-fg: #60A5FA;
+
+    --link-fg: #60A5FA;
+    --link-hover-color: #3B82F6;
+    --link-selected-fg: #93C5FD;
+
+    --hairline-color: #334155;
+    --border-color: #334155;
+
+    --darkened-bg: #1E293B;
+    --selected-bg: #253348;
+    --selected-row: rgba(59, 130, 246, 0.15);
+
+    --error-fg: #EF4444;
+    --message-success-bg: rgba(34, 197, 94, 0.15);
+    --message-warning-bg: rgba(245, 158, 11, 0.15);
+    --message-error-bg: rgba(239, 68, 68, 0.15);
+
+    --close-button-bg: #334155;
+    --close-button-hover-bg: #475569;
+
+    color-scheme: dark;
 }
 
 /* ---------- GLOBAL ---------- */
@@ -94,53 +130,200 @@ a:visited {
     transition: background 0.2s ease !important;
 }
 
-#header .user-tools a:hover {
+#header .user-tools a:hover,
+#header .user-tools button:hover {
     background: rgba(255,255,255,0.15) !important;
     text-decoration: none !important;
 }
 
-/* ---------- SIDEBAR ---------- */
-#nav-sidebar {
-    background: var(--bg-sidebar) !important;
-    border-right: none !important;
-    box-shadow: var(--shadow-md) !important;
-    padding-top: 20px !important;
+/* Logout button in header */
+#header #logout-form button {
+    color: var(--text-white) !important;
+    background: transparent !important;
+    border: none !important;
+    font-weight: 500 !important;
+    padding: 6px 14px !important;
+    border-radius: var(--radius-sm) !important;
+    cursor: pointer !important;
+    font-size: inherit !important;
 }
 
+/* Theme toggle button */
+.theme-toggle {
+    color: var(--text-white) !important;
+}
+
+.theme-toggle svg {
+    fill: var(--text-white) !important;
+    color: var(--text-white) !important;
+}
+
+/* Footer */
+#footer {
+    background: var(--bg-header) !important;
+    color: var(--text-light) !important;
+    border-top: 1px solid var(--border-color) !important;
+    padding: 16px 40px !important;
+}
+
+/* Skip to content link */
+.skip-to-content-link {
+    background: var(--primary) !important;
+    color: var(--text-white) !important;
+}
+
+/* ---------- SIDEBAR (Django 5.2 structure) ---------- */
+.main {
+    background: var(--bg-main) !important;
+}
+
+.toggle-nav-sidebar {
+    background: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border-color) !important;
+    color: var(--primary-light) !important;
+}
+
+.toggle-nav-sidebar:hover,
+.toggle-nav-sidebar:focus {
+    background: var(--bg-header) !important;
+}
+
+#nav-sidebar {
+    background: var(--bg-sidebar) !important;
+    border-right: 1px solid var(--border-color) !important;
+    box-shadow: none !important;
+}
+
+#nav-filter {
+    background: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    border-radius: var(--radius-sm) !important;
+    margin: 8px 12px !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+}
+
+#nav-filter:focus {
+    border-color: var(--primary) !important;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25) !important;
+    outline: none !important;
+}
+
+#nav-filter::placeholder {
+    color: var(--text-light) !important;
+}
+
+/* App modules in sidebar */
 #nav-sidebar .module {
     background: transparent !important;
     border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
 }
 
-#nav-sidebar .module h2 {
+#nav-sidebar .module table {
+    width: 100% !important;
+}
+
+/* App name (caption) */
+#nav-sidebar .module caption {
+    padding: 12px 16px 6px !important;
+}
+
+#nav-sidebar .module caption a.section {
     color: var(--text-light) !important;
     font-size: 11px !important;
-    font-weight: 600 !important;
+    font-weight: 700 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.8px !important;
-    padding: 8px 16px !important;
-    margin: 12px 0 4px !important;
+    letter-spacing: 1px !important;
+    text-decoration: none !important;
+}
+
+#nav-sidebar .module caption a.section:hover {
+    color: var(--primary-light) !important;
+}
+
+#nav-sidebar .current-app .section:link,
+#nav-sidebar .current-app .section:visited {
+    color: var(--primary-light) !important;
+    font-weight: 700 !important;
+}
+
+/* Model links in sidebar */
+#nav-sidebar .module th {
+    background: transparent !important;
+    color: var(--text-secondary) !important;
+    padding: 0 !important;
+}
+
+#nav-sidebar .module th a {
+    color: var(--text-secondary) !important;
+    font-weight: 500 !important;
+    font-size: 14px !important;
+    padding: 8px 16px 8px 24px !important;
+    display: block !important;
+    border-radius: 0 !important;
+    transition: all 0.15s ease !important;
+    text-decoration: none !important;
+}
+
+#nav-sidebar .module th a:hover {
+    background: rgba(59, 130, 246, 0.1) !important;
+    color: var(--text-white) !important;
+}
+
+/* Current model highlight */
+#nav-sidebar .current-model {
+    background: var(--selected-row) !important;
+}
+
+#nav-sidebar .current-model a,
+#nav-sidebar .current-model a:hover {
+    color: var(--primary-light) !important;
+    font-weight: 600 !important;
+}
+
+/* Add/Change links in sidebar */
+#nav-sidebar .module td {
     background: transparent !important;
 }
 
-#nav-sidebar .module a {
-    color: rgba(255,255,255,0.7) !important;
-    font-weight: 500 !important;
-    padding: 8px 20px !important;
-    border-radius: var(--radius-sm) !important;
-    transition: all 0.2s ease !important;
-    margin: 2px 8px !important;
+#nav-sidebar .module td a {
+    color: var(--text-light) !important;
+    font-size: 12px !important;
+    padding: 4px 12px !important;
 }
 
-#nav-sidebar .module a:hover {
-    background: rgba(255,255,255,0.08) !important;
-    color: var(--text-white) !important;
+#nav-sidebar .module td a:hover {
+    color: var(--primary-light) !important;
 }
 
-#nav-sidebar .module a.selected {
-    background: rgba(59, 130, 246, 0.3) !important;
-    color: var(--text-white) !important;
-    border-left: 3px solid var(--primary) !important;
+#nav-sidebar .module td a.addlink {
+    color: var(--success) !important;
+}
+
+#nav-sidebar .module td a.changelink {
+    color: var(--primary-light) !important;
+}
+
+/* Spacer between modules */
+#nav-sidebar .module table + table {
+    border-top: 1px solid var(--border-color) !important;
+    margin-top: 4px !important;
+    padding-top: 4px !important;
+}
+
+/* Toggle arrow color */
+.main > #nav-sidebar + .content {
+    background: var(--bg-main) !important;
+}
+
+/* Override responsive sidebar hide */
+@media (max-width: 768px) {
+    #header #branding h1 a {
+        font-size: 16px !important;
+    }
 }
 
 /* ---------- MAIN CONTENT ---------- */
@@ -148,9 +331,21 @@ a:visited {
     padding: 30px !important;
 }
 
+#content h1 {
+    color: var(--text-primary) !important;
+    font-size: 22px !important;
+    font-weight: 700 !important;
+    margin: 0 0 20px 0 !important;
+}
+
 #content-main {
     max-width: 1200px !important;
     margin: 0 auto !important;
+}
+
+/* Content wrapper */
+.content {
+    background: var(--bg-main) !important;
 }
 
 /* ---------- CARDS / MODULES ---------- */
