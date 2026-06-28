@@ -601,3 +601,245 @@ class JumpRuleTests(APITestCase):
         self.assertEqual(response.data['condition'], 'answer == true')
         self.assertEqual(response.data['condition_type'], 'boolean')
         self.assertEqual(response.data['metadata'], {'expected_value': True})
+
+
+# ============================================================
+# MODULE B TESTS
+# ============================================================
+
+class ModuleBInterviewTests(APITestCase):
+    """
+    Test cases for Module B — Psychotic and Associated Symptoms.
+    Covers interview flow, jump rules, and diagnosis calculation.
+    """
+
+    def setUp(self):
+        self.clinician = User.objects.create_user(
+            phone_number='09123456789',
+            first_name='Test',
+            last_name='Clinician'
+        )
+        UserProfile.objects.get_or_create(user=self.clinician, defaults={'role': 'clinician'})
+
+        self.patient = Patient.objects.create(
+            first_name='Test',
+            last_name='Patient',
+            phone_number='0987654321',
+            created_by=self.clinician
+        )
+
+        self.module = InterviewModule.objects.create(
+            name='Module B - Psychotic and Associated Symptoms',
+            description='Psychotic symptoms module',
+            version='1.0',
+            is_active=True,
+            order=2
+        )
+
+        # Create Module B questions (subset for testing)
+        self.b1 = Question.objects.create(
+            id='B1', module=self.module, text='توهم مرجعیت؟',
+            question_type='boolean', is_criteria=True, criteria_number='1',
+            order=1, has_jump_logic=True
+        )
+        self.b2 = Question.objects.create(
+            id='B2', module=self.module, text='توهم آزار و تعقیب؟',
+            question_type='boolean', is_criteria=True, criteria_number='2',
+            order=2
+        )
+        self.b11 = Question.objects.create(
+            id='B11', module=self.module, text='سایر توهمات؟',
+            question_type='boolean', is_criteria=True, criteria_number='11',
+            order=11, has_jump_logic=True
+        )
+        self.b12 = Question.objects.create(
+            id='B12', module=self.module, text='توهم شنوایی؟',
+            question_type='boolean', is_criteria=True, criteria_number='12',
+            order=12, has_jump_logic=True
+        )
+        self.b18 = Question.objects.create(
+            id='B18', module=self.module, text='گفتار آشفته؟',
+            question_type='boolean', is_criteria=True, criteria_number='18',
+            order=18
+        )
+        self.b20 = Question.objects.create(
+            id='B20', module=self.module, text='رفتار کاتاتونیک؟',
+            question_type='boolean', is_criteria=True, criteria_number='20',
+            order=20, has_jump_logic=True
+        )
+        self.b21 = Question.objects.create(
+            id='B21', module=self.module, text='بی‌ارادگی؟',
+            question_type='boolean', is_criteria=True, criteria_number='21',
+            order=21
+        )
+        self.b23 = Question.objects.create(
+            id='B23', module=self.module, text='بیماری پزشکی؟',
+            question_type='boolean', order=23
+        )
+        self.b24 = Question.objects.create(
+            id='B24', module=self.module, text='مصرف ماده؟',
+            question_type='boolean', order=24
+        )
+
+        # Jump rules
+        JumpRule.objects.create(
+            from_question=self.b1, to_question=self.b12,
+            condition='criteria_count < 1', condition_type='criteria_count',
+            metadata={'question_ids': ['B1'], 'min_count': 1}
+        )
+        JumpRule.objects.create(
+            from_question=self.b12, to_question=self.b18,
+            condition='answer == false', condition_type='boolean',
+            metadata={'expected_value': False}
+        )
+        JumpRule.objects.create(
+            from_question=self.b20, to_question=self.b21,
+            condition='answer == false', condition_type='boolean',
+            metadata={'expected_value': False}
+        )
+
+        self.client.force_authenticate(user=self.clinician)
+
+    def test_module_b_listed(self):
+        """Module B should appear in the modules list."""
+        response = self.client.get('/api/interviews/modules/')
+        self.assertEqual(response.status_code, 200)
+        names = [m['name'] for m in response.data]
+        self.assertIn('Module B - Psychotic and Associated Symptoms', names)
+
+    def test_module_b_start_interview(self):
+        """Should be able to start a Module B interview."""
+        response = self.client.post('/api/interviews/interviews/start/', {
+            'patient_id': str(self.patient.id),
+            'module_id': self.module.id
+        }, format='json')
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['status'], 'in_progress')
+        self.assertEqual(response.data['module_name'], 'Module B - Psychotic and Associated Symptoms')
+
+    def test_b1_negative_skips_to_b12(self):
+        """If B1 (delusion of reference) is negative, skip to B12 (auditory hallucination)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status='in_progress',
+            current_question=self.b1
+        )
+
+        response = self.client.post(f'/api/interviews/interviews/{interview.id}/progress/', {
+            'question_id': 'B1',
+            'answer_value': {'boolean': False},
+            'answer_type': 'boolean'
+        }, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['current_question']['id'], 'B12')
+
+    def test_b1_positive_continues_to_b2(self):
+        """If B1 (delusion of reference) is positive, continue to B2."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status='in_progress',
+            current_question=self.b1
+        )
+
+        response = self.client.post(f'/api/interviews/interviews/{interview.id}/progress/', {
+            'question_id': 'B1',
+            'answer_value': {'boolean': True},
+            'answer_type': 'boolean'
+        }, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['current_question']['id'], 'B2')
+
+    def test_b12_negative_skips_to_b18(self):
+        """If B12 (auditory hallucination) is negative, skip to B18 (disorganized speech)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status='in_progress',
+            current_question=self.b12
+        )
+
+        response = self.client.post(f'/api/interviews/interviews/{interview.id}/progress/', {
+            'question_id': 'B12',
+            'answer_value': {'boolean': False},
+            'answer_type': 'boolean'
+        }, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['current_question']['id'], 'B18')
+
+    def test_b20_negative_skips_to_b21(self):
+        """If B20 (catatonic behavior) is negative, skip to B21 (negative symptoms)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status='in_progress',
+            current_question=self.b20
+        )
+
+        response = self.client.post(f'/api/interviews/interviews/{interview.id}/progress/', {
+            'question_id': 'B20',
+            'answer_value': {'boolean': False},
+            'answer_type': 'boolean'
+        }, format='json')
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data['current_question']['id'], 'B21')
+
+    def test_module_b_diagnosis_with_symptoms(self):
+        """Diagnosis should report present psychotic symptoms."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status='completed',
+            completed_at=timezone.now()
+        )
+
+        # B1 positive (delusion of reference)
+        Answer.objects.create(
+            interview=interview, question=self.b1,
+            answer_type='boolean', value={'boolean': True}
+        )
+        # B12 positive (auditory hallucination)
+        Answer.objects.create(
+            interview=interview, question=self.b12,
+            answer_type='boolean', value={'boolean': True}
+        )
+        # B23 negative (not due to medical)
+        Answer.objects.create(
+            interview=interview, question=self.b23,
+            answer_type='boolean', value={'boolean': False}
+        )
+
+        response = self.client.get(f'/api/interviews/interviews/{interview.id}/summary/')
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data['diagnosis_result']
+        self.assertIn('psychotic_symptoms', diagnosis)
+        self.assertTrue(diagnosis['psychotic_symptoms']['delusions']['present'])
+        self.assertEqual(diagnosis['psychotic_symptoms']['delusions']['count'], 1)
+        self.assertIn('B1', diagnosis['psychotic_symptoms']['delusions']['items'])
+        self.assertTrue(diagnosis['psychotic_symptoms']['hallucinations']['present'])
+        self.assertFalse(diagnosis['exclusion_factors']['due_to_medical_condition'])
+
+    def test_module_b_diagnosis_no_symptoms(self):
+        """Diagnosis should report no psychotic symptoms when all negative."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status='completed',
+            completed_at=timezone.now()
+        )
+
+        # All negative
+        for q in [self.b1, self.b2, self.b12, self.b18, self.b20, self.b21, self.b23, self.b24]:
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type='boolean', value={'boolean': False}
+            )
+
+        response = self.client.get(f'/api/interviews/interviews/{interview.id}/summary/')
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data['diagnosis_result']
+        self.assertFalse(diagnosis['psychotic_symptoms']['delusions']['present'])
+        self.assertEqual(diagnosis['psychotic_symptoms']['delusions']['count'], 0)
+        self.assertFalse(diagnosis['psychotic_symptoms']['hallucinations']['present'])

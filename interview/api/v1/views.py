@@ -294,8 +294,9 @@ class InterviewProgressView(APIView):
                 positive_count = Answer.objects.filter(
                     interview=interview,
                     question_id__in=question_ids
-                ).filter(value__boolean=True).count()
-                return positive_count < min_count
+                )
+                count = sum(1 for a in positive_count if a.boolean_value)
+                return count < min_count
         except Answer.DoesNotExist:
             return False
 
@@ -359,6 +360,56 @@ class InterviewProgressView(APIView):
                     'required_symptoms_count': 4,
                     'criteria_met': hypomania_met
                 }
+            })
+
+        elif 'Psychotic' in interview.module.name:
+            answers = {a.question.id: a for a in interview.answers.all()}
+
+            delusion_ids = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11']
+            hallucination_ids = ['B12', 'B13', 'B14', 'B15', 'B16', 'B17']
+            disorganized_ids = ['B18', 'B19']
+            catatonic_ids = ['B20']
+            negative_ids = ['B21', 'B22']
+
+            delusions_present = [qid for qid in delusion_ids if answers.get(qid) and answers[qid].boolean_value]
+            hallucinations_present = [qid for qid in hallucination_ids if answers.get(qid) and answers[qid].boolean_value]
+            disorganized_present = [qid for qid in disorganized_ids if answers.get(qid) and answers[qid].boolean_value]
+            catatonic_present = [qid for qid in catatonic_ids if answers.get(qid) and answers[qid].boolean_value]
+            negative_present = [qid for qid in negative_ids if answers.get(qid) and answers[qid].boolean_value]
+
+            due_to_medical = answers.get('B23') and answers['B23'].boolean_value
+            due_to_substance = answers.get('B24') and answers['B24'].boolean_value
+
+            result.update({
+                'psychotic_symptoms': {
+                    'delusions': {
+                        'present': len(delusions_present) > 0,
+                        'count': len(delusions_present),
+                        'items': delusions_present
+                    },
+                    'hallucinations': {
+                        'present': len(hallucinations_present) > 0,
+                        'count': len(hallucinations_present),
+                        'items': hallucinations_present
+                    },
+                    'disorganized_speech_or_behavior': {
+                        'present': len(disorganized_present) > 0,
+                        'items': disorganized_present
+                    },
+                    'catatonic_behavior': {
+                        'present': len(catatonic_present) > 0,
+                        'items': catatonic_present
+                    },
+                    'negative_symptoms': {
+                        'present': len(negative_present) > 0,
+                        'items': negative_present
+                    },
+                },
+                'exclusion_factors': {
+                    'due_to_medical_condition': due_to_medical,
+                    'due_to_substance': due_to_substance,
+                },
+                'note': 'This is a symptom profile. Diagnosis (Schizophrenia, Schizoaffective, etc.) requires Module C — Differential Diagnosis of Psychotic Disorders.'
             })
 
         return result

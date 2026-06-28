@@ -2,6 +2,10 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
 
+admin.site.site_header = '🧠 Smart SCID — پنل مدیریت'
+admin.site.site_title = 'Smart SCID Admin'
+admin.site.index_title = 'مدیریت سیستم مصاحبه بالینی'
+
 urlpatterns = [
     # Admin
     path('admin/', admin.site.urls),

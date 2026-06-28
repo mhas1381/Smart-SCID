@@ -1,0 +1,301 @@
+{
+  "module": {
+    "name": "Module B - Psychotic and Associated Symptoms",
+    "description": "Structured Clinical Interview for DSM-5 - Psychotic and Associated Symptoms Module (Delusions, Hallucinations, Disorganized Speech/Behavior, Catatonia, Negative Symptoms)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 2
+  },
+  "questions": [
+    {
+      "id": "B1",
+      "text": "آیا تا به حال به نظرتان رسیده که مردم درباره شما صحبت می‌کنند یا توجه خاصی به شما دارند؟ (چه فکر می‌کردید دارند درباره شما می‌گویند؟) آیا متقاعد شده بودید که دارند درباره شما صحبت می‌کنند یا فکر می‌کردید ممکن است خیال‌پردازی باشد؟ آیا تا به حال احساس کرده‌اید چیزی در رادیو، تلویزیون یا یک فیلم مخصوص شما بوده؟ آیا تا به حال احساس کرده‌اید کلمات یک آهنگ پیام خاصی برای شما داشته؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "B2",
+      "text": "آیا کسی عمداً برایتان مشکل ایجاد کرده یا سعی کرده به شما آسیب بزند؟ (درباره‌اش بگویید.) آیا تا به حال احساس کرده‌اید که تحت تعقیب، جاسوسی، دستکاری یا توطئه هستید؟ آیا تا به حال احساس کرده‌اید که مسموم شده‌اید یا غذایتان دستکاری شده؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B3",
+      "text": "آیا تا به حال فکر کرده‌اید که به نحوی خاص مهم هستید یا قدرت‌ها یا دانش خاصی دارید؟ (درباره‌اش بگویید.) آیا تا به حال باور داشته‌اید که رابطه خاص یا نزدیکی با یک فرد مشهور دارید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B4",
+      "text": "آیا تا به حال متقاعد شده‌اید که مشکل جدی با سلامت جسمی‌تان دارید در حالی که دکتر گفته مشکلی نیست... مثل اینکه سرطان یا بیماری دیگری دارید؟ آیا تا به حال احساس کرده‌اید چیز عجیبی برای بخش‌هایی از بدنتان اتفاق می‌افتد؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B5",
+      "text": "آیا تا به حال احساس کرده‌اید که مرتکب جرم یا کار وحشتناکی شده‌اید که باید مجازات شوید؟ آیا تا به حال احساس کرده‌اید کاری که انجام دادید یا باید انجام می‌دادید، آسیب جدی به خانواده‌تان زده؟ آیا تا به حال احساس مسئولیت در قبال یک فاجعه مثل آتش‌سوزی یا سیل داشته‌اید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B6",
+      "text": "آیا تا به حال متقاعد شده‌اید که همسر یا شریک زندگی‌تان به شما خیانت می‌کند؟ (از کجا فهمیدید دارد خیانت می‌کند؟)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B7",
+      "text": "آیا فرد مذهبی یا معنوی هستید؟ (اگر بله:) آیا تا به حال تجربه‌های مذهبی یا معنوی داشته‌اید که سایر افراد جامعه مذهبی‌تان تجربه نکرده‌اند؟ آیا تا به حال احساس کرده‌اید خدا، شیطان یا یک قدرت معنوی بالاتر مستقیماً با شما ارتباط برقرار کرده؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B8",
+      "text": "آیا تا به حال یک «تحسین‌کننده مخفی» داشته‌اید که وقتی سعی کردید با او تماس بگیرید، انکار کرد که عاشق شماست؟ آیا تا به حال رابطه عاشقانه‌ای با یک فرد مشهور داشته‌اید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B9",
+      "text": "آیا تا به حال احساس کرده‌اید چیزی یا کسی خارج از خودتان افکار یا اعمال شما را برخلاف میل‌تان کنترل می‌کند؟ (درباره‌اش بگویید.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B10",
+      "text": "آیا تا به حال احساس کرده‌اید افکاری که مال شما نیستند در ذهن شما قرار داده شده‌اند؟ (درباره‌اش بگویید.) آیا تا به حال احساس کرده‌اید افکارتان از ذهن شما خارج شده‌اند؟ آیا تا به حال احساس کرده‌اید افکارتان بلند پخش می‌شود به طوری که دیگران واقعاً می‌توانند بشنوند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B11",
+      "text": "آیا تا به حال باور داشته‌اید که کسی می‌تواند فکر شما را بخواند؟ آیا توهمات دیگری بوده که تجربه کرده باشید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "11",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "B12",
+      "text": "آیا تا به حال چیزهایی شنیده‌اید که دیگران نمی‌توانستند بشنوند، مثل صداها یا صدای افرادی که زمزمه یا صحبت می‌کنند؟ (آیا بیدار بودید؟) چه شنیدید؟ چند وقت یکبار می‌شنیدید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "12",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "B13",
+      "text": "آیا چشم‌اندازها یا چیزهایی دیده‌اید که دیگران نمی‌توانستند ببینند؟ (درباره‌اش بگویید. آیا بیدار بودید؟) (توجه: از توهم تمایز قایل شود — یعنی درک نادرست یک محرک واقعی خارجی.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "13",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B14",
+      "text": "آیا تا به حال احساسات عجیبی روی پوست خود داشته‌اید، مثل احساس اینکه چیزی می‌خزد یا زیر پوست شماست؟ یا احساس لمس یا نوازش شدن؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "14",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B15",
+      "text": "آیا تا به حال احساسات غیرعادی داخل بخشی از بدن خود داشته‌اید، مثل احساس الکتریسیته؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "15",
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B16",
+      "text": "آیا تا به حال چیزی خورده‌اید یا نوشیده‌اید که فکر می‌کردید مزه بد یا عجیبی دارد در حالی که هر کس دیگری که آن را چشیده مشکلی نداشته؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "16",
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B17",
+      "text": "آیا تا به حال چیزهای بدبویی استشمام کرده‌اید که دیگران نمی‌توانستند بو کنند، مثل غذای فاسد یا اجساد؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "17",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "B18",
+      "text": "گفتار آشفته: آیا فرد از موضوعی به موضوع دیگر می‌پرد (associations سست)؟ آیا پاسخ‌هایش نامرتبط است (tangentiality)؟ آیا گفتار آنقدر آشفته است که تقریباً غیرقابل فهم است؟ (بر اساس مشاهده و تاریخچه ارزیابی شود.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "18",
+      "order": 18,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B19",
+      "text": "رفتار آشفته شدید: آیا فرد رفتار کودکانه، بی‌قراری غیرقابل پیش‌بینی، آشفتگی ظاهری شدید، لباس عجیب پوشیدن، یا رفتار جنسی نامناسب نشان می‌دهد؟ (بر اساس مشاهده و تاریخچه ارزیابی شود.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "19",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B20",
+      "text": "رفتار کاتاتونیک: آیا نشانه‌هایی از بی‌حرکتی (stupor)، اداسازی (grimacing)، وضعیت‌گیری غیرعادی (posturing)، بیقراری بدون محرک خارجی، حرکات تکراری غیرهدفمند (stereotypy)، یا عدم پاسخ‌گویی (mutism/negativism) وجود دارد؟ (بر اساس مشاهده یا معاینه فیزیکی ارزیابی شود.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "20",
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "B21",
+      "text": "بی‌ارادگی (Avolition): آیا دوره‌ای حداقل چند ماهه بوده که کار نمی‌کردید، در مدرسه نبودید، یا کار زیادی انجام نمی‌دادید؟ آیا دوره‌ای بوده که نتوانید کارهای اساسی روزمره مثل مسواک زدن یا حمام کردن را انجام دهید؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "21",
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B22",
+      "text": "کاهش بیان عاطفی: آیا کاهش در بیان احساسات در صورت، تماس چشمی، لحن صدا (prosody)، و حرکات دست، سر و صورت که معمولاً تأکید عاطفی به گفتار می‌دهند، وجود دارد؟ (بر اساس مشاهده یا گزارش اطرافیان ارزیابی شود.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "22",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B23",
+      "text": "آیا این علائم مستقیماً ناشی از اثرات فیزیولوژیک یک بیماری پزشکی عمومی بوده‌اند؟",
+      "question_type": "boolean",
+      "order": 23,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "B24",
+      "text": "آیا این علائم مستقیماً ناشی از مصرف یک ماده (داروی تجویزی یا مواد مخدر) بوده‌اند؟",
+      "question_type": "boolean",
+      "order": 24,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "B1",
+      "condition": "criteria_count < 1",
+      "to_question": "B12",
+      "condition_type": "criteria_count",
+      "metadata": {
+        "question_ids": ["B1"],
+        "min_count": 1,
+        "note": "If B1 (delusion of reference) is negative, skip to B12 (auditory hallucinations) — skip remaining delusion questions."
+      }
+    },
+    {
+      "from_question": "B11",
+      "condition": "answer == false",
+      "to_question": "B12",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no other delusions (B11 negative), proceed to hallucinations section (B12)."
+      }
+    },
+    {
+      "from_question": "B12",
+      "condition": "answer == false",
+      "to_question": "B18",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no auditory hallucinations, skip remaining hallucination questions to disorganized speech (B18)."
+      }
+    },
+    {
+      "from_question": "B17",
+      "condition": "criteria_count < 1",
+      "to_question": "B18",
+      "condition_type": "criteria_count",
+      "metadata": {
+        "question_ids": ["B12", "B13", "B14", "B15", "B16", "B17"],
+        "min_count": 1,
+        "note": "If no hallucinations are positive, skip to disorganized speech section (B18)."
+      }
+    },
+    {
+      "from_question": "B20",
+      "condition": "answer == false",
+      "to_question": "B21",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no catatonic behavior, proceed to negative symptoms (B21)."
+      }
+    }
+  ]
+}

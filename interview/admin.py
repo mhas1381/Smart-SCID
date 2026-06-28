@@ -81,6 +81,7 @@ class InterviewModuleAdmin(admin.ModelAdmin):
         'is_active',
         'order',
         'question_count',
+        'interview_count',
     )
 
     list_filter = (
@@ -94,6 +95,8 @@ class InterviewModuleAdmin(admin.ModelAdmin):
     )
 
     ordering = ('order',)
+    list_per_page = 20
+    save_on_top = True
 
     fieldsets = (
         (_('Module Information'), {
@@ -117,8 +120,17 @@ class InterviewModuleAdmin(admin.ModelAdmin):
     question_count.short_description = _('Questions')
     question_count.admin_order_field = 'questions__count'
 
+    def interview_count(self, obj):
+        """Display number of interviews using this module."""
+        count = obj.interviews.count()
+        if count > 0:
+            url = reverse('admin:interview_interview_changelist') + f'?module__id__exact={obj.id}'
+            return format_html('<a href="{}">{}</a>', url, count)
+        return '0'
+    interview_count.short_description = _('Interviews')
+
     def get_queryset(self, request):
-        return super().get_queryset(request).prefetch_related('questions')
+        return super().get_queryset(request).prefetch_related('questions', 'interviews')
 
 
 # ============================================================
@@ -158,6 +170,8 @@ class QuestionAdmin(admin.ModelAdmin):
     )
 
     ordering = ('module__order', 'order')
+    list_per_page = 50
+    save_on_top = True
 
     fieldsets = (
         (_('Question Information'), {
@@ -230,6 +244,8 @@ class JumpRuleAdmin(admin.ModelAdmin):
     )
 
     ordering = ('from_question__module__order', 'from_question__order')
+    list_per_page = 50
+    save_on_top = True
 
     fieldsets = (
         (_('Jump Rule Information'), {
@@ -319,10 +335,11 @@ class AnswerAdmin(admin.ModelAdmin):
     )
 
     ordering = ('-timestamp',)
+    list_per_page = 50
+    date_hierarchy = 'timestamp'
 
-    
-    raw_id_fields = ('interview', 'question')  
-    autocomplete_fields = ('interview', 'question') 
+    raw_id_fields = ('interview', 'question')
+    autocomplete_fields = ('interview', 'question')
 
     
     readonly_fields = ('id', 'timestamp')
@@ -418,6 +435,7 @@ class InterviewAdmin(admin.ModelAdmin):
         'clinician_link',
         'module_link',
         'status_badge',
+        'progress_display',
         'current_question_link',
         'answer_count',
         'duration_display',
@@ -439,8 +457,12 @@ class InterviewAdmin(admin.ModelAdmin):
     )
 
     ordering = ('-started_at',)
+    list_per_page = 25
+    date_hierarchy = 'started_at'
+    save_on_top = True
+    actions = ('mark_completed', 'mark_paused')
 
-    readonly_fields = ('id', 'started_at', 'completed_at')
+    readonly_fields = ('id', 'started_at', 'completed_at', 'created_at', 'updated_at')
 
     fieldsets = (
         (_('Interview Information'), {
@@ -457,6 +479,8 @@ class InterviewAdmin(admin.ModelAdmin):
             'fields': (
                 'started_at',
                 'completed_at',
+                'created_at',
+                'updated_at',
             ),
             'classes': ('collapse',),
         }),
@@ -568,6 +592,22 @@ class InterviewAdmin(admin.ModelAdmin):
     started_at_display.short_description = _('Started')
     started_at_display.admin_order_field = 'started_at'
 
+    def progress_display(self, obj):
+        """Display interview progress as a bar."""
+        total = obj.module.questions.count() if obj.module else 0
+        answered = obj.answers.count()
+        if total == 0:
+            return '-'
+        pct = int((answered / total) * 100)
+        color = '#28a745' if pct >= 100 else '#007bff' if pct >= 50 else '#ffc107'
+        return format_html(
+            '<div style="width:80px; background:#e9ecef; border-radius:4px; overflow:hidden;">'
+            '<div style="width:{}%; background:{}; height:14px;"></div></div>'
+            '<small>{}/{} ({}%)</small>',
+            pct, color, answered, total, pct
+        )
+    progress_display.short_description = _('Progress')
+
     def get_queryset(self, request):
         return super().get_queryset(request).select_related(
             'patient', 'clinician', 'module', 'current_question'
@@ -578,3 +618,17 @@ class InterviewAdmin(admin.ModelAdmin):
         if not change and not obj.clinician:
             obj.clinician = request.user
         super().save_model(request, obj, form, change)
+
+    @admin.action(description=_('Mark selected interviews as completed'))
+    def mark_completed(self, request, queryset):
+        from django.utils import timezone
+        count = queryset.filter(status__in=['in_progress', 'paused', 'pending']).update(
+            status='completed',
+            completed_at=timezone.now(),
+        )
+        self.message_user(request, f'{count} interview(s) marked as completed.')
+
+    @admin.action(description=_('Mark selected interviews as paused'))
+    def mark_paused(self, request, queryset):
+        count = queryset.filter(status='in_progress').update(status='paused')
+        self.message_user(request, f'{count} interview(s) paused.')

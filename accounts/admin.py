@@ -51,6 +51,8 @@ class CustomUserAdmin(UserAdmin):
     list_filter = ('is_staff', 'is_active', 'profile__role', 'created_date')
     search_fields = ('phone_number', 'email', 'first_name', 'last_name', 'profile__license_number')
     ordering = ('-created_date',)
+    list_per_page = 25
+    date_hierarchy = 'created_date'
 
     fieldsets = (
         (None, {'fields': ('phone_number', 'password')}),
@@ -67,6 +69,7 @@ class CustomUserAdmin(UserAdmin):
     )
 
     readonly_fields = ('created_date', 'updated_date')
+    save_on_top = True
 
     def full_name_display(self, obj):
         return obj.get_full_name()
@@ -186,6 +189,7 @@ class PatientAdmin(admin.ModelAdmin):
         'created_by_link',
         'overview_count',
         'note_count',
+        'interview_count',
         'created_at',
         'is_active',
     )
@@ -193,6 +197,11 @@ class PatientAdmin(admin.ModelAdmin):
     list_filter = ('gender', 'marital_status', 'education', 'is_active', 'created_at')
     search_fields = ('patient_code', 'first_name', 'last_name', 'phone_number', 'email')
     ordering = ('-created_at',)
+    list_per_page = 25
+    date_hierarchy = 'created_at'
+    save_on_top = True
+    list_editable = ('is_active',)
+    actions = ('activate_patients', 'deactivate_patients')
 
     readonly_fields = ('patient_code', 'created_at', 'updated_at')
 
@@ -241,13 +250,31 @@ class PatientAdmin(admin.ModelAdmin):
         return '0'
     note_count.short_description = 'Notes'
 
+    def interview_count(self, obj):
+        count = obj.interviews.count()
+        if count > 0:
+            url = reverse('admin:interview_interview_changelist') + f'?patient__id__exact={obj.id}'
+            return format_html('<a href="{}">{}</a>', url, count)
+        return '0'
+    interview_count.short_description = 'Interviews'
+
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related('created_by').prefetch_related('notes', 'overviews')
+        return super().get_queryset(request).select_related('created_by').prefetch_related('notes', 'overviews', 'interviews')
 
     def save_model(self, request, obj, form, change):
         if not change and not obj.created_by:
             obj.created_by = request.user
         super().save_model(request, obj, form, change)
+
+    @admin.action(description=_('Activate selected patients'))
+    def activate_patients(self, request, queryset):
+        count = queryset.update(is_active=True)
+        self.message_user(request, f'{count} patient(s) activated.')
+
+    @admin.action(description=_('Deactivate selected patients'))
+    def deactivate_patients(self, request, queryset):
+        count = queryset.update(is_active=False)
+        self.message_user(request, f'{count} patient(s) deactivated.')
 
 
 # ============================================================
@@ -260,6 +287,9 @@ class PatientNoteAdmin(admin.ModelAdmin):
     list_filter = ('note_type', 'created_at', 'clinician')
     search_fields = ('patient__first_name', 'patient__last_name', 'patient__patient_code', 'content', 'clinician__first_name', 'clinician__last_name')
     readonly_fields = ('created_at', 'updated_at')
+    list_per_page = 25
+    date_hierarchy = 'created_at'
+    save_on_top = True
 
     fieldsets = (
         (None, {'fields': ('patient', 'clinician', 'note_type', 'content')}),
@@ -336,6 +366,9 @@ class OverviewAdmin(admin.ModelAdmin):
     )
 
     readonly_fields = ('created_at', 'updated_at')
+    list_per_page = 20
+    date_hierarchy = 'created_at'
+    save_on_top = True
 
     fieldsets = (
         (_('Patient & Clinician'), {

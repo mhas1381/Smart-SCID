@@ -201,7 +201,31 @@ Module A contains **90 questions** (A1–A90) organized into 7 sections:
 | Past Hypomanic Episode | A66–A77 | Historical hypomania verification |
 | Persistent Depressive Disorder | A78–A90 | 2-year chronic depression, associated symptoms |
 
-**16 jump rules** implement the SCID-5 decision tree for conditional navigation (14 active; 2 reference Module B which is not yet implemented).
+**16 jump rules** implement the SCID-5 decision tree for conditional navigation (14 active; 2 reference Module B cross-module diagnosis).
+
+---
+
+## 📋 Module B — Psychotic and Associated Symptoms (Implemented)
+
+Module B contains **24 questions** (B1–B24) organized into 5 sections:
+
+| Section | Questions | Topic |
+|---------|-----------|-------|
+| Delusions | B1–B11 | Reference, persecutory, grandiose, somatic, guilt, jealous, religious, erotomanic, thought control/insertion/withdrawal/broadcasting |
+| Hallucinations | B12–B17 | Auditory, visual, tactile, somatic, gustatory, olfactory |
+| Disorganized Speech/Behavior | B18–B19 | Loose associations, tangentiality, disorganized behavior |
+| Catatonia | B20 | Stupor, grimacing, posturing, stereotypy, mutism, negativism |
+| Negative Symptoms | B21–B22 | Avolition, diminished emotional expressiveness |
+| Exclusion Criteria | B23–B24 | Due to medical condition, due to substance |
+
+**5 jump rules** implement the SCID-5 decision tree:
+- B1 negative → skip to B12 (auditory hallucinations)
+- B11 negative → skip to B12
+- B12 negative → skip to B18 (disorganized speech)
+- No hallucinations positive → skip to B18
+- B20 negative → skip to B21 (negative symptoms)
+
+**Diagnosis output**: Symptom profile (delusions, hallucinations, disorganized, catatonic, negative) with exclusion factors. Full differential diagnosis (Schizophrenia, Schizoaffective, etc.) requires Module C.
 
 ---
 
@@ -231,7 +255,7 @@ pip install -r requirements.txt
 python manage.py makemigrations
 python manage.py migrate
 
-# Load Module A interview data
+# Load interview data (Module A + Module B)
 python manage.py load_interview_data
 
 # Create admin user
@@ -295,15 +319,17 @@ python manage.py test accounts interview --verbosity=2
 - [x] Clinical notes system
 - [x] Interview engine (start, progress, pause, resume, complete)
 - [x] **Module A — Mood Episodes** (90 questions, 15 jump rules, auto-diagnosis)
-- [x] Jump rule evaluation (boolean, multiple_choice, text, range)
+- [x] **Module B — Psychotic and Associated Symptoms** (24 questions, 5 jump rules, symptom profile)
+- [x] Jump rule evaluation (boolean, multiple_choice, text, range, criteria_count)
 - [x] Diagnosis calculation for Depression, Mania, Hypomania
+- [x] Psychotic symptom profiling (delusions, hallucinations, disorganized, catatonic, negative)
 - [x] Custom admin panel with inline editing
 - [x] OpenAPI/Swagger documentation (Persian descriptions)
 - [x] 56 passing tests
 
 ### 🚧 In Progress
 
-- [ ] **Module B — Psychotic and Associated Symptoms**
+- [ ] **Module C — Differential Diagnosis of Psychotic Disorders** (Schizophrenia, Schizoaffective, etc.)
 
 ### 📋 Planned
 
