@@ -1063,3 +1063,339 @@ p.help {
         font-size: 16px !important;
     }
 }
+
+/* ============================================================
+   INLINE TABLE IMPROVEMENTS
+   ============================================================ */
+
+/* Full width tabular inline */
+.inline-group .tabular {
+    width: 100% !important;
+    overflow-x: auto !important;
+}
+
+.inline-group .tabular table {
+    width: 100% !important;
+    table-layout: auto !important;
+    border-collapse: collapse !important;
+}
+
+/* Text field (readonly) - always show full text */
+.tabular td.field-text {
+    min-width: 200px !important;
+    max-width: 400px !important;
+}
+
+.tabular td.field-text p {
+    margin: 0 !important;
+    padding: 4px 0 !important;
+    white-space: normal !important;
+    word-wrap: break-word !important;
+    font-size: 13px !important;
+    line-height: 1.6 !important;
+    color: var(--sc-text-primary) !important;
+}
+
+/* ID column - bigger and clear */
+.tabular td.field-id,
+.tabular td.field-id.hidden {
+    display: table-cell !important;
+    font-family: "SF Mono", "Fira Code", "Consolas", monospace !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    color: var(--sc-primary) !important;
+    white-space: nowrap !important;
+    min-width: 45px !important;
+    max-width: 55px !important;
+    text-align: center !important;
+}
+
+.tabular th.column-id,
+.tabular th.column-id.hidden {
+    display: table-cell !important;
+    min-width: 45px !important;
+    max-width: 55px !important;
+    text-align: center !important;
+}
+
+/* Inline table cells */
+.tabular td {
+    padding: 8px 10px !important;
+    vertical-align: middle !important;
+    min-height: 44px !important;
+}
+
+.tabular tbody tr.form-row {
+    min-height: 44px !important;
+}
+
+.tabular th {
+    padding: 12px !important;
+    white-space: nowrap !important;
+    background: var(--sc-bg-header) !important;
+    color: var(--sc-text-light) !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    border-bottom: 2px solid var(--sc-border) !important;
+}
+
+/* ======== DELETE CHECKBOX (inline row) ======== */
+
+.tabular td.delete {
+    width: 60px !important;
+    min-width: 60px !important;
+    text-align: center !important;
+    vertical-align: middle !important;
+}
+
+.tabular td.delete input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    accent-color: var(--sc-danger) !important;
+    cursor: pointer !important;
+    margin: 0 !important;
+}
+
+/* Delete column header */
+.tabular thead th:last-child {
+    width: 60px !important;
+    min-width: 60px !important;
+    text-align: center !important;
+    color: var(--sc-danger) !important;
+}
+
+/* ======== DELETE LINK (module-level) ======== */
+
+.submit-row a.deletelink {
+    background: var(--sc-danger) !important;
+    color: var(--sc-text-white) !important;
+    padding: 8px 20px !important;
+    border-radius: var(--sc-radius-sm) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    transition: all 0.2s ease !important;
+}
+
+.submit-row a.deletelink:hover {
+    background: #DC2626 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: var(--sc-shadow-md) !important;
+}
+
+/* ======== INLINE ROW STYLES ======== */
+
+.tabular tbody tr:hover td {
+    background: var(--sc-bg-table-hover) !important;
+}
+
+.tabular tbody tr:nth-child(even) td {
+    background: rgba(0,0,0,0.02) !important;
+}
+
+html[data-theme="dark"] .tabular tbody tr:nth-child(even) td {
+    background: rgba(255,255,255,0.03) !important;
+}
+
+/* Add row */
+.tabular .add-row td {
+    padding: 12px !important;
+    text-align: center !important;
+    background: rgba(59,130,246,0.05) !important;
+}
+
+html[data-theme="dark"] .tabular .add-row td {
+    background: rgba(59,130,246,0.1) !important;
+}
+
+.tabular .add-row a {
+    color: var(--sc-primary) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+.tabular .add-row a:hover {
+    color: var(--sc-primary-dark) !important;
+    text-decoration: underline !important;
+}
+
+/* Original column - hide redundant text, show only Change link */
+.tabular th.original {
+    width: 70px !important;
+    max-width: 70px !important;
+    min-width: 70px !important;
+}
+
+.tabular td.original {
+    position: relative !important;
+    width: 70px !important;
+    max-width: 70px !important;
+    min-width: 70px !important;
+    overflow: hidden !important;
+    padding: 8px 4px !important;
+    vertical-align: middle !important;
+}
+
+/* Reset absolute positioning, hide the text content, keep the link */
+.tabular td.original p {
+    display: block !important;
+    position: static !important;
+    top: auto !important;
+    right: auto !important;
+    left: auto !important;
+    bottom: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: auto !important;
+    height: auto !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    overflow: hidden !important;
+}
+
+/* Show only the Change link at normal size */
+.tabular td.original p .inlinechangelink,
+.tabular td.original p .inlineviewlink {
+    font-size: 11px !important;
+    line-height: normal !important;
+    display: inline-block !important;
+}
+
+/* Hide the hidden inputs inside original cell */
+.tabular td.original input[type="hidden"] {
+    display: none !important;
+}
+
+/* Change link in inline */
+.inlinechangelink,
+.inlineviewlink {
+    display: inline-block !important;
+    color: var(--sc-primary-light) !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    padding: 2px 8px !important;
+    background: var(--sc-bg-table-hover) !important;
+    border-radius: 4px !important;
+    margin-left: 4px !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    z-index: 1 !important;
+}
+
+.inlinechangelink:hover,
+.inlineviewlink:hover {
+    color: var(--sc-primary) !important;
+    text-decoration: underline !important;
+    background: var(--sc-border) !important;
+}
+
+/* Select widget inside inline */
+.tabular select {
+    min-width: 120px !important;
+    height: 38px !important;
+    padding: 6px 10px !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+}
+
+/* Compact columns to fit horizontally */
+.tabular .column-question_type {
+    min-width: 110px !important;
+    max-width: 140px !important;
+}
+
+.tabular .field-question_type select {
+    min-width: 100px !important;
+    max-width: 140px !important;
+}
+
+.tabular .column-criteria_number,
+.tabular .field-criteria_number {
+    min-width: 60px !important;
+    max-width: 80px !important;
+}
+
+.tabular .field-criteria_number input[type="text"] {
+    width: 50px !important;
+    min-width: 50px !important;
+    padding: 6px 8px !important;
+    font-size: 13px !important;
+}
+
+.tabular .column-order,
+.tabular .field-order {
+    min-width: 50px !important;
+    max-width: 70px !important;
+}
+
+.tabular .field-order input[type="number"] {
+    width: 50px !important;
+    min-width: 50px !important;
+    padding: 6px 8px !important;
+    font-size: 13px !important;
+}
+
+.tabular .column-is_criteria,
+.tabular .field-is_criteria,
+.tabular .column-has_jump_logic,
+.tabular .field-has_jump_logic {
+    min-width: 50px !important;
+    max-width: 65px !important;
+    text-align: center !important;
+    white-space: nowrap !important;
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+}
+
+.tabular th.column-has_jump_logic,
+.tabular th.column-is_criteria {
+    font-size: 10px !important;
+    white-space: nowrap !important;
+}
+
+/* Delete column - give breathing room */
+.tabular td.delete {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.tabular thead th:last-child {
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+    min-width: 65px !important;
+}
+
+.tabular .field-is_criteria input[type="checkbox"],
+.tabular .field-has_jump_logic input[type="checkbox"] {
+    width: 18px !important;
+    height: 18px !important;
+    margin: 0 !important;
+    cursor: pointer !important;
+}
+
+/* Help text inside inline */
+.tabular .help {
+    font-size: 11px !important;
+    margin-top: 4px !important;
+    color: var(--sc-text-light) !important;
+}
+
+/* Error rows in inline */
+.tabular .row-form-errors td {
+    background: rgba(239,68,68,0.08) !important;
+    padding: 8px 12px !important;
+}
+
+/* Collapsed inline */
+.inline-group details summary {
+    cursor: pointer !important;
+    padding: 12px 20px !important;
+    font-weight: 600 !important;
+}
+
+.inline-group details[open] summary {
+    border-bottom: 1px solid var(--sc-border) !important;
+}

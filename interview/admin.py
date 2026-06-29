@@ -22,19 +22,11 @@ class QuestionInline(admin.TabularInline):
     """
     model = Question
     extra = 0
-    fields = ('id', 'text_preview', 'question_type', 'is_criteria', 'order', 'has_jump_logic')
-    readonly_fields = ('id', 'text_preview')
+    fields = ('id', 'text', 'question_type', 'is_criteria', 'criteria_number', 'order', 'has_jump_logic')
+    readonly_fields = ('id', 'text')
     ordering = ('order',)
-    classes = ('collapse',)
     can_delete = True
     show_change_link = True
-
-    def text_preview(self, obj):
-        """Show truncated question text."""
-        if len(obj.text) > 60:
-            return f"{obj.text[:60]}..."
-        return obj.text
-    text_preview.short_description = _('Question Text')
 
 
 class JumpRuleInline(admin.TabularInline):
@@ -53,11 +45,10 @@ class AnswerInline(admin.TabularInline):
     Inline for answers within interview admin.
     """
     model = Answer
-    extra = 1  
-    fields = ('question', 'answer_type', 'value', 'notes') 
+    extra = 1
+    fields = ('question', 'answer_type', 'value', 'notes')
     ordering = ('question__order',)
-    classes = ('collapse',)
-    can_delete = True  
+    can_delete = True
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         if db_field.name == 'value':
             kwargs['widget'] = forms.Textarea(attrs={'rows': 2, 'cols': 40})
