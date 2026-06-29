@@ -297,6 +297,15 @@ class InterviewProgressView(APIView):
                 )
                 count = sum(1 for a in positive_count if a.boolean_value)
                 return count < min_count
+            elif rule.condition_type == 'criteria_count_met':
+                question_ids = rule.metadata.get('question_ids', [])
+                min_count = rule.metadata.get('min_count', 1)
+                positive_count = Answer.objects.filter(
+                    interview=interview,
+                    question_id__in=question_ids
+                )
+                count = sum(1 for a in positive_count if a.boolean_value)
+                return count >= min_count
         except Answer.DoesNotExist:
             return False
 
@@ -361,6 +370,163 @@ class InterviewProgressView(APIView):
                     'criteria_met': hypomania_met
                 }
             })
+
+        elif 'Differential Diagnosis' in interview.module.name:
+            answers = {a.question.id: a for a in interview.answers.all()}
+
+            # C1: Psychotic symptoms outside mood episodes?
+            c1_positive = answers.get('C1') and answers['C1'].boolean_value
+
+            if not c1_positive:
+                result['psychotic_mood_disorder'] = True
+                result['note'] = (
+                    'Psychotic symptoms occur only during mood episodes. '
+                    'This is a Psychotic Mood Disorder. Proceed to Module D for mood diagnosis.'
+                )
+            else:
+                # Evaluate schizophrenia criteria (C2-C6)
+                schizo_criteria = ['C2', 'C3', 'C4', 'C5', 'C6']
+                schizo_met = [qid for qid in schizo_criteria if answers.get(qid) and answers[qid].boolean_value]
+                schizophrenia = len(schizo_met) == 5
+
+                # Schizophreniform: C7 + C8 (same as schizophrenia but 1-6 months)
+                schizoform_met = [
+                    qid for qid in ['C7', 'C8']
+                    if answers.get(qid) and answers[qid].boolean_value
+                ]
+                schizophreniform = len(schizoform_met) == 2
+
+                # Schizoaffective: C9-C12
+                schizoaffective_criteria = ['C9', 'C10', 'C11', 'C12']
+                schizoaffective_met = [
+                    qid for qid in schizoaffective_criteria
+                    if answers.get(qid) and answers[qid].boolean_value
+                ]
+                schizoaffective = len(schizoaffective_met) == 4
+
+                # Delusional disorder: C13-C17
+                delusional_criteria = ['C13', 'C14', 'C15', 'C16', 'C17']
+                delusional_met = [
+                    qid for qid in delusional_criteria
+                    if answers.get(qid) and answers[qid].boolean_value
+                ]
+                delusional = len(delusional_met) == 5
+
+                # Brief psychotic: C19-C21
+                brief_criteria = ['C19', 'C20', 'C21']
+                brief_met = [
+                    qid for qid in brief_criteria
+                    if answers.get(qid) and answers[qid].boolean_value
+                ]
+                brief_psychotic = len(brief_met) == 3
+
+                # Other specified: C22-C25
+                other_criteria = ['C22', 'C23', 'C24', 'C25']
+                other_met = [
+                    qid for qid in other_criteria
+                    if answers.get(qid) and answers[qid].boolean_value
+                ]
+                other_specified = len(other_met) == 4
+
+                # Determine primary diagnosis
+                diagnosis = 'Undifferentiated'
+                diagnosis_details = {}
+
+                if schizophrenia:
+                    diagnosis = 'Schizophrenia'
+                    diagnosis_details['criteria_met'] = schizo_met
+                    if answers.get('C26'):
+                        diagnosis_details['current'] = answers['C26'].boolean_value
+                elif schizophreniform:
+                    diagnosis = 'Schizophreniform Disorder'
+                    diagnosis_details['criteria_met'] = schizoform_met
+                    if answers.get('C27'):
+                        diagnosis_details['current'] = answers['C27'].boolean_value
+                elif schizoaffective:
+                    diagnosis = 'Schizoaffective Disorder'
+                    diagnosis_details['criteria_met'] = schizoaffective_met
+                    if answers.get('C28'):
+                        diagnosis_details['current'] = answers['C28'].boolean_value
+                elif delusional:
+                    diagnosis = 'Delusional Disorder'
+                    diagnosis_details['criteria_met'] = delusional_met
+                    delusion_type = answers.get('C18')
+                    if delusion_type:
+                        diagnosis_details['type'] = delusion_type.text_value
+                    if answers.get('C29'):
+                        diagnosis_details['current'] = answers['C29'].boolean_value
+                elif brief_psychotic:
+                    diagnosis = 'Brief Psychotic Disorder'
+                    diagnosis_details['criteria_met'] = brief_met
+                    if answers.get('C30'):
+                        diagnosis_details['current'] = answers['C30'].boolean_value
+                elif other_specified:
+                    diagnosis = 'Other Specified Psychotic Disorder'
+                    diagnosis_details['criteria_met'] = other_met
+
+                # Module B symptom summary (referenced by Module C)
+                module_b_answers = {}
+                try:
+                    module_b = InterviewModule.objects.get(name__icontains='Psychotic and Associated')
+                    b_answers = Answer.objects.filter(
+                        interview__patient=interview.patient,
+                        interview__module=module_b,
+                        interview__status='completed'
+                    ).order_by('-interview__completed_at')
+
+                    if b_answers.exists():
+                        latest_b = {}
+                        for a in b_answers:
+                            if a.question_id not in latest_b:
+                                latest_b[a.question_id] = a
+
+                        delusion_ids = ['B1', 'B2', 'B3', 'B4', 'B5', 'B6', 'B7', 'B8', 'B9', 'B10', 'B11']
+                        hallucination_ids = ['B12', 'B13', 'B14', 'B15', 'B16', 'B17']
+
+                        module_b_answers = {
+                            'delusions_present': [
+                                qid for qid in delusion_ids
+                                if latest_b.get(qid) and latest_b[qid].boolean_value
+                            ],
+                            'hallucinations_present': [
+                                qid for qid in hallucination_ids
+                                if latest_b.get(qid) and latest_b[qid].boolean_value
+                            ],
+                        }
+                except InterviewModule.DoesNotExist:
+                    pass
+
+                result.update({
+                    'diagnosis': diagnosis,
+                    'details': diagnosis_details,
+                    'criteria_summary': {
+                        'schizophrenia': {
+                            'met': schizophrenia,
+                            'criteria_positive': schizo_met,
+                        },
+                        'schizophreniform': {
+                            'met': schizophreniform,
+                            'criteria_positive': schizoform_met,
+                        },
+                        'schizoaffective': {
+                            'met': schizoaffective,
+                            'criteria_positive': schizoaffective_met,
+                        },
+                        'delusional_disorder': {
+                            'met': delusional,
+                            'criteria_positive': delusional_met,
+                        },
+                        'brief_psychotic': {
+                            'met': brief_psychotic,
+                            'criteria_positive': brief_met,
+                        },
+                        'other_specified': {
+                            'met': other_specified,
+                            'criteria_positive': other_met,
+                        },
+                    },
+                    'module_b_symptoms': module_b_answers,
+                })
 
         elif 'Psychotic' in interview.module.name:
             answers = {a.question.id: a for a in interview.answers.all()}

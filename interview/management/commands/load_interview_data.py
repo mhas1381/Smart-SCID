@@ -16,6 +16,7 @@ class Command(BaseCommand):
     MODULE_FILES = [
         'module_a.json',
         'module_b.json',
+        'module_c.json',
     ]
 
     def handle(self, *args, **options):

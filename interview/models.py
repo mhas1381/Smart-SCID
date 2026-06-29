@@ -100,6 +100,7 @@ class JumpRule(models.Model):
         ('text', 'Text Match'),
         ('range', 'Number Range'),
         ('criteria_count', 'Criteria Count'),
+        ('criteria_count_met', 'Criteria Count Met'),
     ]
     
     from_question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='jump_rules')

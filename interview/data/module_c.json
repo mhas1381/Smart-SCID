@@ -1,0 +1,359 @@
+{
+  "module": {
+    "name": "Module C - Differential Diagnosis of Psychotic Disorders",
+    "description": "Structured Clinical Interview for DSM-5 - Differential Diagnosis of Psychotic Disorders (Schizophrenia, Schizophreniform, Schizoaffective, Delusional Disorder, Brief Psychotic Disorder)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 3
+  },
+  "questions": [
+    {
+      "id": "C1",
+      "text": "آیا علائم روان‌پریشی در زمان‌هایی غیر از دوره‌های افسردگی اساسی (A12/A26) یا شیدایی (A40/A65) رخ داده‌اند؟ (آیا زمانی بوده که علائم روان‌پریشی داشته‌اید و افسرده/سرحال/تحت‌تأثیر نبوده‌اید؟)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "C2",
+      "text": "معیار A اسکیزوفرنی: آیا دو یا بیشتر از موارد زیر هر کدام برای بخش قابل توجهی از یک دوره یک‌ماهه (یا کمتر در صورت درمان موفق) وجود داشته‌اند؟ (حداقل یکی باید از گزینه‌های ۱ تا ۳ باشد) ۱) هذیان‌ها [B1-B11] ۲) توهم‌ها [B12-B17] ۳) گفتار آشفته [B18] ۴) رفتار کاملاً آشفته یا کاتاتونیک [B19-B20] ۵) علائم منفی [B21-B22]",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "C3",
+      "text": "معیار B اسکیزوفرنی: آیا سطح عملکرد در یک یا چند حوزه اصلی (کار، روابط بین‌فردی، مراقبت از خود) به طور قابل توجهی پایین‌تر از سطح قبل از شروع بیماری بوده است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C4",
+      "text": "معیار C اسکیزوفرنی: آیا نشانه‌های مداوم اختلال حداقل به مدت ۶ ماه ادامه داشته‌اند؟ (شامل حداقل ۱ ماه علائم فاز فعال) — علائم پیش‌مرضی/باقیمانده شامل: باورهای غیرمعمول، تجربه‌های ادراکی غیرمعمول، گفتار انحرافی/مبهم، رفتار غیرمعمول، علائم منفی، عاطفه کُند/نامتناسب، انزوای اجتماعی",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C5",
+      "text": "معیار D اسکیزوفرنی: آیا اختلال اسکیزواِفکتیو و اختلال افسردگی یا دوقطبی با ویژگی‌های روان‌پریشی رد شده‌اند؟ (یعنی هیچ دوره افسردگی اساسی یا شیدایی همزمان با علائم فاز فعال رخ نداده، یا دوره‌های خلقی کمتر از ۵۰٪ کل مدت دوره‌های فعال و باقیمانده بوده‌اند.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C6",
+      "text": "معیار E اسکیزوفرنی: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده (داروی تجویزی یا مواد مخدر) یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "C7",
+      "text": "اختلال اسکیزوفرنی‌فرم: آیا معیارهای A اسکیزوفرنی برآورده شده‌اند و مدت اختلال حداقل ۱ ماه اما کمتر از ۶ ماه بوده است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C8",
+      "text": "اختلال اسکیزوفرنی‌فرم: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "C9",
+      "text": "اختلال اسکیزواِفکتیو — معیار A: آیا یک دوره بیماری بدون وقفه وجود داشته که در آن یک دوره خلقی اساسی (افسردگی یا شیدایی) همزمان با معیارهای کامل A اسکیزوفرنی رخ داده باشد؟ (توجه: دوره افسردگی اساسی باید شامل خلق افسرده باشد، نه فقط بی‌لذتی.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C10",
+      "text": "اختلال اسکیزواِفکتیو — معیار B: آیا توهم‌ها یا هذیان‌ها به مدت ۲ هفته یا بیشتر در غیاب یک دوره خلقی اساسی وجود داشته‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C11",
+      "text": "اختلال اسکیزواِفکتیو — معیار C: آیا علائم دوره خلقی برای اکثریت (بیش از ۵۰٪) کل مدت دوره‌های فعال و باقیمانده وجود داشته‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "11",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C12",
+      "text": "اختلال اسکیزواِفکتیو — معیار D: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "12",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "C13",
+      "text": "اختلال هذیانی: آیا یک یا چند هذیان به مدت حداقل ۱ ماه وجود داشته‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "13",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C14",
+      "text": "اختلال هذیانی: آیا فرد هرگز معیار A اسکیزوفرنی را برآورده نکرده است؟ (توجه: توهم‌های لمسی و بویایی مرتبط با موضوع هذیان مانع تشخیص اختلال هذیانی نمی‌شوند.)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "14",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C15",
+      "text": "اختلال هذیانی: آیا عملکرد به طور قابل توجهی مختل نشده و رفتار آشکارا عجیب یا غیرمنطقی نبوده است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "15",
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C16",
+      "text": "اختلال هذیانی: اگر دوره‌های خلقی رخ داده‌اند، آیا نسبت به دوره‌های هذیانی کوتاه‌تر بوده‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "16",
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C17",
+      "text": "اختلال هذیانی: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست و بهتر با اختلال بدشکلی بدن یا وسواس فکری-عملی توجیه نمی‌شود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "17",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C18",
+      "text": "اختلال هذیانی: نوع هذیان مشخص شود: ۱) آزار/تعقیب ۲) خودبزرگ‌بینی ۳) حسادت ۴) اروتومانیا ۵) جسمانی ۶) مختلط ۷) نامشخص",
+      "question_type": "text",
+      "is_criteria": false,
+      "order": 18,
+      "is_required": false,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C19",
+      "text": "اختلال روان‌پریشی کوتاه‌مدت: آیا حداقل یکی از علائم زیر وجود داشته: هذیان، توهم، گفتار آشفته، یا رفتار کاملاً آشفته/کاتاتونیک؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "18",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C20",
+      "text": "اختلال روان‌پریشی کوتاه‌مدت: آیا مدت اختلال حداقل ۱ روز اما کمتر از ۱ ماه بوده و فرد کاملاً به سطح عملکرد قبل از بیماری بازگشته است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "19",
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C21",
+      "text": "اختلال روان‌پریشی کوتاه‌مدت: آیا اختلال بهتر با اختلال خلقی با ویژگی‌های روان‌پریشی یا اختلال روان‌پریشی دیگری توجیه نمی‌شود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "20",
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C22",
+      "text": "اختلال روان‌پریشی مشخص‌شده دیگر: آیا علائم غالب هستند اما معیارهای کامل هیچ اختلال روان‌پریشی خاصی برآورده نمی‌شود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "21",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C23",
+      "text": "آیا علائم باعث پریشانی بالینی قابل توجه یا اختلال در عملکرد اجتماعی، شغلی یا سایر حوزه‌های مهم عملکرد شده‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "22",
+      "order": 23,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C24",
+      "text": "آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "23",
+      "order": 24,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C25",
+      "text": "آیا علائم معیارهای کامل یک اختلال روان‌پریشی خاص را برآورده نمی‌کنند؟ (در صورت عدم تطابق با هیچ تشخیص خاص، به C26 بروید)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "24",
+      "order": 25,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C26",
+      "text": "سیر زمانی اسکیزوفرنی: آیا علائم فاز فعال در طول ماه گذشته وجود داشته‌اند؟ (اگر بله: «فعلی». اگر خیر: آیا حداقل ۲ ماه بدون علائم قابل توجه بوده‌اید؟ — «بهبود کامل» یا «بهبود نسبی»)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 26,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C27",
+      "text": "سیر زمانی اسکیزوفرنی‌فرم: آیا علائم فاز فعال در طول ماه گذشته وجود داشته‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 27,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C28",
+      "text": "سیر زمانی اسکیزواِفکتیو: آیا علائم فاز فعال در طول ماه گذشته وجود داشته‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 28,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C29",
+      "text": "سیر زمانی اختلال هذیانی: آیا هذیان‌ها در طول ماه گذشته وجود داشته‌اند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 29,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "C30",
+      "text": "سیر زمانی اختلال روان‌پریشی کوتاه‌مدت: آیا علائم در طول ماه گذشته وجود داشته‌اند و آیا فرد کاملاً بهبود یافته است؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 30,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "C1",
+      "condition": "answer == false",
+      "to_question": null,
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If psychotic symptoms occur ONLY during mood episodes, this is a Psychotic Mood Disorder — skip to Module D."
+      }
+    },
+    {
+      "from_question": "C2",
+      "condition": "criteria_count < 2",
+      "to_question": "C13",
+      "condition_type": "criteria_count",
+      "metadata": {
+        "question_ids": ["C2", "C3", "C4", "C5", "C6"],
+        "min_count": 2,
+        "note": "If schizophrenia Criterion A is not met (fewer than 2 of C2-C6 positive), skip to Delusional Disorder (C13)."
+      }
+    },
+    {
+      "from_question": "C6",
+      "condition": "criteria_count_met >= 4",
+      "to_question": "C9",
+      "condition_type": "criteria_count_met",
+      "metadata": {
+        "question_ids": ["C2", "C3", "C4", "C5", "C6"],
+        "min_count": 4,
+        "note": "If full schizophrenia criteria are met (4+ of C2-C6 positive), skip to Schizoaffective assessment (C9)."
+      }
+    },
+    {
+      "from_question": "C8",
+      "condition": "answer == false",
+      "to_question": "C9",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If schizophreniform exclusion not met (C8 negative), proceed to Schizoaffective assessment (C9)."
+      }
+    },
+    {
+      "from_question": "C12",
+      "condition": "answer == false",
+      "to_question": "C13",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If schizoaffective exclusion not met (C12 negative), proceed to Delusional Disorder (C13)."
+      }
+    }
+  ]
+}
