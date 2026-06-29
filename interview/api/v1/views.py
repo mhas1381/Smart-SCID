@@ -909,6 +909,236 @@ class InterviewProgressView(APIView):
                 }
             )
 
+        elif "Substance Use" in interview.module.name:
+            answers = {a.question.id: a for a in interview.answers.all()}
+
+            # Phase 1: Alcohol Use Disorder (E1-E13)
+            e1_positive = answers.get("E1") and answers["E1"].boolean_value
+
+            alcohol_criteria_ids = ["E2", "E3", "E4", "E5", "E6", "E7", "E8", "E9", "E10", "E11", "E12"]
+            alcohol_met = [
+                qid for qid in alcohol_criteria_ids
+                if answers.get(qid) and answers[qid].boolean_value
+            ]
+            alcohol_count = len(alcohol_met)
+
+            if alcohol_count >= 6:
+                alcohol_severity = "شدید"
+            elif alcohol_count >= 4:
+                alcohol_severity = "متوسط"
+            elif alcohol_count >= 2:
+                alcohol_severity = "خفیف"
+            else:
+                alcohol_severity = None
+
+            # Phase 2: Nonalcohol Substance Screening (E14-E22)
+            e14_positive = answers.get("E14") and answers["E14"].boolean_value
+
+            substance_screens = {
+                "E15": "آرامبخش / خواب‌آور / ضداضطراب",
+                "E16": "شاهدانه (ماریجوانا)",
+                "E17": "محرک‌ها (شیشه / کوکائین)",
+                "E18": "مواد افیونی (هروئین / مسکن‌ها)",
+                "E19": "فنسیکلیدین (PCP / کتامین)",
+                "E20": "توهم‌زاها (LSD / اکستازی)",
+                "E21": "مواد استنشاقی",
+                "E22": "سایر مواد",
+            }
+
+            substances_used = [
+                substance_screens[qid]
+                for qid in substance_screens
+                if answers.get(qid) and answers[qid].boolean_value
+            ]
+
+            # Phase 3: Substance Use Disorder Criteria (E38-E48)
+            e37_text = answers["E37"].text_value if answers.get("E37") else None
+
+            substance_criteria_ids = [
+                "E38", "E39", "E40", "E41", "E42",
+                "E43", "E44", "E45", "E46", "E47", "E48",
+            ]
+            substance_met = [
+                qid for qid in substance_criteria_ids
+                if answers.get(qid) and answers[qid].boolean_value
+            ]
+            substance_count = len(substance_met)
+
+            if substance_count >= 6:
+                substance_severity = "شدید"
+            elif substance_count >= 4:
+                substance_severity = "متوسط"
+            elif substance_count >= 2:
+                substance_severity = "خفیف"
+            else:
+                substance_severity = None
+
+            # Build result
+            result.update({
+                "alcohol": {
+                    "diagnosed": alcohol_count >= 2 and e1_positive,
+                    "symptoms_counted": alcohol_count,
+                    "required_symptoms_count": 2,
+                    "severity": alcohol_severity if alcohol_count >= 2 and e1_positive else None,
+                    "criteria_met": alcohol_met if alcohol_count >= 2 and e1_positive else [],
+                },
+                "substances_screened": {
+                    "any_substance_used": e14_positive,
+                    "substances_reported": substances_used,
+                },
+                "substance_use_disorder": {
+                    "diagnosed": substance_count >= 2 and e14_positive,
+                    "primary_substance": e37_text,
+                    "symptoms_counted": substance_count,
+                    "required_symptoms_count": 2,
+                    "severity": substance_severity if substance_count >= 2 and e14_positive else None,
+                    "criteria_met": substance_met if substance_count >= 2 and e14_positive else [],
+                },
+            })
+
+        elif "Anxiety Disorders" in interview.module.name:
+            # ================================================================
+            # MODULE F — ANXIETY DISORDERS
+            # ================================================================
+            # 4 disorders: Panic, Agoraphobia, Social Anxiety, GAD
+            # Each has: gate, criteria, exclusions, severity, chronology
+
+            answers = {a.question.id: a for a in interview.answers.all()}
+
+            # ---- Panic Disorder (F1-F7) ----
+            f1_positive = answers.get("F1") and answers["F1"].boolean_value
+            f2_positive = answers.get("F2") and answers["F2"].boolean_value
+            f3_no_substance = answers.get("F3") and answers["F3"].boolean_value
+            f4_no_medical = answers.get("F4") and answers["F4"].boolean_value
+            f5_no_other = answers.get("F5") and answers["F5"].boolean_value
+
+            panic_diagnosed = (
+                f1_positive
+                and f2_positive
+                and f3_no_substance
+                and f4_no_medical
+                and f5_no_other
+            )
+            panic_severity = None
+            if answers.get("F6"):
+                panic_severity = answers["F6"].text_value
+            panic_current = None
+            if answers.get("F7"):
+                panic_current = answers["F7"].text_value
+
+            result.update({
+                "panic_disorder": {
+                    "diagnosed": panic_diagnosed,
+                    "severity": panic_severity,
+                    "chronology": panic_current,
+                },
+            })
+
+            # ---- Agoraphobia (F8-F19) ----
+            f8_positive = answers.get("F8") and answers["F8"].boolean_value
+            situation_ids = ["F9", "F10", "F11", "F12", "F13"]
+            situations_met = [
+                qid for qid in situation_ids
+                if answers.get(qid) and answers[qid].boolean_value
+            ]
+            f14_avoidance = answers.get("F14") and answers["F14"].boolean_value
+            f15_disproportionate = answers.get("F15") and answers["F15"].boolean_value
+            f16_no_substance = answers.get("F16") and answers["F16"].boolean_value
+            f17_no_other = answers.get("F17") and answers["F17"].boolean_value
+
+            agoraphobia_diagnosed = (
+                f8_positive
+                and len(situations_met) >= 2
+                and f14_avoidance
+                and f15_disproportionate
+                and f16_no_substance
+                and f17_no_other
+            )
+            agoraphobia_severity = None
+            if answers.get("F18"):
+                agoraphobia_severity = answers["F18"].text_value
+            agoraphobia_current = None
+            if answers.get("F19"):
+                agoraphobia_current = answers["F19"].text_value
+
+            result.update({
+                "agoraphobia": {
+                    "diagnosed": agoraphobia_diagnosed,
+                    "situations_count": len(situations_met),
+                    "situations_met": situations_met,
+                    "severity": agoraphobia_severity,
+                    "chronology": agoraphobia_current,
+                },
+            })
+
+            # ---- Social Anxiety Disorder (F20-F28) ----
+            f20_positive = answers.get("F20") and answers["F20"].boolean_value
+            f21_negative_eval = answers.get("F21") and answers["F21"].boolean_value
+            f22_persistent_fear = answers.get("F22") and answers["F22"].boolean_value
+            f23_avoidance = answers.get("F23") and answers["F23"].boolean_value
+            f24_disproportionate = answers.get("F24") and answers["F24"].boolean_value
+            f25_no_substance = answers.get("F25") and answers["F25"].boolean_value
+            f26_no_other = answers.get("F26") and answers["F26"].boolean_value
+
+            social_anxiety_diagnosed = (
+                f20_positive
+                and f21_negative_eval
+                and f22_persistent_fear
+                and f23_avoidance
+                and f24_disproportionate
+                and f25_no_substance
+                and f26_no_other
+            )
+            social_anxiety_severity = None
+            if answers.get("F27"):
+                social_anxiety_severity = answers["F27"].text_value
+            social_anxiety_current = None
+            if answers.get("F28"):
+                social_anxiety_current = answers["F28"].text_value
+
+            result.update({
+                "social_anxiety": {
+                    "diagnosed": social_anxiety_diagnosed,
+                    "severity": social_anxiety_severity,
+                    "chronology": social_anxiety_current,
+                },
+            })
+
+            # ---- Generalized Anxiety Disorder (F29-F40) ----
+            f29_positive = answers.get("F29") and answers["F29"].boolean_value
+            f30_control = answers.get("F30") and answers["F30"].boolean_value
+            gad_symptom_ids = ["F31", "F32", "F33", "F34", "F35", "F36"]
+            gad_symptoms_met = [
+                qid for qid in gad_symptom_ids
+                if answers.get(qid) and answers[qid].boolean_value
+            ]
+            f37_no_substance = answers.get("F37") and answers["F37"].boolean_value
+            f38_no_other = answers.get("F38") and answers["F38"].boolean_value
+
+            gad_diagnosed = (
+                f29_positive
+                and f30_control
+                and len(gad_symptoms_met) >= 3
+                and f37_no_substance
+                and f38_no_other
+            )
+            gad_severity = None
+            if answers.get("F39"):
+                gad_severity = answers["F39"].text_value
+            gad_current = None
+            if answers.get("F40"):
+                gad_current = answers["F40"].text_value
+
+            result.update({
+                "generalized_anxiety": {
+                    "diagnosed": gad_diagnosed,
+                    "associated_symptoms_count": len(gad_symptoms_met),
+                    "associated_symptoms_met": gad_symptoms_met,
+                    "severity": gad_severity,
+                    "chronology": gad_current,
+                },
+            })
+
         return result
 
 

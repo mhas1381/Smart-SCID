@@ -2977,3 +2977,1280 @@ class ModuleDInterviewTests(APITestCase):
             self.assertIn(key, diagnosis["criteria_summary"])
             self.assertIn("met", diagnosis["criteria_summary"][key])
             self.assertIn("criteria_positive", diagnosis["criteria_summary"][key])
+
+
+class ModuleEInterviewTests(APITestCase):
+    """
+    Test cases for Module E — Substance Use Disorders.
+    Covers interview flow, jump rules, and diagnosis calculation.
+    """
+
+    def setUp(self):
+        self.clinician = User.objects.create_user(
+            phone_number="09123456789", first_name="Test", last_name="Clinician"
+        )
+        UserProfile.objects.get_or_create(
+            user=self.clinician, defaults={"role": "clinician"}
+        )
+
+        self.patient = Patient.objects.create(
+            first_name="Test",
+            last_name="Patient",
+            phone_number="0987654321",
+            created_by=self.clinician,
+        )
+
+        self.module = InterviewModule.objects.create(
+            name="Module E - Substance Use Disorders",
+            description="Substance Use Disorders",
+            version="1.0",
+            is_active=True,
+            order=5,
+        )
+
+        # Phase 1: Alcohol (E1-E13)
+        self.e1 = Question.objects.create(
+            id="E1", module=self.module,
+            text="مصرف الکل در ۱۲ ماه گذشته؟",
+            question_type="boolean", is_criteria=False,
+            order=1, has_jump_logic=True,
+        )
+        self.e2 = Question.objects.create(
+            id="E2", module=self.module,
+            text="بیشتر از قصد مینوشید؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=2,
+        )
+        self.e3 = Question.objects.create(
+            id="E3", module=self.module,
+            text="تلاش ناموفق برای کاهش؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=3,
+        )
+        self.e4 = Question.objects.create(
+            id="E4", module=self.module,
+            text="زمان زیاد صرف نوشیدن؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=4,
+        )
+        self.e5 = Question.objects.create(
+            id="E5", module=self.module,
+            text="هوس نوشیدن؟",
+            question_type="boolean", is_criteria=True, criteria_number="4",
+            order=5,
+        )
+        self.e6 = Question.objects.create(
+            id="E6", module=self.module,
+            text="ناتوانی در تعهدات؟",
+            question_type="boolean", is_criteria=True, criteria_number="5",
+            order=6,
+        )
+        self.e7 = Question.objects.create(
+            id="E7", module=self.module,
+            text="مشکلات اجتماعی؟",
+            question_type="boolean", is_criteria=True, criteria_number="6",
+            order=7,
+        )
+        self.e8 = Question.objects.create(
+            id="E8", module=self.module,
+            text="کاهش فعالیتها؟",
+            question_type="boolean", is_criteria=True, criteria_number="7",
+            order=8,
+        )
+        self.e9 = Question.objects.create(
+            id="E9", module=self.module,
+            text="مصرف در موقعیت خطرناک؟",
+            question_type="boolean", is_criteria=True, criteria_number="8",
+            order=9,
+        )
+        self.e10 = Question.objects.create(
+            id="E10", module=self.module,
+            text="ادامه مصرف علیرغم مشکلات؟",
+            question_type="boolean", is_criteria=True, criteria_number="9",
+            order=10,
+        )
+        self.e11 = Question.objects.create(
+            id="E11", module=self.module,
+            text="تلرانس؟",
+            question_type="boolean", is_criteria=True, criteria_number="10",
+            order=11,
+        )
+        self.e12 = Question.objects.create(
+            id="E12", module=self.module,
+            text="ترک؟",
+            question_type="boolean", is_criteria=True, criteria_number="11",
+            order=12,
+        )
+        self.e13 = Question.objects.create(
+            id="E13", module=self.module,
+            text="آستانه الکل؟",
+            question_type="boolean", order=13, has_jump_logic=True,
+        )
+
+        # Phase 2: Substance Screening (E14-E22)
+        self.e14 = Question.objects.create(
+            id="E14", module=self.module,
+            text="مصرف مواد غیر از الکل؟",
+            question_type="boolean", order=14, has_jump_logic=True,
+        )
+        self.e15 = Question.objects.create(
+            id="E15", module=self.module,
+            text="آرامبخش؟",
+            question_type="boolean", order=15, has_jump_logic=True,
+        )
+        self.e16 = Question.objects.create(
+            id="E16", module=self.module,
+            text="شاهدانه؟",
+            question_type="boolean", order=16, has_jump_logic=True,
+        )
+        self.e17 = Question.objects.create(
+            id="E17", module=self.module,
+            text="محرکها؟",
+            question_type="boolean", order=17, has_jump_logic=True,
+        )
+        self.e18 = Question.objects.create(
+            id="E18", module=self.module,
+            text="افیونی؟",
+            question_type="boolean", order=18, has_jump_logic=True,
+        )
+        self.e19 = Question.objects.create(
+            id="E19", module=self.module,
+            text="PCP؟",
+            question_type="boolean", order=19, has_jump_logic=True,
+        )
+        self.e20 = Question.objects.create(
+            id="E20", module=self.module,
+            text="توهمزا؟",
+            question_type="boolean", order=20, has_jump_logic=True,
+        )
+        self.e21 = Question.objects.create(
+            id="E21", module=self.module,
+            text="استنشاقی؟",
+            question_type="boolean", order=21, has_jump_logic=True,
+        )
+        self.e22 = Question.objects.create(
+            id="E22", module=self.module,
+            text="سایر مواد؟",
+            question_type="boolean", order=22, has_jump_logic=True,
+        )
+
+        # Phase 3: Substance Use Disorder Criteria (E37-E49)
+        self.e37 = Question.objects.create(
+            id="E37", module=self.module,
+            text="ماده اصلی؟",
+            question_type="text", order=37,
+        )
+        self.e38 = Question.objects.create(
+            id="E38", module=self.module,
+            text="بیشتر از قصد مصرف؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=38,
+        )
+        self.e39 = Question.objects.create(
+            id="E39", module=self.module,
+            text="تلاش ناموفق برای کاهش ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=39,
+        )
+        self.e40 = Question.objects.create(
+            id="E40", module=self.module,
+            text="زمان زیاد صرف ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=40,
+        )
+        self.e41 = Question.objects.create(
+            id="E41", module=self.module,
+            text="هوس ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="4",
+            order=41,
+        )
+        self.e42 = Question.objects.create(
+            id="E42", module=self.module,
+            text="ناتوانی در تعهدات ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="5",
+            order=42,
+        )
+        self.e43 = Question.objects.create(
+            id="E43", module=self.module,
+            text="مشکلات اجتماعی ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="6",
+            order=43,
+        )
+        self.e44 = Question.objects.create(
+            id="E44", module=self.module,
+            text="کاهش فعالیتها ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="7",
+            order=44,
+        )
+        self.e45 = Question.objects.create(
+            id="E45", module=self.module,
+            text="مصرف ماده در موقعیت خطرناک؟",
+            question_type="boolean", is_criteria=True, criteria_number="8",
+            order=45,
+        )
+        self.e46 = Question.objects.create(
+            id="E46", module=self.module,
+            text="ادامه مصرف ماده علیرغم مشکلات؟",
+            question_type="boolean", is_criteria=True, criteria_number="9",
+            order=46,
+        )
+        self.e47 = Question.objects.create(
+            id="E47", module=self.module,
+            text="تلرانس ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="10",
+            order=47,
+        )
+        self.e48 = Question.objects.create(
+            id="E48", module=self.module,
+            text="ترک ماده؟",
+            question_type="boolean", is_criteria=True, criteria_number="11",
+            order=48,
+        )
+        self.e49 = Question.objects.create(
+            id="E49", module=self.module,
+            text="آستانه اختلال مصرف ماده؟",
+            question_type="boolean", order=49,
+        )
+
+        # Jump rules
+        JumpRule.objects.create(
+            from_question=self.e1, condition="answer == false",
+            condition_type="boolean", to_question=self.e14,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.e13, condition="alcohol threshold assessed",
+            condition_type="boolean", to_question=self.e14,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.e14, condition="answer == false",
+            condition_type="boolean", to_question=None,
+            metadata={"expected_value": False},
+        )
+        for eq in [self.e15, self.e16, self.e17, self.e18, self.e19, self.e20, self.e21]:
+            JumpRule.objects.create(
+                from_question=eq, condition="answer == true",
+                condition_type="boolean", to_question=self.e37,
+                metadata={"expected_value": True},
+            )
+        JumpRule.objects.create(
+            from_question=self.e22, condition="answer == true",
+            condition_type="boolean", to_question=self.e37,
+            metadata={"expected_value": True},
+        )
+        JumpRule.objects.create(
+            from_question=self.e22, condition="answer == false",
+            condition_type="boolean", to_question=None,
+            metadata={"expected_value": False},
+        )
+
+        self.client.force_authenticate(user=self.clinician)
+
+    # ============================================================
+    # JUMP RULE TESTS
+    # ============================================================
+
+    def test_e1_negative_skips_to_e14(self):
+        """E1 negative should skip to E14 (no alcohol use)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.e1,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "E1", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "E14")
+
+    def test_e14_negative_ends_interview(self):
+        """E14 negative should end the interview (no substance use)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.e14,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "E14", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["has_next"])
+        self.assertEqual(response.data["interview_status"], "completed")
+
+    def test_e15_positive_jumps_to_e37(self):
+        """E15 positive (sedatives) should jump to E37 (primary substance)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.e15,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "E15", "answer_value": {"boolean": True}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "E37")
+
+    def test_e16_positive_jumps_to_e37(self):
+        """E16 positive (cannabis) should jump to E37."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.e16,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "E16", "answer_value": {"boolean": True}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "E37")
+
+    def test_e17_negative_continues_to_e18(self):
+        """E17 negative (no stimulants) should continue to E18."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.e17,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "E17", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "E18")
+
+    def test_e22_negative_ends_interview(self):
+        """E22 negative (no other substances) should end interview."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.e22,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "E22", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["has_next"])
+        self.assertEqual(response.data["interview_status"], "completed")
+
+    # ============================================================
+    # DIAGNOSIS TESTS
+    # ============================================================
+
+    def test_diagnosis_no_alcohol_no_substances(self):
+        """No alcohol, no substances → both not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e1,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e14,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["alcohol"]["diagnosed"])
+        self.assertFalse(diagnosis["substance_use_disorder"]["diagnosed"])
+
+    def test_diagnosis_alcohol_mild(self):
+        """Alcohol with 3 criteria (E1+E2+E3) → mild alcohol use disorder."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e1,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["E2", "E3"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["alcohol"]["diagnosed"])
+        self.assertEqual(diagnosis["alcohol"]["symptoms_counted"], 2)
+        self.assertEqual(diagnosis["alcohol"]["severity"], "خفیف")
+
+    def test_diagnosis_alcohol_severe(self):
+        """Alcohol with 7 criteria → severe alcohol use disorder."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e1,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["E2", "E3", "E4", "E5", "E6", "E7", "E8"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["alcohol"]["diagnosed"])
+        self.assertEqual(diagnosis["alcohol"]["symptoms_counted"], 7)
+        self.assertEqual(diagnosis["alcohol"]["severity"], "شدید")
+
+    def test_diagnosis_substance_cannabis_moderate(self):
+        """Cannabis use with 5 criteria → moderate substance use disorder."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e1,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e14,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e16,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e37,
+            answer_type="text", value={"text": "شاهدانه"},
+        )
+        for qid in ["E38", "E39", "E40", "E41", "E42"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["alcohol"]["diagnosed"])
+        self.assertTrue(diagnosis["substance_use_disorder"]["diagnosed"])
+        self.assertEqual(diagnosis["substance_use_disorder"]["primary_substance"], "شاهدانه")
+        self.assertEqual(diagnosis["substance_use_disorder"]["symptoms_counted"], 5)
+        self.assertEqual(diagnosis["substance_use_disorder"]["severity"], "متوسط")
+
+    def test_diagnosis_substance_insufficient_criteria(self):
+        """Only 1 substance criterion → not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e1,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e14,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e17,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e37,
+            answer_type="text", value={"text": "شیشه"},
+        )
+        q = Question.objects.get(id="E38")
+        Answer.objects.create(
+            interview=interview, question=q,
+            answer_type="boolean", value={"boolean": True},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["substance_use_disorder"]["diagnosed"])
+        self.assertEqual(diagnosis["substance_use_disorder"]["symptoms_counted"], 1)
+
+    def test_substances_screened_tracking(self):
+        """Multiple substances reported should appear in substances_screened."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e1,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.e14,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["E16", "E17", "E18"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        screened = diagnosis["substances_screened"]
+        self.assertTrue(screened["any_substance_used"])
+        self.assertEqual(len(screened["substances_reported"]), 3)
+        self.assertIn("شاهدانه (ماریجوانا)", screened["substances_reported"])
+
+
+class ModuleFInterviewTests(APITestCase):
+    """
+    Test cases for Module F — Anxiety Disorders.
+    Covers interview flow, jump rules, and diagnosis calculation.
+    """
+
+    def setUp(self):
+        self.clinician = User.objects.create_user(
+            phone_number="09123456789", first_name="Test", last_name="Clinician"
+        )
+        UserProfile.objects.get_or_create(
+            user=self.clinician, defaults={"role": "clinician"}
+        )
+
+        self.patient = Patient.objects.create(
+            first_name="Test",
+            last_name="Patient",
+            phone_number="0987654321",
+            created_by=self.clinician,
+        )
+
+        self.module = InterviewModule.objects.create(
+            name="Module F - Anxiety Disorders",
+            description="Anxiety Disorders",
+            version="1.0",
+            is_active=True,
+            order=6,
+        )
+
+        # ---- Panic Disorder (F1-F7) ----
+        self.f1 = Question.objects.create(
+            id="F1", module=self.module,
+            text="حمله هراس؟",
+            question_type="boolean", order=1, has_jump_logic=True,
+        )
+        self.f2 = Question.objects.create(
+            id="F2", module=self.module,
+            text="نگرانی مداوم یا تغییر رفتار؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=2,
+        )
+        self.f3 = Question.objects.create(
+            id="F3", module=self.module,
+            text="عدم انتساب به ماده؟",
+            question_type="boolean", order=3,
+        )
+        self.f4 = Question.objects.create(
+            id="F4", module=self.module,
+            text="عدم انتساب به بیماری پزشکی؟",
+            question_type="boolean", order=4,
+        )
+        self.f5 = Question.objects.create(
+            id="F5", module=self.module,
+            text="عدم توضیح با اختلال دیگر؟",
+            question_type="boolean", order=5,
+        )
+        self.f6 = Question.objects.create(
+            id="F6", module=self.module,
+            text="شدت هراس؟",
+            question_type="text", order=6, has_jump_logic=True,
+        )
+        self.f7 = Question.objects.create(
+            id="F7", module=self.module,
+            text="کرونولوژی هراس؟",
+            question_type="text", order=7, has_jump_logic=True,
+        )
+
+        # ---- Agoraphobia (F8-F19) ----
+        self.f8 = Question.objects.create(
+            id="F8", module=self.module,
+            text="ترس از ۲+ موقعیت؟",
+            question_type="boolean", order=8, has_jump_logic=True,
+        )
+        self.f9 = Question.objects.create(
+            id="F9", module=self.module,
+            text="حملونقل عمومی؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=9,
+        )
+        self.f10 = Question.objects.create(
+            id="F10", module=self.module,
+            text="فضاهای باز؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=10,
+        )
+        self.f11 = Question.objects.create(
+            id="F11", module=self.module,
+            text="مکانهای بسته؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=11,
+        )
+        self.f12 = Question.objects.create(
+            id="F12", module=self.module,
+            text="ایستادن در صف؟",
+            question_type="boolean", is_criteria=True, criteria_number="4",
+            order=12,
+        )
+        self.f13 = Question.objects.create(
+            id="F13", module=self.module,
+            text="بیرون رفتن تنها؟",
+            question_type="boolean", is_criteria=True, criteria_number="5",
+            order=13,
+        )
+        self.f14 = Question.objects.create(
+            id="F14", module=self.module,
+            text="اجتناب یا تحمل با ترس شدید؟",
+            question_type="boolean", is_criteria=True, criteria_number="6",
+            order=14,
+        )
+        self.f15 = Question.objects.create(
+            id="F15", module=self.module,
+            text="عدم تناسب با خطر واقعی؟",
+            question_type="boolean", is_criteria=True, criteria_number="7",
+            order=15,
+        )
+        self.f16 = Question.objects.create(
+            id="F16", module=self.module,
+            text="عدم انتساب به ماده/پزشکی؟",
+            question_type="boolean", order=16,
+        )
+        self.f17 = Question.objects.create(
+            id="F17", module=self.module,
+            text="عدم توضیح با اختلال دیگر؟",
+            question_type="boolean", order=17,
+        )
+        self.f18 = Question.objects.create(
+            id="F18", module=self.module,
+            text="شدت آگورافوبیا؟",
+            question_type="text", order=18, has_jump_logic=True,
+        )
+        self.f19 = Question.objects.create(
+            id="F19", module=self.module,
+            text="کرونولوژی آگورافوبیا؟",
+            question_type="text", order=19, has_jump_logic=True,
+        )
+
+        # ---- Social Anxiety (F20-F28) ----
+        self.f20 = Question.objects.create(
+            id="F20", module=self.module,
+            text="ترس از موقعیتهای اجتماعی؟",
+            question_type="boolean", order=20, has_jump_logic=True,
+        )
+        self.f21 = Question.objects.create(
+            id="F21", module=self.module,
+            text="ترس از ارزیابی منفی؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=21,
+        )
+        self.f22 = Question.objects.create(
+            id="F22", module=self.module,
+            text="ترس مداوم در موقعیتهای اجتماعی؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=22,
+        )
+        self.f23 = Question.objects.create(
+            id="F23", module=self.module,
+            text="اجتناب اجتماعی؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=23,
+        )
+        self.f24 = Question.objects.create(
+            id="F24", module=self.module,
+            text="عدم تناسب اجتماعی؟",
+            question_type="boolean", order=24,
+        )
+        self.f25 = Question.objects.create(
+            id="F25", module=self.module,
+            text="عدم انتساب به ماده اجتماعی؟",
+            question_type="boolean", order=25,
+        )
+        self.f26 = Question.objects.create(
+            id="F26", module=self.module,
+            text="عدم توضیح با اختلال دیگر اجتماعی؟",
+            question_type="boolean", order=26,
+        )
+        self.f27 = Question.objects.create(
+            id="F27", module=self.module,
+            text="شدت اضطراب اجتماعی؟",
+            question_type="text", order=27, has_jump_logic=True,
+        )
+        self.f28 = Question.objects.create(
+            id="F28", module=self.module,
+            text="کرونولوژی اضطراب اجتماعی؟",
+            question_type="text", order=28, has_jump_logic=True,
+        )
+
+        # ---- GAD (F29-F40) ----
+        self.f29 = Question.objects.create(
+            id="F29", module=self.module,
+            text="نگرانی بیش از حد ≥۶ ماه؟",
+            question_type="boolean", order=29, has_jump_logic=True,
+        )
+        self.f30 = Question.objects.create(
+            id="F30", module=self.module,
+            text="ناتوانی در کنترل نگرانی؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=30,
+        )
+        self.f31 = Question.objects.create(
+            id="F31", module=self.module,
+            text="بیقراری؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=31,
+        )
+        self.f32 = Question.objects.create(
+            id="F32", module=self.module,
+            text="خستگی؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=32,
+        )
+        self.f33 = Question.objects.create(
+            id="F33", module=self.module,
+            text="مشکل تمرکز؟",
+            question_type="boolean", is_criteria=True, criteria_number="4",
+            order=33,
+        )
+        self.f34 = Question.objects.create(
+            id="F34", module=self.module,
+            text="زودرنجی؟",
+            question_type="boolean", is_criteria=True, criteria_number="5",
+            order=34,
+        )
+        self.f35 = Question.objects.create(
+            id="F35", module=self.module,
+            text="تنش عضلانی؟",
+            question_type="boolean", is_criteria=True, criteria_number="6",
+            order=35,
+        )
+        self.f36 = Question.objects.create(
+            id="F36", module=self.module,
+            text="اختلال خواب؟",
+            question_type="boolean", is_criteria=True, criteria_number="7",
+            order=36,
+        )
+        self.f37 = Question.objects.create(
+            id="F37", module=self.module,
+            text="عدم انتساب به ماده GAD؟",
+            question_type="boolean", order=37,
+        )
+        self.f38 = Question.objects.create(
+            id="F38", module=self.module,
+            text="عدم توضیح با اختلال دیگر GAD؟",
+            question_type="boolean", order=38,
+        )
+        self.f39 = Question.objects.create(
+            id="F39", module=self.module,
+            text="شدت GAD؟",
+            question_type="text", order=39, has_jump_logic=True,
+        )
+        self.f40 = Question.objects.create(
+            id="F40", module=self.module,
+            text="کرونولوژی GAD؟",
+            question_type="text", order=40,
+        )
+
+        # Jump rules
+        JumpRule.objects.create(
+            from_question=self.f1, condition="answer == false",
+            condition_type="boolean", to_question=self.f8,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.f6, condition="match=''",
+            condition_type="text", to_question=self.f7,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.f7, condition="match=''",
+            condition_type="text", to_question=self.f8,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.f8, condition="answer == false",
+            condition_type="boolean", to_question=self.f20,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.f18, condition="match=''",
+            condition_type="text", to_question=self.f19,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.f19, condition="match=''",
+            condition_type="text", to_question=self.f20,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.f20, condition="answer == false",
+            condition_type="boolean", to_question=self.f29,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.f27, condition="match=''",
+            condition_type="text", to_question=self.f28,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.f28, condition="match=''",
+            condition_type="text", to_question=self.f29,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.f29, condition="answer == false",
+            condition_type="boolean", to_question=None,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.f39, condition="match=''",
+            condition_type="text", to_question=self.f40,
+            metadata={"match": ""},
+        )
+
+        self.client.force_authenticate(user=self.clinician)
+
+    # ============================================================
+    # JUMP RULE TESTS
+    # ============================================================
+
+    def test_f1_negative_skips_to_f8(self):
+        """F1 negative should skip to F8 (no panic → assess agoraphobia)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f1,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F1", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "F8")
+
+    def test_f6_text_jumps_to_f7(self):
+        """F6 (severity text) should always jump to F7 (chronology)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f6,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F6", "answer_value": {"text": "شدید"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "F7")
+
+    def test_f8_negative_skips_to_f20(self):
+        """F8 negative should skip to F20 (no agoraphobia → assess social anxiety)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f8,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F8", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "F20")
+
+    def test_f19_text_jumps_to_f20(self):
+        """F19 (agoraphobia chronology text) should always jump to F20."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f19,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F19", "answer_value": {"text": "جاری"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "F20")
+
+    def test_f20_negative_skips_to_f29(self):
+        """F20 negative should skip to F29 (no social anxiety → assess GAD)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f20,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F20", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "F29")
+
+    def test_f29_negative_ends_interview(self):
+        """F29 negative should end the interview (no GAD)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f29,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F29", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["has_next"])
+        self.assertEqual(response.data["interview_status"], "completed")
+
+    def test_f39_text_jumps_to_f40(self):
+        """F39 (GAD severity text) should always jump to F40 (chronology)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.f39,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "F39", "answer_value": {"text": "متوسط"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "F40")
+
+    # ============================================================
+    # DIAGNOSIS TESTS
+    # ============================================================
+
+    def test_diagnosis_no_anxiety(self):
+        """All gate questions negative → no disorders diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["F1", "F8", "F20", "F29"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": False},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["panic_disorder"]["diagnosed"])
+        self.assertFalse(diagnosis["agoraphobia"]["diagnosed"])
+        self.assertFalse(diagnosis["social_anxiety"]["diagnosed"])
+        self.assertFalse(diagnosis["generalized_anxiety"]["diagnosed"])
+
+    def test_diagnosis_panic_disorder(self):
+        """F1-F5 all positive → Panic Disorder diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["F1", "F2", "F3", "F4", "F5"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.f6,
+            answer_type="text", value={"text": "شدید"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["panic_disorder"]["diagnosed"])
+        self.assertEqual(diagnosis["panic_disorder"]["severity"], "شدید")
+
+    def test_diagnosis_panic_exclusion_met(self):
+        """F3 (substance exclusion) negative → Panic not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f1,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f2,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f3,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["panic_disorder"]["diagnosed"])
+
+    def test_diagnosis_agoraphobia(self):
+        """F8 + F9,F10 + F14,F15 + F16,F17 → Agoraphobia diagnosed with 2 situations."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f8,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["F9", "F10"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        for qid in ["F14", "F15", "F16", "F17"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["agoraphobia"]["diagnosed"])
+        self.assertEqual(diagnosis["agoraphobia"]["situations_count"], 2)
+
+    def test_diagnosis_agoraphobia_insufficient_situations(self):
+        """Only 1 situation → Agoraphobia not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f8,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f9,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["F14", "F15", "F16", "F17"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["agoraphobia"]["diagnosed"])
+        self.assertEqual(diagnosis["agoraphobia"]["situations_count"], 1)
+
+    def test_diagnosis_social_anxiety(self):
+        """F20-F26 all positive → Social Anxiety diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["F20", "F21", "F22", "F23", "F24", "F25", "F26"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.f27,
+            answer_type="text", value={"text": "خفیف"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["social_anxiety"]["diagnosed"])
+        self.assertEqual(diagnosis["social_anxiety"]["severity"], "خفیف")
+
+    def test_diagnosis_social_anxiety_exclusion(self):
+        """F25 (substance exclusion) negative → Social Anxiety not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["F20", "F21", "F22", "F23", "F24"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.f25,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["social_anxiety"]["diagnosed"])
+
+    def test_diagnosis_gad(self):
+        """F29+F30 + F31,F32,F33 + F37,F38 → GAD diagnosed with 3 associated symptoms."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f29,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f30,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["F31", "F32", "F33"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        for qid in ["F37", "F38"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["generalized_anxiety"]["diagnosed"])
+        self.assertEqual(diagnosis["generalized_anxiety"]["associated_symptoms_count"], 3)
+
+    def test_diagnosis_gad_insufficient_symptoms(self):
+        """Only 2 associated symptoms → GAD not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f29,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f30,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["F31", "F32"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        for qid in ["F37", "F38"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["generalized_anxiety"]["diagnosed"])
+        self.assertEqual(diagnosis["generalized_anxiety"]["associated_symptoms_count"], 2)
+
+    def test_diagnosis_multiple_disorders(self):
+        """Panic + GAD both diagnosed (comorbid)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        # Panic: F1-F5 all true
+        for qid in ["F1", "F2", "F3", "F4", "F5"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        # GAD: F29-F30 + F31-F36 + F37-F38 all true
+        Answer.objects.create(
+            interview=interview, question=self.f29,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.f30,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["F31", "F32", "F33", "F34", "F35", "F36"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        for qid in ["F37", "F38"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["panic_disorder"]["diagnosed"])
+        self.assertTrue(diagnosis["generalized_anxiety"]["diagnosed"])
+        self.assertEqual(diagnosis["generalized_anxiety"]["associated_symptoms_count"], 6)

@@ -239,6 +239,23 @@ smart_scid/
 | D17–D21, D27 | MDD | Depressed mood + exclusions + severity + chronology |
 | D22–D24, D28 | Other Depressive | Subthreshold symptoms + distress + exclusions + chronology |
 
+### ✅ Module E — Substance Use Disorders
+
+**35 questions** (E1–E22, E37–E49), **12 jump rules**, alcohol + substance use disorder diagnosis with severity classification.
+
+| Section | Questions | Topic |
+|---------|-----------|-------|
+| Alcohol Gate | E1 | ≥6 drinks in past 12 months? (→ E14 if false) |
+| Alcohol Use Disorder Criteria | E2–E12 | 11 DSM-5 criteria: impaired control, social impairment, risky use, tolerance, withdrawal |
+| Alcohol Threshold | E13 | ≥2 criteria met? (→ always E14) |
+| Substance Gate | E14 | Any non-alcohol substance use? (→ END if false) |
+| Substance Screening | E15–E22 | 8 substance classes: sedatives, cannabis, stimulants, opioids, PCP, hallucinogens, inhalants, other (→ E37 if true) |
+| Primary Substance ID | E37 | Free text: which substance caused most problems |
+| Substance Use Disorder Criteria | E38–E48 | 11 DSM-5 criteria (same as alcohol, for primary substance) |
+| Substance Threshold | E49 | ≥2 criteria met? |
+
+**Severity Classification** (DSM-5): Mild = 2–3, Moderate = 4–5, Severe = 6+
+
 ---
 
 ## 🧠 Diagnosis Algorithm
@@ -368,6 +385,92 @@ D2: Manic episode criteria met?
 | D16 | `text, match=""` | D26 | BP-II severity entered → chronology |
 | D21 | `text, match=""` | D27 | MDD severity entered → chronology |
 
+### Module E — Diagnosis Logic
+
+```python
+# Phase 1: Alcohol Use Disorder (E1-E12)
+# Gate: E1=True (≥6 drinks in past year)
+# Criteria: E2-E12 (11 DSM-5 criteria, is_criteria=True)
+# Threshold: E13 (≥2 criteria met)
+# Severity: mild (2-3), moderate (4-5), severe (6+)
+
+# Phase 2: Substance Screening (E14-E22)
+# Gate: E14=True (any non-alcohol substance)
+# Screening: E15-E22 (8 substance classes)
+# Tracks which substances were reported
+
+# Phase 3: Substance Use Disorder (E37-E49)
+# Primary substance: E37 (free text)
+# Criteria: E38-E48 (11 DSM-5 criteria)
+# Threshold: E49 (≥2 criteria met)
+# Severity: same thresholds as alcohol
+```
+
+### Module E Jump Rules
+
+| From | Condition | To | Meaning |
+|------|-----------|-----|---------|
+| E1 | `answer == false` | E14 | No alcohol → skip to substance screening |
+| E13 | always | E14 | After alcohol threshold → continue to substance screening |
+| E14 | `answer == false` | END | No substances → end interview |
+| E15–E21 | `answer == true` | E37 | Substance reported → primary substance ID |
+| E22 | `answer == true` | E37 | Other substance reported → primary substance ID |
+| E22 | `answer == false` | END | No substances reported → end interview |
+
+### Module F — Diagnosis Logic
+
+```python
+# 4 independent anxiety disorders, each assessed sequentially:
+
+# 1. Panic Disorder (F1-F7)
+# Gate: F1=True (panic attack in past month)
+# Criteria: F2 (persistent worry or behavioral change)
+# Exclusions: F3 (not substance), F4 (not medical), F5 (not other disorder)
+# All must be true → diagnosed
+# Severity: F6 (text), Chronology: F7 (text)
+
+# 2. Agoraphobia (F8-F19)
+# Gate: F8=True (fear of ≥2 situations)
+# Situations: F9-F13 (transport, open, enclosed, queues, alone) — count ≥2
+# Criteria: F14 (avoidance/distress), F15 (disproportionate fear)
+# Exclusions: F16 (not substance/medical), F17 (not other disorder)
+# Gate + ≥2 situations + F14 + F15 + F16 + F17 → diagnosed
+# Severity: F18 (text), Chronology: F19 (text)
+
+# 3. Social Anxiety Disorder (F20-F28)
+# Gate: F20=True (fear of social situations)
+# Criteria: F21 (fear of negative evaluation), F22 (persistent fear), F23 (avoidance)
+# Exclusions: F24 (disproportionate — checked but not exclusionary),
+#             F25 (not substance/medical), F26 (not other disorder)
+# All must be true → diagnosed
+# Severity: F27 (text), Chronology: F28 (text)
+
+# 4. Generalized Anxiety Disorder (F29-F40)
+# Gate: F29=True (excessive worry ≥6 months)
+# Criteria: F30 (difficulty controlling worry)
+# Associated symptoms: F31-F36 (restlessness, fatigue, concentration,
+#                       irritability, muscle tension, sleep) — count ≥3
+# Exclusions: F37 (not substance/medical), F38 (not other disorder)
+# Gate + F30 + ≥3 symptoms + F37 + F38 → diagnosed
+# Severity: F39 (text), Chronology: F40 (text)
+```
+
+### Module F Jump Rules
+
+| From | Condition | To | Meaning |
+|------|-----------|-----|---------|
+| F1 | `answer == false` | F8 | No panic attacks → skip to Agoraphobia |
+| F6 | `text, match=""` | F7 | Severity entered → chronology |
+| F7 | `text, match=""` | F8 | Chronology entered → Agoraphobia |
+| F8 | `answer == false` | F20 | No agoraphobia → skip to Social Anxiety |
+| F18 | `text, match=""` | F19 | Severity entered → chronology |
+| F19 | `text, match=""` | F20 | Chronology entered → Social Anxiety |
+| F20 | `answer == false` | F29 | No social anxiety → skip to GAD |
+| F27 | `text, match=""` | F28 | Severity entered → chronology |
+| F28 | `text, match=""` | F29 | Chronology entered → GAD |
+| F29 | `answer == false` | END | No GAD → end interview |
+| F39 | `text, match=""` | F40 | Severity entered → chronology |
+
 ---
 
 ## 🔄 Jump Rules System
@@ -419,6 +522,7 @@ Each rule links a `from_question` → `to_question` (nullable; `null` = end inte
 | B | `psychotic_symptoms` (grouped by type), `exclusion_factors`, `note` |
 | C | `diagnosis` (string), `details`, `criteria_summary` (6 disorders), `module_b_symptoms`, optionally `psychotic_mood_disorder` + `note` |
 | D | `diagnosis` (string), `details`, `criteria_summary` (4 mood disorders), `module_a_episodes`, optionally `no_significant_mood_symptoms` + `note` |
+| E | `alcohol` (`diagnosed`, `symptoms_counted`, `severity`), `substances_screened` (`any_substance_used`, `substances_reported`), `substance_use_disorder` (`diagnosed`, `primary_substance`, `symptoms_counted`, `severity`) |
 
 ### Chronology Fields
 
@@ -442,6 +546,7 @@ Each rule links a `from_question` → `to_question` (nullable; `null` = end inte
 | B | B1 (delusions), B12 (hallucinations) | B2-B11, B13-B17, B18-B22 | B23, B24 | — |
 | C | C1 (psychosis outside mood) | C2-C6, C7-C8, C9-C12, C13-C17, C19-C21, C22-C25 | C6, C8, C12, C17, C24 | C26-C30 |
 | D | D1 (mood symptoms gate) | D2, D8-D11, D17, D22 | D3-D4, D10, D12-D14, D18-D19, D23-D24 | D25-D28 |
+| E | E1 (alcohol gate), E14 (substance gate) | E2-E12 (alcohol), E38-E48 (substance) | — | — |
 
 ---
 
@@ -498,13 +603,13 @@ The admin panel has been extensively customized:
 | B — Psychotic Symptoms | ✅ Done | 24 | 5 | Symptom Profile |
 | C — Differential Psychotic | ✅ Done | 30 | 5 | SZ, Schizophreniform, Schizoaffective, Delusional, Brief Psychotic |
 | D — Differential Mood | ✅ Done | 28 | 9 | Bipolar I, Bipolar II, MDD, Other Depressive |
+| E — Substance Use Disorders | ✅ Done | 35 | 12 | Alcohol Use Disorder, Substance Use Disorder (severity: Mild/Moderate/Severe) |
+| F — Anxiety Disorders | ✅ Done | 40 | 11 | Panic Disorder, Agoraphobia, Social Anxiety, GAD |
 
 ### Next Modules to Implement
 
 | Module | Name | Est. Questions | Priority | Dependencies |
 |--------|------|----------------|----------|--------------|
-| **E** | Substance Use Disorders | ~40-50 | High | Module A (mood episodes) |
-| **F** | Anxiety Disorders | ~30-40 | High | None |
 | **G** | Obsessive-Compulsive & Related | ~20-25 | Medium | Module F (anxiety) |
 | **H** | Trauma- & Stressor-Related | ~20-30 | Medium | Module A (mood), Module F (anxiety) |
 | **I** | Somatic Symptom & Related | ~20-25 | Low | None |
@@ -552,7 +657,7 @@ Module A (Mood) ──────┬──→ Module D (Differential Mood)
                       │
 Module B (Psychotic) ─┼──→ Module C (Differential Psychotic)
                       │
-                      ├──→ Module E (Substance) [planned]
+                      ├──→ Module E (Substance) ✅
                       │
 Module F (Anxiety) ───┼──→ Module G (OCD) [planned]
                       │
@@ -653,6 +758,7 @@ python manage.py test accounts interview --verbosity=2
 
 ### July 2025
 
+- **Module E** — Substance Use Disorders (35 questions, 12 jump rules, Alcohol/Substance Use Disorder diagnosis with DSM-5 severity classification)
 - **Module D** — Differential Diagnosis of Mood Disorders (28 questions, 9 jump rules, Bipolar I/II/MDD diagnosis)
 - **Module C** — Differential Diagnosis of Psychotic Disorders (30 questions, 5 jump rules, SZ/Schizophreniform/Schizoaffective/Delusional diagnosis)
 - **Admin UI overhaul** — Tabular inline layout fixes, ID column visibility, form field sizing, dark mode, delete button styling

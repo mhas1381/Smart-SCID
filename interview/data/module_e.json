@@ -1,0 +1,483 @@
+{
+  "module": {
+    "name": "Module E - Substance Use Disorders",
+    "description": "SCID-5-CV Module E: Alcohol Use Disorder and Other Substance Use Disorders (DSM-5 criteria, severity classification)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 5
+  },
+  "questions": [
+    {
+      "id": "E1",
+      "text": "آیا در ۱۲ ماه گذشته (از [یک سال پیش]) حداقل ۶ بار الکل مصرف کردهاید؟ (عادت نوشیدن شما چگونه است؟ چقدر مینوشید؟)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E2",
+      "text": "آیا متوجه شدهاید که وقتی شروع به نوشیدن میکنید، بیشتر از آنچه قصد داشتید مینوشید؟ (معیار ۱: مقدار بیشتر یا مدت طولانیتر از قصد)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E3",
+      "text": "آیا میخواستید نوشیدن را متوقف کنید یا کاهش دهید، یا تلاش کردید مقدار نوشیدن خود را کنترل کنید اما نتوانستید؟ (معیار ۲: تمایل مداوم یا تلاش ناموفق برای کاهش)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E4",
+      "text": "آیا زمان زیادی را صرف نوشیدن، مست بودن یا بهبودی از حالت مستی کردهاید؟ (معیار ۳: صرف زمان زیاد)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E5",
+      "text": "آیا در فواصل بین نوشیدنها، هوس یا تمایل شدیدی به نوشیدن الکل داشتهاید؟ (معیار ۴: هوس یا تمایل شدید)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E6",
+      "text": "آیا به دلیل مستی یا حالت تعلیق (hangover) از کار، مدرسه یا مسئولیتهای خانگی غیبت کردهاید یا مرتباً دیر رسیدهاید؟ (معیار ۵: ناتوانی در انجام تعهدات)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E7",
+      "text": "آیا نوشیدن شما باعث مشکلاتی با افراد دیگر مانند اعضای خانواده، دوستان یا همکاران شده است؟ (معیار ۶: ادامه مصرف علیرغم مشکلات اجتماعی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E8",
+      "text": "آیا مجبور شدهاید فعالیتهای مهم مانند کار، تحصیل، وقت گذراندن با خانواده یا سرگرمیها را به دلیل نوشیدن یا حالت مستی کنار بگذارید یا کاهش دهید؟ (معیار ۷: کاهش فعالیتها)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E9",
+      "text": "آیا تا به حال درست قبل از انجام کاری که نیاز به هماهنگی و تمرکز دارد (مانند رانندگی، کار با ماشینآلات سنگین، بالا رفتن از نردبان) چند نوشیدنی مصرف کردهاید؟ (معیار ۸: مصرف در موقعیتهای خطرناک)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E10",
+      "text": "آیا علیرغم اینکه نوشیدن باعث مشکلات جسمی یا روانی (مانند افسردگی، اضطراب) شده بود، به نوشیدن ادامه دادید؟ (معیار ۹: ادامه مصرف علیرغم مشکلات جسمی/روانی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E11",
+      "text": "آیا متوجه شدهاید که برای رسیدن به احساس مورد نظرتان، باید مقدار بیشتری الکل نسبت به قبل مصرف کنید؟ (معیار ۱۰: تحمل / تلرانس)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E12",
+      "text": "آیا وقتی نوشیدن را کاهش دادید یا متوقف کردید، علائم ترک (مانند لرزش، تعریق، تهوع، بیخوابی، اضطراب) را تجربه کردید؟ (معیار ۱۱: ترک / سندرم محرومیت)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "11",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E13",
+      "text": "آیا حداقل ۲ مورد از معیارهای فوق (E2-E12) مثبت بوده و علائم در ۱۲ ماه گذشته رخ دادهاند؟ (آیا اختلال مصرف الکل وجود دارد؟)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E14",
+      "text": "حالا میخواهم درباره مصرف مواد مخدر یا داروها در ۱۲ ماه گذشته (از [یک سال پیش]) از شما بپرسم. آیا از هیچ مادهای غیر از الکل استفاده کردهاید؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E15",
+      "text": "آیا قرصهایی برای آرام شدن، ریلکس شدن یا کمک به خواب مصرف کردهاید؟ (مانند والیوم، زاناکس، آتیوان، کلونوپین، آمبین) — آرامبخشها / خوابآورها / ضداضطرابها",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E16",
+      "text": "آیا از ماریجوانا (گراس، علف)، حشیش، THC، K2 یا اسپایس استفاده کردهاید؟ — شاهدانه",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E17",
+      "text": "آیا از مواد محرک مانند شیشه، کریستال مت، ریتالین، آدرال، قرصهای لاغری یا کوکائین / کراک استفاده کردهاید؟ — محرکها",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E18",
+      "text": "آیا از هروئین، متادون یا مسکنهای تجویزی مانند مورفین، کدئین، پرکوست، اکسیکونتین، ویکودین، سابوکسون استفاده کردهاید؟ — مواد افیونی",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 18,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E19",
+      "text": "آیا از PCP (فرشته غبار) یا کتامین (ویژگی K) استفاده کردهاید؟ — فنسیکلیدین",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E20",
+      "text": "آیا از مواد توهمزا مانند LSD، قارچ، اکستازی/MDMA، DMT یا نمکهای حمام استفاده کردهاید؟ — سایر توهمزاها",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E21",
+      "text": "آیا تا به حال از چسب، رنگ، بنزین یا سایر مواد استنشاقی برای مست شدن استفاده کردهاید؟ — مواد استنشاقی",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E22",
+      "text": "آیا از سایر مواد مانند استروئیدهای آنابولیک، نیتروس اکساید، نیتریتها (پاپر)، قرصهای لاغری یا داروهای بدون نسخه برای سرماخوردگی، سرفه یا خواب استفاده کردهاید؟ — سایر مواد",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "E37",
+      "text": "کدام ماده در ۱۲ ماه گذشته بیشترین مشکل را برای شما ایجاد کرده است؟ کدام ماده را بیشتر مصرف کردهاید؟ (ماده اصلی را مشخص کنید)",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 37,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E38",
+      "text": "آیا متوجه شدهاید که وقتی شروع به مصرف [ماده] میکنید، بیشتر از آنچه قصد داشتید مصرف میکنید؟ (معیار ۱: مقدار بیشتر یا مدت طولانیتر از قصد)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 38,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E39",
+      "text": "آیا میخواستید مصرف [ماده] را متوقف یا کاهش دهید، یا تلاش کردید مقدار مصرف را کنترل کنید اما نتوانستید؟ (معیار ۲: تمایل مداوم یا تلاش ناموفق برای کاهش)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 39,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E40",
+      "text": "آیا زمان زیادی را صرف تهیه [ماده]، مصرف آن یا بهبودی از اثرات آن کردهاید؟ (معیار ۳: صرف زمان زیاد)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 40,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E41",
+      "text": "آیا در فواصل بین مصرف، هوس یا تمایل شدیدی به مصرف [ماده] داشتهاید؟ (معیار ۴: هوس یا تمایل شدید)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 41,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E42",
+      "text": "آیا به دلیل مصرف [ماده] از کار، مدرسه یا مسئولیتهای خانگی غیبت کردهاید یا مرتباً دیر رسیدهاید؟ (معیار ۵: ناتوانی در انجام تعهدات)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 42,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E43",
+      "text": "آیا مصرف [ماده] باعث مشکلاتی با افراد دیگر مانند اعضای خانواده، دوستان یا همکاران شده است؟ (معیار ۶: ادامه مصرف علیرغم مشکلات اجتماعی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 43,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E44",
+      "text": "آیا مجبور شدهاید فعالیتهای مهم مانند کار، وقت گذراندن با خانواده یا سرگرمیها را به دلیل مصرف [ماده] کنار بگذارید یا کاهش دهید؟ (معیار ۷: کاهش فعالیتها)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 44,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E45",
+      "text": "آیا تا به حال درست قبل از انجام کاری که نیاز به هماهنگی و تمرکز دارد (مانند رانندگی، کار با ماشینآلات) [ماده] مصرف کردهاید؟ (معیار ۸: مصرف در موقعیتهای خطرناک)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 45,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E46",
+      "text": "آیا علیرغم اینکه مصرف [ماده] باعث مشکلات جسمی یا روانی (مانند افسردگی، اضطراب، پارانویا) شده بود، به مصرف ادامه دادید؟ (معیار ۹: ادامه مصرف علیرغم مشکلات جسمی/روانی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 46,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E47",
+      "text": "آیا متوجه شدهاید که برای رسیدن به احساس مورد نظرتان، باید مقدار بیشتری [ماده] نسبت به قبل مصرف کنید؟ (معیار ۱۰: تحمل / تلرانس)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 47,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E48",
+      "text": "آیا وقتی مصرف [ماده] را کاهش دادید یا متوقف کردید، علائم ترک را تجربه کردید؟ (معیار ۱۱: ترک / سندرم محرومیت)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "11",
+      "order": 48,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "E49",
+      "text": "آیا حداقل ۲ مورد از معیارهای فوق (E38-E48) مثبت بوده و علائم در ۱۲ ماه گذشته رخ دادهاند؟ (آیا اختلال مصرف ماده وجود دارد؟)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 49,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "E1",
+      "condition": "answer == false",
+      "to_question": "E14",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No alcohol use (fewer than 6 times in past year) → skip to nonalcohol substance screening (E14)."
+      }
+    },
+    {
+      "from_question": "E13",
+      "condition": "alcohol threshold assessed",
+      "to_question": "E14",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "After alcohol threshold assessment → always continue to nonalcohol substance screening (E14)."
+      }
+    },
+    {
+      "from_question": "E14",
+      "condition": "answer == false",
+      "to_question": null,
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No nonalcohol substance use → END Module E."
+      }
+    },
+    {
+      "from_question": "E15",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Sedative/Hypnotic/Anxiolytic use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E16",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Cannabis use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E17",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Stimulant use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E18",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Opioid use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E19",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "PCP use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E20",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Hallucinogen use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E21",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Inhalant use reported → assess substance use disorder criteria (E37)."
+      }
+    },
+    {
+      "from_question": "E22",
+      "condition": "answer == true",
+      "to_question": "E37",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": true,
+        "note": "Other substance use reported → assess substance use disorder criteria (E37). If false, END Module E (no substance use)."
+      }
+    },
+    {
+      "from_question": "E22",
+      "condition": "answer == false",
+      "to_question": null,
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No other substance use reported and all previous substance screenings negative → END Module E."
+      }
+    }
+  ]
+}

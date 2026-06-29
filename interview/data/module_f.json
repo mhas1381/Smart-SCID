@@ -1,0 +1,523 @@
+{
+  "module": {
+    "name": "Module F - Anxiety Disorders",
+    "description": "SCID-5-CV Module F: Panic Disorder, Agoraphobia, Social Anxiety Disorder, Generalized Anxiety Disorder (DSM-5 criteria)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 6
+  },
+  "questions": [
+    {
+      "id": "F1",
+      "text": "آیا در ماه گذشته، حمله هراس (پانیک) داشتهاید — یعنی ناگهان موجی از ترس یا ناراحتی به شما دست داده که در عرض چند دقیقه به اوج رسیده است؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F2",
+      "text": "آیا حداقل یک ماه پس از حملات، نگرانی مداوم درباره حملات بعدی یا نگرانی درباره عواقب آنها (مانند از دست دادن کنترل، حمله قلبی، دیوانه شدن) داشتهاید، یا تغییر قابلتوجهی در رفتار خود به دلیل حملات ایجاد کردهاید؟ (معیار B)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F3",
+      "text": "آیا حملات هراس به دلیل اثرات فیزیولوژیکی یک ماده (مانند مواد مخدر، دارو، الکل) نیست؟ (معیار C — عدم انتساب به ماده)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F4",
+      "text": "آیا حملات هراس به دلیل یک بیماری پزشکی دیگر (مانند پرکاری تیروئید، بیماری قلبی) نیست؟ (معیار C — عدم انتساب به بیماری پزشکی)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F5",
+      "text": "آیا اختلال بهتر با اختلال روانی دیگری توضیح داده نمیشود؟ (معیار D — مثلاً ترس از موقعیتهای اجتماعی، وسواس، اختلال استرس پس از سانحه)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F6",
+      "text": "شدت اختلال هراس را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F7",
+      "text": "آیا در حال حاضر علائم اختلال هراس را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F8",
+      "text": "آیا ترس یا اضطراب شدیدی درباره حداقل ۲ مورد از موقعیتهای زیر دارید: حملونقل عمومی، فضاهای باز، مکانهای بسته، ایستادن در صف یا بودن در جمعیت، بیرون رفتن از خانه به تنهایی؟ (آگورافوبیا)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F9",
+      "text": "آیا از استفاده از حملونقل عمومی (مانند اتوبوس، مترو، هواپیما) میترسید یا اضطراب دارید؟ (موقعیت ۱)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F10",
+      "text": "آیا از بودن در فضاهای باز (مانند پارکینگ، بازار، پل) میترسید یا اضطراب دارید؟ (موقعیت ۲)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F11",
+      "text": "آیا از بودن در مکانهای بسته (مانند آسانسور، تونل، فروشگاه) میترسید یا اضطراب دارید؟ (موقعیت ۳)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F12",
+      "text": "آیا از ایستادن در صف یا بودن در جمعیت میترسید یا اضطراب دارید؟ (موقعیت ۴)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F13",
+      "text": "آیا از بیرون رفتن از خانه به تنهایی میترسید یا اضطراب دارید؟ (موقعیت ۵)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F14",
+      "text": "آیا این موقعیتها را به طور فعال اجتناب میکنید، نیاز به همراه دارید، یا با ترس/اضطراب شدید تحمل میکنید؟ (معیار B — اجتناب یا تحمل با ترس شدید)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F15",
+      "text": "آیا ترس یا اضطراب شما متناسب با خطر واقعی موقعیت نیست (بیش از حد است)؟ (معیار C — عدم تناسب با خطر واقعی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F16",
+      "text": "آیا اختلال به دلیل اثرات فیزیولوژیکی یک ماده یا بیماری پزشکی دیگر نیست؟ (معیار D)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F17",
+      "text": "آیا اختلال بهتر با اختلال روانی دیگری توضیح داده نمیشود؟ (معیار E)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F18",
+      "text": "شدت آگورافوبیا را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 18,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F19",
+      "text": "آیا در حال حاضر علائم آگورافوبیا را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F20",
+      "text": "آیا ترس یا اضطراب شدیدی درباره موقعیتهای اجتماعی دارید که در آنها ممکن است مورد بررسی و قضاوت دیگران قرار بگیرید؟ (اختلال اضطراب اجتماعی)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F21",
+      "text": "آیا میترسید که دیگران شما را منفی ارزیابی کنند (مثلاً مسخره کنند، طرد کنند، قضاوت بد کنند)؟ (معیار A2 — ترس از ارزیابی منفی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F22",
+      "text": "آیا موقعیتهای اجتماعی تقریباً همیشه ترس یا اضطراب در شما ایجاد میکنند؟ (معیار B — ترس/اضطراب مداوم)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F23",
+      "text": "آیا از موقعیتهای اجتماعی به طور فعال اجتناب میکنید یا با ترس/اضطراب شدید تحمل میکنید؟ (معیار C — اجتناب یا تحمل با ترس شدید)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 23,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F24",
+      "text": "آیا ترس یا اضطراب شما متناسب با تهدید واقعی موقعیت اجتماعی نیست (بیش از حد است)؟ (معیار D — عدم تناسب)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 24,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F25",
+      "text": "آیا اختلال به دلیل اثرات فیزیولوژیکی یک ماده یا بیماری پزشکی دیگر نیست؟ (معیار E)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 25,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F26",
+      "text": "آیا اختلال بهتر با اختلال روانی دیگری توضیح داده نمیشود؟ (معیار F)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 26,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F27",
+      "text": "شدت اختلال اضطراب اجتماعی را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 27,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F28",
+      "text": "آیا در حال حاضر علائم اختلال اضطراب اجتماعی را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 28,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F29",
+      "text": "آیا اضطراب و نگرانی بیش از حد درباره رویدادها یا فعالیتهای مختلف (مانند کار، تحصیل، سلامت) دارید، بیشتر روزها، حداقل به مدت ۶ ماه؟ (اختلال اضطراب فراگیر)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 29,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F30",
+      "text": "آیا کنترل نگرانی برایتان دشوار است؟ (معیار B — ناتوانی در کنترل نگرانی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 30,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F31",
+      "text": "آیا بیقراری یا احساس تنش و آمادگی بیش از حد دارید؟ (علت مرتبط ۱ — بیقراری)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 31,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F32",
+      "text": "آیا به راحتی خسته میشوید؟ (علت مرتبط ۲ — خستگی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 32,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F33",
+      "text": "آیا مشکل در تمرکز یا ذهنتان خالی میشود؟ (علت مرتبط ۳ — مشکل در تمرکز)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 33,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F34",
+      "text": "آیا زودرنجی و عصبانیت بیش از حد دارید؟ (علت مرتبط ۴ — زودرنجی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 34,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F35",
+      "text": "آیا تنش عضلانی دارید؟ (علت مرتبط ۵ — تنش عضلانی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 35,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F36",
+      "text": "آیا مشکل خواب دارید (مانند بیخوابی، خواب بیکیفیت، بیدار شدن مکرر)؟ (علت مرتبط ۶ — اختلال خواب)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 36,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F37",
+      "text": "آیا اختلال به دلیل اثرات فیزیولوژیکی یک ماده یا بیماری پزشکی دیگر نیست؟ (معیار C)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 37,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F38",
+      "text": "آیا اختلال بهتر با اختلال روانی دیگری توضیح داده نمیشود؟ (معیار D)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 38,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "F39",
+      "text": "شدت اختلال اضطراب فراگیر را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 39,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "F40",
+      "text": "آیا در حال حاضر علائم اختلال اضطراب فراگیر را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 40,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "F1",
+      "condition": "answer == false",
+      "to_question": "F8",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No panic attacks → skip to Agoraphobia assessment (F8)."
+      }
+    },
+    {
+      "from_question": "F6",
+      "condition": "match=''",
+      "to_question": "F7",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (F7)."
+      }
+    },
+    {
+      "from_question": "F7",
+      "condition": "match=''",
+      "to_question": "F8",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to Agoraphobia (F8)."
+      }
+    },
+    {
+      "from_question": "F8",
+      "condition": "answer == false",
+      "to_question": "F20",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No agoraphobia → skip to Social Anxiety (F20)."
+      }
+    },
+    {
+      "from_question": "F18",
+      "condition": "match=''",
+      "to_question": "F19",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (F19)."
+      }
+    },
+    {
+      "from_question": "F19",
+      "condition": "match=''",
+      "to_question": "F20",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to Social Anxiety (F20)."
+      }
+    },
+    {
+      "from_question": "F20",
+      "condition": "answer == false",
+      "to_question": "F29",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No social anxiety → skip to GAD (F29)."
+      }
+    },
+    {
+      "from_question": "F27",
+      "condition": "match=''",
+      "to_question": "F28",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (F28)."
+      }
+    },
+    {
+      "from_question": "F28",
+      "condition": "match=''",
+      "to_question": "F29",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to GAD (F29)."
+      }
+    },
+    {
+      "from_question": "F29",
+      "condition": "answer == false",
+      "to_question": null,
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No GAD → END Module F."
+      }
+    },
+    {
+      "from_question": "F39",
+      "condition": "match=''",
+      "to_question": "F40",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (F40)."
+      }
+    }
+  ]
+}
