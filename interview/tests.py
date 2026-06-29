@@ -4254,3 +4254,851 @@ class ModuleFInterviewTests(APITestCase):
         self.assertTrue(diagnosis["panic_disorder"]["diagnosed"])
         self.assertTrue(diagnosis["generalized_anxiety"]["diagnosed"])
         self.assertEqual(diagnosis["generalized_anxiety"]["associated_symptoms_count"], 6)
+
+
+class ModuleGInterviewTests(APITestCase):
+    """
+    Test cases for Module G — Obsessive-Compulsive and Related Disorders.
+    Covers interview flow, jump rules, and diagnosis calculation.
+    """
+
+    def setUp(self):
+        self.clinician = User.objects.create_user(
+            phone_number="09123456789", first_name="Test", last_name="Clinician"
+        )
+        UserProfile.objects.get_or_create(
+            user=self.clinician, defaults={"role": "clinician"}
+        )
+
+        self.patient = Patient.objects.create(
+            first_name="Test",
+            last_name="Patient",
+            phone_number="0987654321",
+            created_by=self.clinician,
+        )
+
+        self.module = InterviewModule.objects.create(
+            name="Module G - Obsessive-Compulsive and Related Disorders",
+            description="OCD and Related Disorders",
+            version="1.0",
+            is_active=True,
+            order=7,
+        )
+
+        # ---- OCD (G1-G9) ----
+        self.g1 = Question.objects.create(
+            id="G1", module=self.module,
+            text="وسواس فکری یا عملی؟",
+            question_type="boolean", order=1, has_jump_logic=True,
+        )
+        self.g2 = Question.objects.create(
+            id="G2", module=self.module,
+            text="افکار مزاحم و ناخواسته؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=2,
+        )
+        self.g3 = Question.objects.create(
+            id="G3", module=self.module,
+            text="تلاش برای سرکوب؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=3,
+        )
+        self.g4 = Question.objects.create(
+            id="G4", module=self.module,
+            text="رفتارهای تکراری؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=4,
+        )
+        self.g5 = Question.objects.create(
+            id="G5", module=self.module,
+            text="وقتگیر یا اختلال عملکرد؟",
+            question_type="boolean", is_criteria=True, criteria_number="4",
+            order=5,
+        )
+        self.g6 = Question.objects.create(
+            id="G6", module=self.module,
+            text="عدم انتساب به ماده؟",
+            question_type="boolean", order=6,
+        )
+        self.g7 = Question.objects.create(
+            id="G7", module=self.module,
+            text="عدم توضیح با اختلال دیگر؟",
+            question_type="boolean", order=7,
+        )
+        self.g8 = Question.objects.create(
+            id="G8", module=self.module,
+            text="شدت OCD؟",
+            question_type="text", order=8, has_jump_logic=True,
+        )
+        self.g9 = Question.objects.create(
+            id="G9", module=self.module,
+            text="کرونولوژی OCD؟",
+            question_type="text", order=9, has_jump_logic=True,
+        )
+
+        # ---- BDD (G10-G15) ----
+        self.g10 = Question.objects.create(
+            id="G10", module=self.module,
+            text="مشغولیت با نقص ظاهری؟",
+            question_type="boolean", order=10, has_jump_logic=True,
+        )
+        self.g11 = Question.objects.create(
+            id="G11", module=self.module,
+            text="رفتارهای تکراری BDD؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=11,
+        )
+        self.g12 = Question.objects.create(
+            id="G12", module=self.module,
+            text="اختلال عملکرد BDD؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=12,
+        )
+        self.g13 = Question.objects.create(
+            id="G13", module=self.module,
+            text="عدم انتساب به اختلال خوردن؟",
+            question_type="boolean", order=13,
+        )
+        self.g14 = Question.objects.create(
+            id="G14", module=self.module,
+            text="شدت BDD؟",
+            question_type="text", order=14, has_jump_logic=True,
+        )
+        self.g15 = Question.objects.create(
+            id="G15", module=self.module,
+            text="کرونولوژی BDD؟",
+            question_type="text", order=15, has_jump_logic=True,
+        )
+
+        # ---- Hoarding (G16-G22) ----
+        self.g16 = Question.objects.create(
+            id="G16", module=self.module,
+            text="مشکل دور انداختن وسایل؟",
+            question_type="boolean", order=16, has_jump_logic=True,
+        )
+        self.g17 = Question.objects.create(
+            id="G17", module=self.module,
+            text="میل شدید به نگهداری؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=17,
+        )
+        self.g18 = Question.objects.create(
+            id="G18", module=self.module,
+            text="شلوغی فضای زندگی؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=18,
+        )
+        self.g19 = Question.objects.create(
+            id="G19", module=self.module,
+            text="پریشانی یا اختلال عملکرد؟",
+            question_type="boolean", is_criteria=True, criteria_number="3",
+            order=19,
+        )
+        self.g20 = Question.objects.create(
+            id="G20", module=self.module,
+            text="عدم انتساب به بیماری پزشکی؟",
+            question_type="boolean", order=20,
+        )
+        self.g21 = Question.objects.create(
+            id="G21", module=self.module,
+            text="شدت احتکار؟",
+            question_type="text", order=21, has_jump_logic=True,
+        )
+        self.g22 = Question.objects.create(
+            id="G22", module=self.module,
+            text="کرونولوژی احتکار؟",
+            question_type="text", order=22, has_jump_logic=True,
+        )
+
+        # ---- Trichotillomania (G23-G28) ----
+        self.g23 = Question.objects.create(
+            id="G23", module=self.module,
+            text="کندن مکرر مو؟",
+            question_type="boolean", order=23, has_jump_logic=True,
+        )
+        self.g24 = Question.objects.create(
+            id="G24", module=self.module,
+            text="تلاش برای توقف کندن مو؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=24,
+        )
+        self.g25 = Question.objects.create(
+            id="G25", module=self.module,
+            text="پریشانی کندن مو؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=25,
+        )
+        self.g26 = Question.objects.create(
+            id="G26", module=self.module,
+            text="عدم انتساب به بیماری پزشکی مو؟",
+            question_type="boolean", order=26,
+        )
+        self.g27 = Question.objects.create(
+            id="G27", module=self.module,
+            text="شدت تریکوتیلومانیا؟",
+            question_type="text", order=27, has_jump_logic=True,
+        )
+        self.g28 = Question.objects.create(
+            id="G28", module=self.module,
+            text="کرونولوژی تریکوتیلومانیا؟",
+            question_type="text", order=28, has_jump_logic=True,
+        )
+
+        # ---- Excoriation (G29-G34) ----
+        self.g29 = Question.objects.create(
+            id="G29", module=self.module,
+            text="کندن مکرر پوست؟",
+            question_type="boolean", order=29, has_jump_logic=True,
+        )
+        self.g30 = Question.objects.create(
+            id="G30", module=self.module,
+            text="تلاش برای توقف کندن پوست؟",
+            question_type="boolean", is_criteria=True, criteria_number="1",
+            order=30,
+        )
+        self.g31 = Question.objects.create(
+            id="G31", module=self.module,
+            text="پریشانی کندن پوست؟",
+            question_type="boolean", is_criteria=True, criteria_number="2",
+            order=31,
+        )
+        self.g32 = Question.objects.create(
+            id="G32", module=self.module,
+            text="عدم انتساب به بیماری پزشکی پوست؟",
+            question_type="boolean", order=32,
+        )
+        self.g33 = Question.objects.create(
+            id="G33", module=self.module,
+            text="شدت اکسکوریشن؟",
+            question_type="text", order=33, has_jump_logic=True,
+        )
+        self.g34 = Question.objects.create(
+            id="G34", module=self.module,
+            text="کرونولوژی اکسکوریشن؟",
+            question_type="text", order=34,
+        )
+
+        # Other (G35)
+        self.g35 = Question.objects.create(
+            id="G35", module=self.module,
+            text="سایر اختلالات مرتبط؟",
+            question_type="text", order=35,
+        )
+
+        # Jump rules
+        JumpRule.objects.create(
+            from_question=self.g1, condition="answer == false",
+            condition_type="boolean", to_question=self.g10,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.g8, condition="match=''",
+            condition_type="text", to_question=self.g9,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g9, condition="match=''",
+            condition_type="text", to_question=self.g10,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g10, condition="answer == false",
+            condition_type="boolean", to_question=self.g16,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.g14, condition="match=''",
+            condition_type="text", to_question=self.g15,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g15, condition="match=''",
+            condition_type="text", to_question=self.g16,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g16, condition="answer == false",
+            condition_type="boolean", to_question=self.g23,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.g21, condition="match=''",
+            condition_type="text", to_question=self.g22,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g22, condition="match=''",
+            condition_type="text", to_question=self.g23,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g23, condition="answer == false",
+            condition_type="boolean", to_question=self.g29,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.g27, condition="match=''",
+            condition_type="text", to_question=self.g28,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g28, condition="match=''",
+            condition_type="text", to_question=self.g29,
+            metadata={"match": ""},
+        )
+        JumpRule.objects.create(
+            from_question=self.g29, condition="answer == false",
+            condition_type="boolean", to_question=self.g35,
+            metadata={"expected_value": False},
+        )
+        JumpRule.objects.create(
+            from_question=self.g33, condition="match=''",
+            condition_type="text", to_question=self.g34,
+            metadata={"match": ""},
+        )
+
+        self.client.force_authenticate(user=self.clinician)
+
+    # ============================================================
+    # JUMP RULE TESTS
+    # ============================================================
+
+    def test_g1_negative_skips_to_g10(self):
+        """G1 negative should skip to G10 (no OCD → assess BDD)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g1,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G1", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G10")
+
+    def test_g8_text_jumps_to_g9(self):
+        """G8 (severity text) should always jump to G9 (chronology)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g8,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G8", "answer_value": {"text": "شدید"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G9")
+
+    def test_g9_text_jumps_to_g10(self):
+        """G9 (OCD chronology text) should always jump to G10."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g9,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G9", "answer_value": {"text": "جاری"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G10")
+
+    def test_g10_negative_skips_to_g16(self):
+        """G10 negative should skip to G16 (no BDD → assess Hoarding)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g10,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G10", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G16")
+
+    def test_g15_text_jumps_to_g16(self):
+        """G15 (BDD chronology text) should always jump to G16."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g15,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G15", "answer_value": {"text": "جاری"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G16")
+
+    def test_g16_negative_skips_to_g23(self):
+        """G16 negative should skip to G23 (no Hoarding → assess Trichotillomania)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g16,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G16", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G23")
+
+    def test_g22_text_jumps_to_g23(self):
+        """G22 (Hoarding chronology text) should always jump to G23."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g22,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G22", "answer_value": {"text": "جاری"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G23")
+
+    def test_g23_negative_skips_to_g29(self):
+        """G23 negative should skip to G29 (no Trichotillomania → assess Excoriation)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g23,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G23", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G29")
+
+    def test_g28_text_jumps_to_g29(self):
+        """G28 (Trich chronology text) should always jump to G29."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g28,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G28", "answer_value": {"text": "جاری"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G29")
+
+    def test_g29_negative_skips_to_g35(self):
+        """G29 negative should skip to G35 (no Excoriation → Other)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g29,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G29", "answer_value": {"boolean": False}, "answer_type": "boolean"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G35")
+
+    def test_g33_text_jumps_to_g34(self):
+        """G33 (Excoriation severity text) should always jump to G34."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="in_progress",
+            current_question=self.g33,
+        )
+        response = self.client.post(
+            f"/api/interviews/interviews/{interview.id}/progress/",
+            {"question_id": "G33", "answer_value": {"text": "خفیف"}, "answer_type": "text"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["current_question"]["id"], "G34")
+
+    # ============================================================
+    # DIAGNOSIS TESTS
+    # ============================================================
+
+    def test_diagnosis_no_disorder(self):
+        """All gate questions negative → no disorders diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G1", "G10", "G16", "G23", "G29"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": False},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["ocd"]["diagnosed"])
+        self.assertFalse(diagnosis["body_dysmorphic"]["diagnosed"])
+        self.assertFalse(diagnosis["hoarding"]["diagnosed"])
+        self.assertFalse(diagnosis["trichotillomania"]["diagnosed"])
+        self.assertFalse(diagnosis["excoriation"]["diagnosed"])
+
+    def test_diagnosis_ocd(self):
+        """G1-G7 all positive → OCD diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G1", "G2", "G3", "G4", "G5", "G6", "G7"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g8,
+            answer_type="text", value={"text": "شدید"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["ocd"]["diagnosed"])
+        self.assertEqual(diagnosis["ocd"]["severity"], "شدید")
+
+    def test_diagnosis_ocd_exclusion_met(self):
+        """G6 (substance exclusion) negative → OCD not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G1", "G2", "G3", "G4", "G5"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g6,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["ocd"]["diagnosed"])
+
+    def test_diagnosis_ocd_insufficient_criteria(self):
+        """Only 3 of 4 criteria met → OCD not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g1,
+            answer_type="boolean", value={"boolean": True},
+        )
+        for qid in ["G2", "G3", "G4"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g5,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["ocd"]["diagnosed"])
+        self.assertEqual(len(diagnosis["ocd"]["criteria_met"]), 3)
+
+    def test_diagnosis_bdd(self):
+        """G10-G13 all positive → BDD diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G10", "G11", "G12", "G13"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g14,
+            answer_type="text", value={"text": "متوسط"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["body_dysmorphic"]["diagnosed"])
+        self.assertEqual(diagnosis["body_dysmorphic"]["severity"], "متوسط")
+
+    def test_diagnosis_bdd_exclusion(self):
+        """G13 (eating disorder exclusion) negative → BDD not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G10", "G11", "G12"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g13,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["body_dysmorphic"]["diagnosed"])
+
+    def test_diagnosis_hoarding(self):
+        """G16-G20 all positive → Hoarding diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G16", "G17", "G18", "G19", "G20"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g21,
+            answer_type="text", value={"text": "خفیف"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["hoarding"]["diagnosed"])
+        self.assertEqual(diagnosis["hoarding"]["severity"], "خفیف")
+
+    def test_diagnosis_hoarding_either_criteria(self):
+        """G16+G17 + only G19 (no G18) → Hoarding diagnosed (either G18 or G19)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g16,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g17,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g18,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g19,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g20,
+            answer_type="boolean", value={"boolean": True},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["hoarding"]["diagnosed"])
+
+    def test_diagnosis_hoarding_insufficient(self):
+        """Neither G18 nor G19 → Hoarding not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g16,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g17,
+            answer_type="boolean", value={"boolean": True},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g18,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g19,
+            answer_type="boolean", value={"boolean": False},
+        )
+        Answer.objects.create(
+            interview=interview, question=self.g20,
+            answer_type="boolean", value={"boolean": True},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["hoarding"]["diagnosed"])
+
+    def test_diagnosis_trichotillomania(self):
+        """G23-G26 all positive → Trichotillomania diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G23", "G24", "G25", "G26"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g27,
+            answer_type="text", value={"text": "شدید"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["trichotillomania"]["diagnosed"])
+        self.assertEqual(diagnosis["trichotillomania"]["severity"], "شدید")
+
+    def test_diagnosis_trichotillomania_exclusion(self):
+        """G26 negative → Trichotillomania not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G23", "G24", "G25"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g26,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["trichotillomania"]["diagnosed"])
+
+    def test_diagnosis_excoriation(self):
+        """G29-G32 all positive → Excoriation diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G29", "G30", "G31", "G32"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g33,
+            answer_type="text", value={"text": "متوسط"},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["excoriation"]["diagnosed"])
+        self.assertEqual(diagnosis["excoriation"]["severity"], "متوسط")
+
+    def test_diagnosis_excoriation_exclusion(self):
+        """G32 negative → Excoriation not diagnosed."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        for qid in ["G29", "G30", "G31"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        Answer.objects.create(
+            interview=interview, question=self.g32,
+            answer_type="boolean", value={"boolean": False},
+        )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertFalse(diagnosis["excoriation"]["diagnosed"])
+
+    def test_diagnosis_multiple_disorders(self):
+        """OCD + Hoarding both diagnosed (comorbid)."""
+        interview = Interview.objects.create(
+            patient=self.patient, clinician=self.clinician,
+            module=self.module, status="completed",
+            completed_at=timezone.now(),
+        )
+        # OCD: G1-G7 all true
+        for qid in ["G1", "G2", "G3", "G4", "G5", "G6", "G7"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+        # Hoarding: G16-G20 all true
+        for qid in ["G16", "G17", "G18", "G19", "G20"]:
+            q = Question.objects.get(id=qid)
+            Answer.objects.create(
+                interview=interview, question=q,
+                answer_type="boolean", value={"boolean": True},
+            )
+
+        response = self.client.get(f"/api/interviews/interviews/{interview.id}/summary/")
+        self.assertEqual(response.status_code, 200)
+
+        diagnosis = response.data["diagnosis_result"]
+        self.assertTrue(diagnosis["ocd"]["diagnosed"])
+        self.assertTrue(diagnosis["hoarding"]["diagnosed"])

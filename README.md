@@ -471,6 +471,66 @@ D2: Manic episode criteria met?
 | F29 | `answer == false` | END | No GAD → end interview |
 | F39 | `text, match=""` | F40 | Severity entered → chronology |
 
+### Module G — Diagnosis Logic
+
+```python
+# 5 independent OCD-related disorders, each assessed sequentially:
+
+# 1. OCD (G1-G9)
+# Gate: G1=True (obsessions or compulsions)
+# Criteria: G2 (intrusive thoughts), G3 (attempts to suppress), G4 (repetitive behaviors), G5 (time-consuming/distressing)
+# Exclusions: G6 (not substance/medical), G7 (not other disorder)
+# All must be true → diagnosed
+# Severity: G8 (text), Chronology: G9 (text)
+
+# 2. Body Dysmorphic Disorder (G10-G15)
+# Gate: G10=True (preoccupation with appearance defects)
+# Criteria: G11 (repetitive behaviors), G12 (significant distress/impairment)
+# Exclusion: G13 (not better explained by eating disorder)
+# All must be true → diagnosed
+# Severity: G14 (text), Chronology: G15 (text)
+
+# 3. Hoarding Disorder (G16-G22)
+# Gate: G16=True (difficulty discarding possessions)
+# Criteria: G17 (strong urge to save), G18∨G19 (clutter OR distress — at least one)
+# Exclusion: G20 (not due to medical condition)
+# Gate + G17 + (G18 or G19) + G20 → diagnosed
+# Severity: G21 (text), Chronology: G22 (text)
+
+# 4. Trichotillomania (G23-G28)
+# Gate: G23=True (repeated hair pulling)
+# Criteria: G24 (attempts to stop), G25 (significant distress/impairment)
+# Exclusion: G26 (not due to medical condition)
+# All must be true → diagnosed
+# Severity: G27 (text), Chronology: G28 (text)
+
+# 5. Excoriation Disorder (G29-G34)
+# Gate: G29=True (repeated skin picking)
+# Criteria: G30 (attempts to stop), G31 (significant distress/impairment)
+# Exclusion: G32 (not due to medical condition)
+# All must be true → diagnosed
+# Severity: G33 (text), Chronology: G34 (text)
+```
+
+### Module G Jump Rules
+
+| From | Condition | To | Meaning |
+|------|-----------|-----|---------|
+| G1 | `answer == false` | G10 | No OCD → skip to BDD |
+| G8 | `text, match=""` | G9 | Severity entered → chronology |
+| G9 | `text, match=""` | G10 | Chronology entered → BDD |
+| G10 | `answer == false` | G16 | No BDD → skip to Hoarding |
+| G14 | `text, match=""` | G15 | Severity entered → chronology |
+| G15 | `text, match=""` | G16 | Chronology entered → Hoarding |
+| G16 | `answer == false` | G23 | No Hoarding → skip to Trichotillomania |
+| G21 | `text, match=""` | G22 | Severity entered → chronology |
+| G22 | `text, match=""` | G23 | Chronology entered → Trichotillomania |
+| G23 | `answer == false` | G29 | No Trichotillomania → skip to Excoriation |
+| G27 | `text, match=""` | G28 | Severity entered → chronology |
+| G28 | `text, match=""` | G29 | Chronology entered → Excoriation |
+| G29 | `answer == false` | G35 | No Excoriation → Other |
+| G33 | `text, match=""` | G34 | Severity entered → chronology |
+
 ---
 
 ## 🔄 Jump Rules System
@@ -605,12 +665,12 @@ The admin panel has been extensively customized:
 | D — Differential Mood | ✅ Done | 28 | 9 | Bipolar I, Bipolar II, MDD, Other Depressive |
 | E — Substance Use Disorders | ✅ Done | 35 | 12 | Alcohol Use Disorder, Substance Use Disorder (severity: Mild/Moderate/Severe) |
 | F — Anxiety Disorders | ✅ Done | 40 | 11 | Panic Disorder, Agoraphobia, Social Anxiety, GAD |
+| G — OCD & Related | ✅ Done | 35 | 14 | OCD, Body Dysmorphic, Hoarding, Trichotillomania, Excoriation |
 
 ### Next Modules to Implement
 
 | Module | Name | Est. Questions | Priority | Dependencies |
 |--------|------|----------------|----------|--------------|
-| **G** | Obsessive-Compulsive & Related | ~20-25 | Medium | Module F (anxiety) |
 | **H** | Trauma- & Stressor-Related | ~20-30 | Medium | Module A (mood), Module F (anxiety) |
 | **I** | Somatic Symptom & Related | ~20-25 | Low | None |
 | **J** | Feeding & Eating Disorders | ~20-25 | Low | None |
@@ -659,7 +719,7 @@ Module B (Psychotic) ─┼──→ Module C (Differential Psychotic)
                       │
                       ├──→ Module E (Substance) ✅
                       │
-Module F (Anxiety) ───┼──→ Module G (OCD) [planned]
+Module F (Anxiety) ───┼──→ Module G (OCD) ✅
                       │
                       └──→ Module H (Trauma) [planned]
 ```

@@ -20,6 +20,7 @@ class Command(BaseCommand):
         "module_d.json",
         "module_e.json",
         "module_f.json",
+        "module_g.json",
     ]
 
     def handle(self, *args, **options):

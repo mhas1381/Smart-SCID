@@ -1139,6 +1139,185 @@ class InterviewProgressView(APIView):
                 },
             })
 
+        elif "Obsessive-Compulsive" in interview.module.name:
+            # ================================================================
+            # MODULE G — OBSESSIVE-COMPULSIVE AND RELATED DISORDERS
+            # ================================================================
+            # 5 disorders: OCD, BDD, Hoarding, Trichotillomania, Excoriation
+            # Each has: gate, criteria, exclusions, severity, chronology
+
+            answers = {a.question.id: a for a in interview.answers.all()}
+
+            # ---- OCD (G1-G9) ----
+            g1_positive = answers.get("G1") and answers["G1"].boolean_value
+            g2_positive = answers.get("G2") and answers["G2"].boolean_value
+            g3_positive = answers.get("G3") and answers["G3"].boolean_value
+            g4_positive = answers.get("G4") and answers["G4"].boolean_value
+            g5_positive = answers.get("G5") and answers["G5"].boolean_value
+            g6_no_substance = answers.get("G6") and answers["G6"].boolean_value
+            g7_no_other = answers.get("G7") and answers["G7"].boolean_value
+
+            ocd_criteria_met = [
+                c for c, v in {
+                    "G2": g2_positive, "G3": g3_positive,
+                    "G4": g4_positive, "G5": g5_positive,
+                }.items() if v
+            ]
+
+            ocd_diagnosed = (
+                g1_positive
+                and g2_positive
+                and g3_positive
+                and g4_positive
+                and g5_positive
+                and g6_no_substance
+                and g7_no_other
+            )
+
+            ocd_severity = None
+            ocd_current = None
+            if ocd_diagnosed:
+                g8_answer = answers.get("G8")
+                if g8_answer and g8_answer.text_value:
+                    ocd_severity = g8_answer.text_value
+                g9_answer = answers.get("G9")
+                if g9_answer and g9_answer.text_value:
+                    ocd_current = g9_answer.text_value
+
+            result.update({
+                "ocd": {
+                    "diagnosed": ocd_diagnosed,
+                    "criteria_met": ocd_criteria_met,
+                    "severity": ocd_severity,
+                    "chronology": ocd_current,
+                },
+            })
+
+            # ---- BDD (G10-G15) ----
+            g10_positive = answers.get("G10") and answers["G10"].boolean_value
+            g11_positive = answers.get("G11") and answers["G11"].boolean_value
+            g12_positive = answers.get("G12") and answers["G12"].boolean_value
+            g13_no_eating = answers.get("G13") and answers["G13"].boolean_value
+
+            bdd_diagnosed = (
+                g10_positive
+                and g11_positive
+                and g12_positive
+                and g13_no_eating
+            )
+
+            bdd_severity = None
+            bdd_current = None
+            if bdd_diagnosed:
+                g14_answer = answers.get("G14")
+                if g14_answer and g14_answer.text_value:
+                    bdd_severity = g14_answer.text_value
+                g15_answer = answers.get("G15")
+                if g15_answer and g15_answer.text_value:
+                    bdd_current = g15_answer.text_value
+
+            result.update({
+                "body_dysmorphic": {
+                    "diagnosed": bdd_diagnosed,
+                    "severity": bdd_severity,
+                    "chronology": bdd_current,
+                },
+            })
+
+            # ---- Hoarding (G16-G22) ----
+            g16_positive = answers.get("G16") and answers["G16"].boolean_value
+            g17_positive = answers.get("G17") and answers["G17"].boolean_value
+            g18_positive = answers.get("G18") and answers["G18"].boolean_value
+            g19_positive = answers.get("G19") and answers["G19"].boolean_value
+            g20_no_medical = answers.get("G20") and answers["G20"].boolean_value
+
+            hoarding_diagnosed = (
+                g16_positive
+                and g17_positive
+                and (g18_positive or g19_positive)
+                and g20_no_medical
+            )
+
+            hoarding_severity = None
+            hoarding_current = None
+            if hoarding_diagnosed:
+                g21_answer = answers.get("G21")
+                if g21_answer and g21_answer.text_value:
+                    hoarding_severity = g21_answer.text_value
+                g22_answer = answers.get("G22")
+                if g22_answer and g22_answer.text_value:
+                    hoarding_current = g22_answer.text_value
+
+            result.update({
+                "hoarding": {
+                    "diagnosed": hoarding_diagnosed,
+                    "severity": hoarding_severity,
+                    "chronology": hoarding_current,
+                },
+            })
+
+            # ---- Trichotillomania (G23-G28) ----
+            g23_positive = answers.get("G23") and answers["G23"].boolean_value
+            g24_positive = answers.get("G24") and answers["G24"].boolean_value
+            g25_positive = answers.get("G25") and answers["G25"].boolean_value
+            g26_no_medical = answers.get("G26") and answers["G26"].boolean_value
+
+            trich_diagnosed = (
+                g23_positive
+                and g24_positive
+                and g25_positive
+                and g26_no_medical
+            )
+
+            trich_severity = None
+            trich_current = None
+            if trich_diagnosed:
+                g27_answer = answers.get("G27")
+                if g27_answer and g27_answer.text_value:
+                    trich_severity = g27_answer.text_value
+                g28_answer = answers.get("G28")
+                if g28_answer and g28_answer.text_value:
+                    trich_current = g28_answer.text_value
+
+            result.update({
+                "trichotillomania": {
+                    "diagnosed": trich_diagnosed,
+                    "severity": trich_severity,
+                    "chronology": trich_current,
+                },
+            })
+
+            # ---- Excoriation (G29-G34) ----
+            g29_positive = answers.get("G29") and answers["G29"].boolean_value
+            g30_positive = answers.get("G30") and answers["G30"].boolean_value
+            g31_positive = answers.get("G31") and answers["G31"].boolean_value
+            g32_no_medical = answers.get("G32") and answers["G32"].boolean_value
+
+            excor_diagnosed = (
+                g29_positive
+                and g30_positive
+                and g31_positive
+                and g32_no_medical
+            )
+
+            excor_severity = None
+            excor_current = None
+            if excor_diagnosed:
+                g33_answer = answers.get("G33")
+                if g33_answer and g33_answer.text_value:
+                    excor_severity = g33_answer.text_value
+                g34_answer = answers.get("G34")
+                if g34_answer and g34_answer.text_value:
+                    excor_current = g34_answer.text_value
+
+            result.update({
+                "excoriation": {
+                    "diagnosed": excor_diagnosed,
+                    "severity": excor_severity,
+                    "chronology": excor_current,
+                },
+            })
+
         return result
 
 

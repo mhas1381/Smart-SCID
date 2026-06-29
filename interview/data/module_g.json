@@ -1,0 +1,503 @@
+{
+  "module": {
+    "name": "Module G - Obsessive-Compulsive and Related Disorders",
+    "description": "SCID-5-CV Module G: OCD, Body Dysmorphic Disorder, Hoarding Disorder, Trichotillomania, Excoriation Disorder (DSM-5 criteria)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 7
+  },
+  "questions": [
+    {
+      "id": "G1",
+      "text": "آیا وسواسهای فکری (افکار، تصاویر یا تکانههای مزاحم و ناخواسته) یا وسواسهای عملی (رفتارهای تکراری یا اعمال ذهنی) دارید؟ (اختلال وسواسی-اجباری)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G2",
+      "text": "آیا افکار، تصاویر یا تکانههای مزاحم و ناخواسته در طول اختلال وجود دارند و باعث اضطراب یا پریشانی شدید میشوند؟ (معیار A — وسواسهای فکری)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G3",
+      "text": "آیا بیمار سعی میکند این افکار را نادیده بگیرد، سرکوب کند یا با فکر یا عمل دیگری خنثی کند؟ (معیار A — تلاش برای سرکوب/خنثیسازی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G4",
+      "text": "آیا بیمار رفتارهای تکراری (مانند شستن، وارسی، مرتب کردن) یا اعمال ذهنی (مانند شمردن، تکرار کلمات) انجام میدهد؟ (معیار B — وسواسهای عملی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G5",
+      "text": "آیا وسواسها یا اجبارها وقتگیر هستند (مثلاً بیش از یک ساعت در روز) یا باعث پریشانی قابلتوجه یا اختلال در عملکرد میشوند؟ (معیار C)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G6",
+      "text": "آیا اختلال به دلیل اثرات فیزیولوژیکی یک ماده یا بیماری پزشکی دیگر نیست؟ (معیار D)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G7",
+      "text": "آیا اختلال بهتر با اختلال روانی دیگری توضیح داده نمیشود؟ (معیار E)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G8",
+      "text": "شدت اختلال وسواسی-اجباری را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G9",
+      "text": "آیا در حال حاضر علائم اختلال وسواسی-اجباری را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G10",
+      "text": "آیا مشغولیت ذهنی با نقصهای خیالی یا بسیار جزئی در ظاهر خود دارید؟ (اختلال بدشکلی بدنی)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G11",
+      "text": "آیا در واکنش به نگرانی ظاهری، رفتارهای تکراری (مانند وارسی آینه، آرایش بیش از حد، مقایسه) یا اعمال ذهنی انجام میدهید؟ (معیار B — رفتارهای تکراری)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G12",
+      "text": "آیا مشغولیت ذهنی باعث پریشانی قابلتوجه یا اختلال در عملکرد اجتماعی، شغلی یا سایر حوزههای مهم میشود؟ (معیار C — اختلال عملکرد)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G13",
+      "text": "آیا مشغولیت ذهنی بهتر با اختلال خوردن (مانند نگرانی درباره چاقی) توضیح داده نمیشود؟ (معیار D — عدم انتساب)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G14",
+      "text": "شدت اختلال بدشکلی بدنی را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G15",
+      "text": "آیا در حال حاضر علائم اختلال بدشکلی بدنی را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G16",
+      "text": "آیا در دور انداختن وسایل مشکل مداوم دارید، صرف نظر از ارزش واقعی آنها؟ (اختلال احتکار)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G17",
+      "text": "آیا این مشکل به دلیل کمبود فضا برای نگهداری وسایل نیست، بلکه به دلیل میل شدید به نگهداری آنهاست؟ (معیار A — تفکیک از کمبود فضا)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G18",
+      "text": "آیا انباشت وسایل باعث شلوغی فضای زندگی شده به طوری که استفاده از آنها به شدت محدود یا غیرممکن شده است؟ (معیار B — شلوغی)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 18,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G19",
+      "text": "آیا این شلوغی باعث پریشانی قابلتوجه یا اختلال در عملکرد میشود؟ (معیار C)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G20",
+      "text": "آیا اختلال به دلیل بیماری پزشکی دیگر (مانند آسیب مغزی) نیست؟ (معیار D)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G21",
+      "text": "شدت اختلال احتکار را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G22",
+      "text": "آیا در حال حاضر علائم اختلال احتکار را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G23",
+      "text": "آیا کندن مکرر مو دارید که منجر به از دست دادن قابلتوجه مو شده است؟ (تریکوتیلومانیا)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 23,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G24",
+      "text": "آیا تلاشهای مکرر برای کاهش یا توقف کندن مو انجام دادهاید؟ (معیار B — تلاش برای توقف)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 24,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G25",
+      "text": "آیا کندن مو باعث پریشانی قابلتوجه یا اختلال در عملکرد میشود؟ (معیار C)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 25,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G26",
+      "text": "آیا کندن مو به دلیل بیماری پزشکی دیگر نیست؟ (معیار D)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 26,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G27",
+      "text": "شدت اختلال تریکوتیلومانیا را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 27,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G28",
+      "text": "آیا در حال حاضر علائم تریکوتیلومانیا را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 28,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G29",
+      "text": "آیا کندن مکرر پوست دارید که منجر به ضایعات پوستی شده است؟ (اختلال کندن پوست)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 29,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G30",
+      "text": "آیا تلاشهای مکرر برای کاهش یا توقف کندن پوست انجام دادهاید؟ (معیار B — تلاش برای توقف)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 30,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G31",
+      "text": "آیا کندن پوست باعث پریشانی قابلتوجه یا اختلال در عملکرد میشود؟ (معیار C)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 31,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G32",
+      "text": "آیا کندن پوست به دلیل بیماری پزشکی دیگر نیست؟ (معیار D)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 32,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G33",
+      "text": "شدت اختلال کندن پوست را مشخص کنید: خفیف، متوسط، یا شدید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 33,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "G34",
+      "text": "آیا در حال حاضر علائم اختلال کندن پوست را دارید (جاری) یا در بهبودی کامل هستید؟",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 34,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "G35",
+      "text": "آیا درباره سایر اختلالات مرتبط با وسواس و اجبار سوالی دارید یا نیاز به ارزیابی بیشتر هست؟ (سایر اختلالات مرتبط)",
+      "question_type": "text",
+      "is_criteria": false,
+      "criteria_number": "",
+      "order": 35,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "G1",
+      "condition": "answer == false",
+      "to_question": "G10",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No OCD → skip to Body Dysmorphic Disorder (G10)."
+      }
+    },
+    {
+      "from_question": "G8",
+      "condition": "match=''",
+      "to_question": "G9",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (G9)."
+      }
+    },
+    {
+      "from_question": "G9",
+      "condition": "match=''",
+      "to_question": "G10",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to BDD (G10)."
+      }
+    },
+    {
+      "from_question": "G10",
+      "condition": "answer == false",
+      "to_question": "G16",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No BDD → skip to Hoarding Disorder (G16)."
+      }
+    },
+    {
+      "from_question": "G14",
+      "condition": "match=''",
+      "to_question": "G15",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (G15)."
+      }
+    },
+    {
+      "from_question": "G15",
+      "condition": "match=''",
+      "to_question": "G16",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to Hoarding (G16)."
+      }
+    },
+    {
+      "from_question": "G16",
+      "condition": "answer == false",
+      "to_question": "G23",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No Hoarding → skip to Trichotillomania (G23)."
+      }
+    },
+    {
+      "from_question": "G21",
+      "condition": "match=''",
+      "to_question": "G22",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (G22)."
+      }
+    },
+    {
+      "from_question": "G22",
+      "condition": "match=''",
+      "to_question": "G23",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to Trichotillomania (G23)."
+      }
+    },
+    {
+      "from_question": "G23",
+      "condition": "answer == false",
+      "to_question": "G29",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No Trichotillomania → skip to Excoriation (G29)."
+      }
+    },
+    {
+      "from_question": "G27",
+      "condition": "match=''",
+      "to_question": "G28",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (G28)."
+      }
+    },
+    {
+      "from_question": "G28",
+      "condition": "match=''",
+      "to_question": "G29",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After chronology entered → continue to Excoriation (G29)."
+      }
+    },
+    {
+      "from_question": "G29",
+      "condition": "answer == false",
+      "to_question": "G35",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No Excoriation → skip to Other (G35)."
+      }
+    },
+    {
+      "from_question": "G33",
+      "condition": "match=''",
+      "to_question": "G34",
+      "condition_type": "text",
+      "metadata": {
+        "match": "",
+        "note": "After severity entered → continue to chronology (G34)."
+      }
+    }
+  ]
+}
