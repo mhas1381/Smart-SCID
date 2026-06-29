@@ -1,4 +1,4 @@
-from rest_framework import status, generics, serializers
+from rest_framework import status, generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
@@ -6,9 +6,6 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from drf_spectacular.utils import (
     extend_schema_view,
-    extend_schema,
-    inline_serializer,
-    OpenApiTypes,
 )
 import logging
 
@@ -17,12 +14,10 @@ from .serializers import (
     InterviewListSerializer,
     InterviewDetailSerializer,
     InterviewModuleListSerializer,
-    InterviewModuleDetailSerializer,
     QuestionListSerializer,
     QuestionDetailSerializer,
     InterviewStartSerializer,
     InterviewProgressSerializer,
-    InterviewSummarySerializer,
     AnswerListSerializer,
     AnswerDetailSerializer,
     JumpRuleListSerializer,
@@ -131,12 +126,12 @@ class InterviewDetailView(generics.RetrieveAPIView):
     lookup_field = "id"
 
 
+@extend_schema_view(
+    post=interview_start_schema,
+)
 class InterviewStartView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(
-        request=InterviewStartSerializer, responses={201: InterviewListSerializer}
-    )
     def post(self, request):
         serializer = InterviewStartSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -171,28 +166,12 @@ class InterviewStartView(APIView):
         )
 
 
+@extend_schema_view(
+    post=interview_progress_schema,
+)
 class InterviewProgressView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(
-        request=InterviewProgressSerializer,
-        responses={
-            200: inline_serializer(
-                name="ProgressResponse",
-                fields={
-                    "current_question": QuestionListSerializer(allow_null=True),
-                    "has_next": serializers.BooleanField(),
-                    "interview_status": serializers.CharField(),
-                    "answered_questions": serializers.IntegerField(),
-                    "total_questions": serializers.IntegerField(),
-                    "diagnosis_result": serializers.DictField(required=False),
-                },
-            ),
-            400: OpenApiTypes.OBJECT,
-            403: OpenApiTypes.OBJECT,
-            404: OpenApiTypes.OBJECT,
-        },
-    )
     def post(self, request, id):
         interview = get_object_or_404(Interview, id=id)
 
@@ -933,19 +912,12 @@ class InterviewProgressView(APIView):
         return result
 
 
+@extend_schema_view(
+    post=interview_pause_schema,
+)
 class InterviewPauseView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def get_serializer_class(self):
-        return None
-
-    @extend_schema(
-        responses={
-            200: inline_serializer(
-                name="PauseResponse", fields={"message": serializers.CharField()}
-            )
-        }
-    )
     def post(self, request, id):
         interview = get_object_or_404(Interview, id=id)
 
@@ -966,20 +938,12 @@ class InterviewPauseView(APIView):
         return Response({"message": "Interview paused successfully"})
 
 
+@extend_schema_view(
+    post=interview_resume_schema,
+)
 class InterviewResumeView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(
-        responses={
-            200: inline_serializer(
-                name="ResumeResponse",
-                fields={
-                    "message": serializers.CharField(),
-                    "current_question": QuestionListSerializer(allow_null=True),
-                },
-            )
-        }
-    )
     def post(self, request, id):
         interview = get_object_or_404(Interview, id=id)
 
@@ -1008,23 +972,12 @@ class InterviewResumeView(APIView):
         )
 
 
+@extend_schema_view(
+    get=interview_summary_schema,
+)
 class InterviewSummaryView(APIView):
     permission_classes = [IsAuthenticated]
 
-    @extend_schema(
-        responses={
-            200: inline_serializer(
-                name="SummaryResponse",
-                fields={
-                    "interview_id": serializers.CharField(),
-                    "diagnosis_result": serializers.DictField(),
-                    "completed_questions": serializers.IntegerField(),
-                    "total_questions": serializers.IntegerField(),
-                    "completion_percentage": serializers.FloatField(),
-                },
-            )
-        }
-    )
     def get(self, request, id):
         interview = get_object_or_404(Interview, id=id)
 
