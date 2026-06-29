@@ -408,9 +408,16 @@ select {
     color: var(--sc-text-primary) !important;
     border: 1px solid var(--sc-border) !important;
     border-radius: var(--sc-radius-sm) !important;
-    padding: 8px 12px !important;
+    padding: 10px 14px !important;
     font-family: inherit !important;
     font-size: 14px !important;
+    min-height: 42px !important;
+    box-sizing: border-box !important;
+}
+
+select {
+    line-height: 1.5 !important;
+    cursor: pointer !important;
 }
 
 input[type="text"]:focus,
@@ -434,6 +441,34 @@ select {
     background-position: right 10px center !important;
     padding-right: 30px !important;
     -webkit-appearance: none !important;
+}
+
+input[type="file"] {
+    padding: 10px 14px !important;
+    min-height: 42px !important;
+    background: var(--sc-bg-input) !important;
+    border: 1px solid var(--sc-border) !important;
+    border-radius: var(--sc-radius-sm) !important;
+    color: var(--sc-text-primary) !important;
+    font-size: 14px !important;
+    cursor: pointer !important;
+}
+
+input[type="file"]::file-selector-button {
+    background: var(--sc-primary) !important;
+    color: var(--sc-text-white) !important;
+    border: none !important;
+    border-radius: var(--sc-radius-sm) !important;
+    padding: 8px 16px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    cursor: pointer !important;
+    margin-right: 12px !important;
+    transition: opacity 0.2s !important;
+}
+
+input[type="file"]::file-selector-button:hover {
+    opacity: 0.85 !important;
 }
 
 label {
@@ -537,12 +572,14 @@ input[type="button"] {
     color: var(--sc-text-white) !important;
     border: none !important;
     border-radius: var(--sc-radius-sm) !important;
-    padding: 8px 20px !important;
+    padding: 10px 20px !important;
+    min-height: 42px !important;
     font-weight: 600 !important;
     font-size: 14px !important;
     transition: all 0.2s ease !important;
     cursor: pointer !important;
     font-family: inherit !important;
+    vertical-align: middle !important;
 }
 
 .button:hover,
@@ -1019,6 +1056,9 @@ p.help {
     background: var(--sc-bg-input) !important;
     border: 1px solid var(--sc-border) !important;
     color: var(--sc-text-primary) !important;
+    min-height: 42px !important;
+    padding: 8px 10px !important;
+    line-height: 1.5 !important;
 }
 
 .select2-container--default .select2-selection--single .select2-selection__rendered {
@@ -1170,13 +1210,19 @@ p.help {
 
 .submit-row a.deletelink {
     background: var(--sc-danger) !important;
+    background-image: none !important;
     color: var(--sc-text-white) !important;
-    padding: 8px 20px !important;
+    padding: 10px 20px !important;
+    min-height: 42px !important;
+    border: none !important;
     border-radius: var(--sc-radius-sm) !important;
     font-weight: 600 !important;
+    font-size: 14px !important;
     text-decoration: none !important;
-    display: inline-block !important;
+    display: inline-flex !important;
+    align-items: center !important;
     transition: all 0.2s ease !important;
+    cursor: pointer !important;
 }
 
 .submit-row a.deletelink:hover {
@@ -1295,8 +1341,8 @@ html[data-theme="dark"] .tabular .add-row td {
 /* Select widget inside inline */
 .tabular select {
     min-width: 120px !important;
-    height: 38px !important;
-    padding: 6px 10px !important;
+    min-height: 42px !important;
+    padding: 8px 10px !important;
     font-size: 13px !important;
     line-height: 1.4 !important;
 }
