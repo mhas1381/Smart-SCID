@@ -15,8 +15,9 @@
 4. [Module A — Mood Episodes](#module-a--mood-episodes)
 5. [Module B — Psychotic and Associated Symptoms](#module-b--psychotic-and-associated-symptoms)
 6. [Module C — Differential Diagnosis of Psychotic Disorders](#module-c--differential-diagnosis-of-psychotic-disorders)
-7. [Module D+ — Future Modules](#module-d--future-modules)
-8. [Output Format Reference](#output-format-reference)
+7. [Module D — Differential Diagnosis of Mood Disorders](#module-d--differential-diagnosis-of-mood-disorders)
+8. [Module E+ — Future Modules](#module-e--future-modules)
+9. [Output Format Reference](#output-format-reference)
 
 ---
 
@@ -34,12 +35,14 @@ InterviewProgressView.post()
 **Module detection** is done via module name pattern matching in `_calculate_diagnosis`:
 
 ```python
-if 'Mood Episodes' in interview.module.name:       # Module A
-elif 'Differential Diagnosis' in interview.module.name:  # Module C (checked BEFORE B!)
-elif 'Psychotic' in interview.module.name:           # Module B
+if 'Mood Episodes' in interview.module.name:                     # Module A
+elif 'Differential Diagnosis of Psychotic' in interview.module.name:  # Module C
+elif 'Mood Disorders' in interview.module.name:                  # Module D
+elif 'Psychotic' in interview.module.name:                       # Module B
 ```
 
 > ⚠️ Module C must be checked before Module B because both contain "Psychotic" in the name.
+> Module D must be checked after Module C because Module D's name also contains "Differential Diagnosis".
 
 ---
 
@@ -335,15 +338,120 @@ b_answers = Answer.objects.filter(
 
 ---
 
-## Module D+ — Future Modules
+## Module D — Differential Diagnosis of Mood Disorders
 
-When adding Module D (Differential Diagnosis of Mood Disorders), Module E (Substance Use), etc.:
+**SCID-5-CV Section**: pages 45-52
+**Module name in DB**: `Module D - Differential Diagnosis of Mood Disorders`
+**Questions**: D1-D28
+**Gate question**: D1 (clinically significant mood symptoms not better explained by Schizoaffective Disorder)
+
+### Decision Tree
+
+```
+D1 — Clinically significant mood symptoms not accounted for by Schizoaffective Disorder?
+  ├── NO → no_significant_mood_symptoms → END
+  └── YES ↓
+D2 — Manic episode criteria met? [references Module A: A40/A65]
+  ├── YES → Bipolar I track (D3-D7, D25)
+  │   D3 — Not better explained by psychotic disorders?
+  │   D4 — Not substance/medical?
+  │     ├── ALL YES → Bipolar I Disorder confirmed
+  │     │   D5 — Current episode active?
+  │     │     ├── YES → D6 (episode type) → D7 (severity) → D25 (chronology)
+  │     │     └── NO → D25 (chronology)
+  │     └── ANY NO → Not Bipolar I → fall through to D8
+  └── NO → Bipolar II / MDD track (D8-D28)
+      D8 — At least one MDE?
+        ├── NO → D22 (Other Depressive)
+        └── YES ↓
+      D9 — At least one hypomanic episode? [references Module A: A50/A76]
+        ├── NO → MDD track (D17-D21, D27)
+        └── YES ↓
+      D10 — Never had a full manic episode?
+      D11 — Hypomanic episode >= 4 consecutive days?
+        ├── NO → MDD track (D17-D21, D27)
+        └── YES ↓
+      D12 — Clinically significant distress/impairment?
+      D13 — Not substance/medical?
+      D14 — Not better explained by psychotic disorders?
+        ├── ALL YES → Bipolar II Disorder confirmed
+        │   D15 — Current depressive episode?
+        │     ├── YES → D16 (severity) → D26 (chronology)
+        │     └── NO → D26 (chronology) [current hypomanic or unspecified]
+        └── ANY NO → Not Bipolar II → MDD track (D17-D21, D27)
+      D17 — At least 2 weeks of depressed mood or loss of interest?
+      D18 — Clinically significant distress/impairment?
+      D19 — Not substance/medical?
+        ├── ALL YES → MDD confirmed
+        │   D20 — Single episode or recurrent?
+        │   D21 (severity) → D27 (chronology)
+        └── ANY NO → D22 (Other Depressive)
+      D22 — Depressive symptoms but don't meet full MDD/Persistent/PMDD?
+      D23 — Clinically significant distress?
+      D24 — Not substance/medical?
+        ├── ALL YES → Other Specified Depressive Disorder → D28 (chronology)
+        └── ANY NO → Undifferentiated mood disorder
+```
+
+### Diagnosis Priority
+
+```
+if bipolar_i (D2 + D3 + D4):
+    → "اختلال دوقطبی نوع ۱" (Bipolar I Disorder)
+    → includes: episode type from D6, severity from D7, chronology from D25
+elif bipolar_ii (D8 + D9 + D10 + D11 + D12 + D13 + D14):
+    → "اختلال دوقطبی نوع ۲" (Bipolar II Disorder)
+    → includes: episode type from D15, severity from D16, chronology from D26
+elif mdd (D17 + D18 + D19):
+    → "اختلال افسردگی اساسی" (Major Depressive Disorder)
+    → includes: single/recurrent from D20, severity from D21, chronology from D27
+elif other_depressive (D22 + D23 + D24):
+    → "سایر اختلالات افسردگی مشخص‌شده" (Other Specified Depressive Disorder)
+    → includes: chronology from D28
+else:
+    → "اختلال خلقی نامشخص" (Unspecified Mood Disorder)
+```
+
+### Module A Episode Lookup
+
+Module D references Module A data for cross-validation:
+- Bipolar I: checks Module A manic criteria (A40/A65)
+- Bipolar II: checks Module A hypomanic criteria (A50/A76)
+
+When Module A has been completed for the same patient, the diagnosis output includes a `module_a_episodes` field summarizing:
+- `depression_symptoms`: list of positive A1-A9
+- `mania_symptoms`: list of positive A29-A38
+- `hypomania_symptoms`: list of positive A41-A50
+
+### Jump Rules (Module D)
+
+| From | Condition | To | Meaning |
+|---|---|---|---|
+| D1 | `answer == false` | END | No significant mood symptoms → end module |
+| D2 | `answer == false` | D8 | No manic episode → skip Bipolar I, assess BP-II/MDD |
+| D5 | `answer == false` | D25 | BP-I confirmed, no current episode → chronology |
+| D7 | `text, match=""` | D25 | BP-I severity entered (any text) → chronology |
+| D9 | `answer == false` | D17 | No hypomanic episode → skip BP-II, assess MDD |
+| D11 | `answer == false` | D17 | Hypomanic < 4 days → not BP-II, assess MDD |
+| D15 | `answer == false` | D26 | BP-II confirmed, no current depressive → chronology |
+| D16 | `text, match=""` | D26 | BP-II severity entered (any text) → chronology |
+| D21 | `text, match=""` | D27 | MDD severity entered (any text) → chronology |
+
+### Severity Questions (Text Type)
+
+D7, D16, D21 are `text` type severity questions with `match_pattern=""`. Since empty string always matches any text input (`"" in "anytext"` = True), these jump rules act as unconditional "next" buttons — whatever the clinician types for severity, the jump triggers.
+
+---
+
+## Module E+ — Future Modules
+
+When adding Module E (Substance Use), Module F, etc.:
 
 1. **Create JSON file** in `interview/data/` following the format in existing modules
 2. **Add filename** to `MODULE_FILES` in `load_interview_data.py`
 3. **Add diagnosis branch** in `_calculate_diagnosis()`:
    - Use a unique name pattern that doesn't overlap with existing modules
-   - Check order: more specific patterns first (e.g., `'Differential Diagnosis'` before `'Psychotic'`)
+   - Check order: more specific patterns first
 4. **Add tests** in `interview/tests.py` following `ModuleCInterviewTests` pattern
 5. **Update this document**
 
@@ -375,6 +483,7 @@ All diagnosis results share this top-level structure:
 | A | `depression`, `mania`, `hypomania` (each: `diagnosed`, `symptoms_counted`, `required_symptoms_count`, `criteria_met`) |
 | B | `psychotic_symptoms` (grouped by type), `exclusion_factors`, `note` |
 | C | `diagnosis` (string), `details`, `criteria_summary` (6 disorders), `module_b_symptoms`, optionally `psychotic_mood_disorder` + `note` |
+| D | `diagnosis` (string), `details`, `criteria_summary` (4 mood disorders), `module_a_episodes`, optionally `no_significant_mood_symptoms` + `note` |
 
 ### Chronology Fields (Module C)
 
@@ -387,6 +496,15 @@ When a specific disorder is diagnosed, the corresponding chronology question is 
 | Schizoaffective | C28 | `details.current` |
 | Delusional | C29 | `details.current` |
 | Brief Psychotic | C30 | `details.current` |
+
+### Chronology Fields (Module D)
+
+| Disorder | Chronology Question | Field |
+|---|---|---|
+| Bipolar I | D25 | `details.current` |
+| Bipolar II | D26 | `details.current` |
+| MDD | D27 | `details.current` |
+| Other Depressive | D28 | `details.current` |
 
 ### Delusion Type Specifier (C18)
 
@@ -404,3 +522,4 @@ Stored in `details.type`.
 | A | A1, A15, A29, A41, A54, A66, A78 | A2-A9, A17-A25, A30-A38, A42-A50, A55-A63, A67-A75, A79-A84 | A12, A27, A40, A53, A65, A77, A89 | A28, A53, A65, A77 |
 | B | B1 (delusions), B12 (hallucinations) | B2-B11, B13-B17, B18-B22 | B23, B24 | — |
 | C | C1 (psychosis outside mood) | C2-C6, C7-C8, C9-C12, C13-C17, C19-C21, C22-C25 | C6, C8, C12, C17, C24 | C26-C30 |
+| D | D1 (mood symptoms gate) | D2, D8-D11, D17, D22 | D3-D4, D10, D12-D14, D18-D19, D23-D24 | D25-D28 |

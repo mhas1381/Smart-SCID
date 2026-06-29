@@ -1,0 +1,372 @@
+{
+  "module": {
+    "name": "Module D - Differential Diagnosis of Mood Disorders",
+    "description": "Structured Clinical Interview for DSM-5 - Differential Diagnosis of Mood Disorders (Bipolar I, Bipolar II, Major Depressive Disorder, Other Specified Depressive Disorder)",
+    "version": "1.0",
+    "is_active": true,
+    "order": 4
+  },
+  "questions": [
+    {
+      "id": "D1",
+      "text": "آیا علائم خلقی بالینی قابل توجهی وجود داشتهاند که بهتر با اختلال اسکیزواِفکتیو توجیه نشوند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "1",
+      "order": 1,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D2",
+      "text": "معیارهای یک دوره شیدایی [A40/A65] برآورده شدهاند؟ (آیا تا به حال دوره‌ای از بالا رفتن خلق، تحریک‌پذیری یا افزایش انرژی به مدت حداقل یک هفته داشته‌اید؟)",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "2",
+      "order": 2,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D3",
+      "text": "اختلال دوقطبی نوع ۱: آیا رخداد دوره‌های شیدایی و افسردگی اساسی بهتر با اختلال اسکیزواِفکتیو، اسکیزوفرنی، اختلال اسکیزوفرنیفرم، اختلال هذیانی، یا سایر اختلالات روانپریشی مشخص‌شده توجیه نمی‌شود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "3",
+      "order": 3,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D4",
+      "text": "اختلال دوقطبی نوع ۱: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده (داروی تجویزی یا مواد مخدر) یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "4",
+      "order": 4,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D5",
+      "text": "نوع دوره فعلی یا اخیر اختلال دوقطبی نوع ۱ مشخص شود: آیا در حال حاضر یک دوره شیدایی، افسردگی اساسی یا هیپومانیک فعال وجود دارد؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 5,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D6",
+      "text": "اختلال دوقطبی نوع ۱: نوع دوره فعلی یا اخیر: ۱) شیدایی ۲) افسردگی اساسی ۳) هیپومانیک ۴) نامشخص",
+      "question_type": "multiple_choice",
+      "is_criteria": false,
+      "order": 6,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D7",
+      "text": "شدت دوره فعلی اختلال دوقطبی نوع ۱ مشخص شود: خفیف / متوسط / شدید / با ویژگی‌های روانپریشی",
+      "question_type": "text",
+      "is_criteria": false,
+      "order": 7,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D8",
+      "text": "اختلال دوقطبی نوع ۲ — معیار A: آیا حداقل یک دوره افسردگی اساسی وجود داشته است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "5",
+      "order": 8,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D9",
+      "text": "اختلال دوقطبی نوع ۲ — معیار A: آیا حداقل یک دوره هیپومانیک وجود داشته است؟ [A50/A76]",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "6",
+      "order": 9,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D10",
+      "text": "اختلال دوقطبی نوع ۲: آیا هرگز یک دوره شیدایی کامل وجود نداشته است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "7",
+      "order": 10,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D11",
+      "text": "اختلال دوقطبی نوع ۲ — معیار C: آیا دوره هیپومانیک حداقل ۴ روز متوالی طول کشیده است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "8",
+      "order": 11,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D12",
+      "text": "اختلال دوقطبی نوع ۲ — معیار D: آیا علائم افسردگی یا عدم قابلیت پیش‌بینی ناشی از تناوب سریع بین دوره‌های افسردگی و هیپومانیا باعث پریشانی بالینی قابل توجه یا اختلال در عملکرد اجتماعی، شغلی یا سایر حوزه‌های مهم شده است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "9",
+      "order": 12,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D13",
+      "text": "اختلال دوقطبی نوع ۲: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "10",
+      "order": 13,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D14",
+      "text": "اختلال دوقطبی نوع ۲: آیا اختلال خلقی بهتر با اختلال اسکیزواِفکتیو، اسکیزوفرنی، اختلال اسکیزوفرنیفرم، اختلال هذیانی، یا سایر اختلالات روانپریشی مشخص‌شده یا نامشخص توجیه نمی‌شود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "11",
+      "order": 14,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D15",
+      "text": "نوع دوره فعلی یا اخیر اختلال دوقطبی نوع ۲: آیا در حال حاضر یک دوره افسردگی اساسی وجود دارد؟ (اگر بله: دوره فعلی افسرده. اگر خیر: دوره اخیر هیپومانیک)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 15,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D16",
+      "text": "شدت دوره افسردگی فعلی اختلال دوقطبی نوع ۲ مشخص شود: خفیف / متوسط / شدید / با ویژگی‌های روانپریشی",
+      "question_type": "text",
+      "is_criteria": false,
+      "order": 16,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D17",
+      "text": "اختلال افسردگی اساسی: آیا حداقل ۲ هفته خلق افسرده یا از دست دادن علاقه یا لذت وجود داشته است؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "12",
+      "order": 17,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D18",
+      "text": "اختلال افسردگی اساسی: آیا علائم باعث پریشانی بالینی قابل توجه یا اختلال در عملکرد اجتماعی، شغلی یا سایر حوزه‌های مهم عملکرد شدهاند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "13",
+      "order": 18,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D19",
+      "text": "اختلال افسردگی اساسی: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "14",
+      "order": 19,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D20",
+      "text": "اختلال افسردگی اساسی: آیا فقط یک دوره افسردگی اساسی وجود داشته یا بیش از یک دوره؟ (تک‌episode / عودکننده)",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 20,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D21",
+      "text": "شدت دوره فعلی اختلال افسردگی اساسی مشخص شود: خفیف / متوسط / شدید / با ویژگی‌های روانپریشی",
+      "question_type": "text",
+      "is_criteria": false,
+      "order": 21,
+      "is_required": true,
+      "has_jump_logic": true
+    },
+    {
+      "id": "D22",
+      "text": "سایر اختلالات افسردگی مشخص‌شده: آیا علائم غالب افسردگی وجود دارد اما معیارهای کامل اختلال افسردگی اساسی، اختلال افسردگی مداوم، یا اختلال ناخوشی پیش از قاعدگی برآورده نمی‌شود؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "15",
+      "order": 22,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D23",
+      "text": "سایر اختلالات افسردگی مشخص‌شده: آیا علائم باعث پریشانی بالینی قابل توجه یا اختلال در عملکرد شدهاند؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "16",
+      "order": 23,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D24",
+      "text": "سایر اختلالات افسردگی مشخص‌شده: آیا اختلال ناشی از اثرات فیزیولوژیک یک ماده یا یک بیماری پزشکی عمومی نیست؟",
+      "question_type": "boolean",
+      "is_criteria": true,
+      "criteria_number": "17",
+      "order": 24,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D25",
+      "text": "سیر زمانی اختلال دوقطبی نوع ۱: آیا معیارهای علائمی برای یک دوره شیدایی، افسردگی اساسی یا هیپومانیک در طول ماه گذشته برآورده شدهاند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 25,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D26",
+      "text": "سیر زمانی اختلال دوقطبی نوع ۲: آیا علائم دوره فعلی (افسردگی اساسی یا هیپومانیک) در طول ماه گذشته وجود داشتهاند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 26,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D27",
+      "text": "سیر زمانی اختلال افسردگی اساسی: آیا معیارهای علائمی برای یک دوره افسردگی اساسی در طول ماه گذشته برآورده شدهاند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 27,
+      "is_required": true,
+      "has_jump_logic": false
+    },
+    {
+      "id": "D28",
+      "text": "سیر زمانی سایر اختلالات افسردگی مشخص‌شده: آیا علائم افسردگی در طول ماه گذشته وجود داشتهاند؟",
+      "question_type": "boolean",
+      "is_criteria": false,
+      "order": 28,
+      "is_required": true,
+      "has_jump_logic": false
+    }
+  ],
+  "jump_rules": [
+    {
+      "from_question": "D1",
+      "condition": "answer == false",
+      "to_question": null,
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "If no clinically significant mood symptoms or all accounted for by Schizoaffective Disorder, end Module D — go to Module E."
+      }
+    },
+    {
+      "from_question": "D2",
+      "condition": "answer == false",
+      "to_question": "D8",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No manic episode → skip Bipolar I, assess Bipolar II and MDD."
+      }
+    },
+    {
+      "from_question": "D5",
+      "condition": "answer == false",
+      "to_question": "D25",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "Bipolar I confirmed but no current mood episode → go to Bipolar I chronology."
+      }
+    },
+    {
+      "from_question": "D7",
+      "condition": "severity entered",
+      "to_question": "D25",
+      "condition_type": "text",
+      "metadata": {
+        "match_pattern": "",
+        "note": "Bipolar I severity entered (any text) → go to Bipolar I chronology. match_pattern='' always matches."
+      }
+    },
+    {
+      "from_question": "D9",
+      "condition": "answer == false",
+      "to_question": "D17",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "No hypomanic episode → skip Bipolar II, assess MDD."
+      }
+    },
+    {
+      "from_question": "D11",
+      "condition": "answer == false",
+      "to_question": "D17",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "Hypomanic episode less than 4 days → does not meet Bipolar II Criterion C, go to MDD."
+      }
+    },
+    {
+      "from_question": "D15",
+      "condition": "answer == false",
+      "to_question": "D26",
+      "condition_type": "boolean",
+      "metadata": {
+        "expected_value": false,
+        "note": "Bipolar II confirmed but no current depressive episode (current hypomanic or unspecified) → go to Bipolar II chronology."
+      }
+    },
+    {
+      "from_question": "D16",
+      "condition": "severity entered",
+      "to_question": "D26",
+      "condition_type": "text",
+      "metadata": {
+        "match_pattern": "",
+        "note": "Bipolar II severity entered (any text) → go to Bipolar II chronology. match_pattern='' always matches."
+      }
+    },
+    {
+      "from_question": "D21",
+      "condition": "severity entered",
+      "to_question": "D27",
+      "condition_type": "text",
+      "metadata": {
+        "match_pattern": "",
+        "note": "MDD severity entered (any text) → go to MDD chronology. match_pattern='' always matches."
+      }
+    }
+  ]
+}
